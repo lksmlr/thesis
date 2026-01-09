@@ -1,0 +1,16 @@
+{
+  "file_name": {
+    "type": "kg5b",
+    "name_child": "name, vorname",
+    "birthday_child": "01.01.2000",
+    "start_date_apprenticeship": "01.01.2000",
+    "end_date_apprenticeship": "01.01.2000",
+    "date_document": "01.01.2000",
+    "stamp_company": true,
+    "signature_company": true,
+    "signature_child": true,
+    "signature_legal_guardian": true,
+    "apprenticeship_ended": true,
+    "exam_month": "01"
+  }
+}

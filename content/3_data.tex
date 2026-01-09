@@ -2,14 +2,33 @@
 
 \section{Dokumentenarten}\label{sec:documents}
 
-Für die Beantragung des Kindergeldes sind verschiedene Dokumente gültig.
-Dazu gehören ein offizielles Dokument der Bundesagentur für Arbeit namens KG5b\cite{KG5b} und Ausbildungsverträge.
-Neben diesen gültigen Dokumentenarten werden weitere Arten von Dokumenten wie Schulbescheinigungen in dem Portal hochgeladen.
-Da diese aber keine Relevanz für die Beantragung hat, werden solche weiteren Dokumente im folgenden immer mit Sonstige-Dokumente angesprochen.
+
+Im Rahmen der Kindergeldbeantragung sind verschiedene Nachweise gültig.
+Zu den anerkannten Dokumententypen zählen der offizielle Vordruck der Bundesagentur für Arbeit (KG5b)\cite{KG5b} sowie Ausbildungsverträge.
+Zusätzlich laden Kunden häufig weitere Unterlagen, wie beispielsweise Schulbescheinigungen, im Portal hoch.
+Da diese für den Kindergeldantrag nicht im Fokus stehen, werden sie im Folgenden unter der Kategorie „Sonstiges“ zusammengefasst.
+
+Ziel der Arbeit ist die Extraktion spezifischer Informationen aus den genannten Dokumentenklassen.
+Um die gewonnenen Informationen aus dem Dokument bereitzustellen, wird ein flaches \gls{JSON}-Schema verwendet.
+Die Wahl dieses Formats wird dadurch begünstigt, dass moderne \gls{LLM}s durch ihr Training bereits eine hohe Zuverlässigkeit in der Generierung valider \gls{JSON}-Strukturen aufweisen.
+
+Die Qualität der Dokumente, die im Onlineportal hochgeladen werden, ist sehr unterschiedlich.
+Neben Scans mit guter Belichtung und hoher Auflösung enthält der Datensatz auch Fotos, die aus verschiedenen Winkeln und Entfernungen aufgenommen wurden.
+Eine zusätzliche Herausforderung ist, dass die Dokumente häufig handschriftlich ausgefüllt sind.
+
+Die Test- und Trainingsdatensätze bestehen aus unterschiedlichen Konstellationen dieser Probleme.
+Der Testdatensatz besteht aus insgesamt 60 Dokumenten, wobei es 20 Verträge, 20 KG5bs und 20 sonstige Dokumente gibt.
 
 \subsection{KG5b}\label{subsec:kg5b}
 
+Wie bereits erwähnt ist ein KG5b-Dokument ein offizielles Dokument der Bundesagentur für Arbeit.
+Hierbei können volljährige Kinder ihr aktuelles Ausbildungsverhältnis gegenüber der Kindergeldstelle bekannt geben.
+
+
+
 \subsection{Ausbildungsvertrag}\label{subsec:vertraege}
+
+\subsection{Sonstige Dokumente}\label{subsec:other_documents}
 
 \section{Datenschutz}\label{sec:data_privacy}
 

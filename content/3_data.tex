@@ -2,7 +2,6 @@
 
 \section{Dokumentenarten}\label{sec:documents}
 
-
 Im Rahmen der Kindergeldbeantragung sind verschiedene Nachweise gültig.
 Zu den anerkannten Dokumententypen zählen der offizielle Vordruck der Bundesagentur für Arbeit (KG5b)\cite{KG5b} sowie Ausbildungsverträge.
 Zusätzlich laden Kunden häufig weitere Unterlagen, wie beispielsweise Schulbescheinigungen, im Portal hoch.
@@ -16,19 +15,36 @@ Die Qualität der Dokumente, die im Onlineportal hochgeladen werden, ist sehr un
 Neben Scans mit guter Belichtung und hoher Auflösung enthält der Datensatz auch Fotos, die aus verschiedenen Winkeln und Entfernungen aufgenommen wurden.
 Eine zusätzliche Herausforderung ist, dass die Dokumente häufig handschriftlich ausgefüllt sind.
 
-Die Test- und Trainingsdatensätze bestehen aus unterschiedlichen Konstellationen dieser Probleme.
-Der Testdatensatz besteht aus insgesamt 60 Dokumenten, wobei es 20 Verträge, 20 KG5bs und 20 sonstige Dokumente gibt.
+In den Test- und Trainingsdatensätzen kommen diese Probleme in unterschiedlichen Konstellationen vor.
+Der Testdatensatz umfasst insgesamt 60 Dokumente, die sich gleichmäßig auf 20 Ausbildungsverträge, 20 KG5b-Formulare und 20 sonstige Dokumente verteilen.
+Der Trainingsdatensatz setzt sich aus 165 KG5b-Formularen, 227 Ausbildungsverträgen und 218 sonstigen Dokumenten zusammen.
+
+Die Erstellung Ground Truth erfolgte in einem zweistufigen Verfahren.
+Zunächst wurden die \gls{JSON}-Strukturen für den Testdatensatz vollständig manuell erstellt.
+Dieser Testdatensatz diente anschließend dazu, den System-Prompt zu optimieren, bis die Ergebnisse des Basis-Modells eine zufriedenstellende Qualität erreichten.
+Um den Annotationsaufwand für den Trainingsdatensatz zu reduzieren, wurde dieser optimierte Prompt für ein sogenanntes Pre-Labeling genutzt.
+Das Modell generierte dabei erste Vorschläge für die \gls{JSON}-Schemas, welche im Anschluss manuell validiert und korrigiert wurden.
+Dieser modellgestützte Annotationsprozess (Model-Assisted Labeling) ermöglichte eine effiziente Erstellung der Trainingsdaten bei gleichbleibend hoher Datenqualität.
+
 
 \subsection{KG5b}\label{subsec:kg5b}
 
 Wie bereits erwähnt ist ein KG5b-Dokument ein offizielles Dokument der Bundesagentur für Arbeit.
 Hierbei können volljährige Kinder ihr aktuelles Ausbildungsverhältnis gegenüber der Kindergeldstelle bekannt geben.
+Die relevanten Felder für ein KG5B-Formular sind in dem folgenden \gls{JSON}-Schema beschrieben
 
+\lstinputlisting[language=JSON, caption={JSON-Schema KG5b}, captionpos=b,label={lst:lstkg5b}]{listings/kgb5.json}
 
 
 \subsection{Ausbildungsvertrag}\label{subsec:vertraege}
 
+\lstinputlisting[language=JSON, caption={JSON-Schema KG5b}, captionpos=b,label={lst:lstvertrag}]{listings/vertrag.json}
+
+
 \subsection{Sonstige Dokumente}\label{subsec:other_documents}
+
+\lstinputlisting[language=JSON, caption={JSON-Schema KG5b}, captionpos=b,label={lst:lstsonstiges}]{listings/vertrag.json}
+
 
 \section{Datenschutz}\label{sec:data_privacy}
 

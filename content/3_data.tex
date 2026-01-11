@@ -1,5 +1,6 @@
 \chapter{Datenbasis}\label{ch:data}
 
+
 \section{Dokumentenarten}\label{sec:documents}
 
 Im Rahmen der Kindergeldbeantragung sind verschiedene Nachweise gültig.
@@ -29,21 +30,67 @@ Dieser modellgestützte Annotationsprozess (Model-Assisted Labeling) ermöglicht
 
 \subsection{KG5b}\label{subsec:kg5b}
 
-Wie bereits erwähnt ist ein KG5b-Dokument ein offizielles Dokument der Bundesagentur für Arbeit.
-Hierbei können volljährige Kinder ihr aktuelles Ausbildungsverhältnis gegenüber der Kindergeldstelle bekannt geben.
-Die relevanten Felder für ein KG5B-Formular sind in dem folgenden \gls{JSON}-Schema beschrieben
+Der Vordruck KG5b ist, wie bereits erwähnt, ein offizielles Dokument der Bundesagentur für Arbeit, welches als Bescheinigung der Ausbildungsstätte dient.
+Volljährige Kinder weisen damit gegenüber der Familienkasse den Fortbestand ihrer Ausbildung nach, was die Voraussetzung für den weiteren Kindergeldbezug ist.
 
-\lstinputlisting[language=JSON, caption={JSON-Schema KG5b}, captionpos=b,label={lst:lstkg5b}]{listings/kgb5.json}
+Da es sich um ein standardisiertes Formular handelt, ist das Layout gleichbleibend.
+Theoretisch vereinfacht dies die Extraktion der Informationen, da relevante Felder an denselben Positionen zu erwarten sind.
+In der Praxis ergibt sich jedoch eine hohe Varianz durch den Ausfüllprozess.
+Obwohl der Vordruck digital ausfüllbar angeboten wird, erfolgt die Bearbeitung in der Regel handschriftlich.
+Zudem erzwingen Unterschriften und Firmenstempeln einen doppelten Medienbruch.
+Das Dokument wird ausgedruckt, bearbeitet und anschließend wieder digitalisiert.
+
+Abbildung\ref{fig:kg5b} zeigt ein exemplarisch ausgefülltes KG5b-Formular mit Markierung der zu extrahierenden Felder.
+
+\begin{figure}[!ht]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/kg5b_page_1}
+        \caption{Erste Seite}
+        \label{fig:kg5bpage1}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/kg5b_page_2}
+        \caption{Zweite Seite}
+        \label{fig:kg5bpage2}
+    \end{subfigure}
+    \caption{KG5b-Formular}
+    \label{fig:kg5b}
+\end{figure}
+
+Das Zielformat für die Extraktion wird durch das folgende \gls{JSON}-Schema definiert:
+
+\lstinputlisting[language=Python, caption={JSON-Schema für KG5b}, captionpos=b, label={lst:kg5b_schema}]{listings/kg5b.json}
+
+Eine besondere Herausforderung bei der Verarbeitung stellen die binären Informationen dar, wie etwa die Checkbox für das Feld \texttt{apprenticeship\_ended}.
+Hier muss das Modell visuell unterscheiden, ob ein Kasten leer, angekreuzt oder durchgestrichen ist.
+Ebenso kritisch ist die Detektion von \texttt{signature\_company} und \texttt{stamp\_company}.
+Im Gegensatz zu Textfeldern ist hier nicht der textliche Inhalt des Stempels relevant, sondern lediglich dessen Vorhandensein.
+Die Stempel sind oft blass oder eingefärbt, was besonders bei Schwarz-Weiß Scans zu einer schlechten Qualität führt.
+Zudem liegen die Felder \texttt{date\_document} und \texttt{signature\_company} nah beieinander.
+Unterschriften sind regelmäßig größer als ihr vorgesehener Platz, wodurch das Feld \texttt{date\_document} überdeckt wird.
+Zusätzlich werden die Stempel häufig zusammen mit der Unterschrift auf der linken Seite platziert.
+
+% TODO: Beispiel erstellen für diese Felder. Eventuell Dokument drucken, ausfüllen mit richtigem Stempel usw und wieder einscannen.
 
 
 \subsection{Ausbildungsvertrag}\label{subsec:vertraege}
 
-\lstinputlisting[language=JSON, caption={JSON-Schema KG5b}, captionpos=b,label={lst:lstvertrag}]{listings/vertrag.json}
+Die Ausbildungsverträge haben eine deutlich höhere Varianz als die KG5b-Formulare, da hier die verschiedenen Firmen und Kammern ein anderes Layout haben.
+Es gibt sowohl strukturierte Verträge die aus einzelnen Felder bestehen, als auch Verträge die ein reiner Fließtext sind.
+Des Weiteren haben solche Verträge häufig mehrere Seiten, wodurch es schwieriger für das Modell wird den Kontext zu bewahren.
+Durch Anhänge wie Rechtsbelehrungen usw. haben die Dokumente einen
+
+
+\lstinputlisting[language=Python, caption={JSON-Schema Vertrag}, captionpos=b,label={lst:lstvertrag}]{listings/vertrag.json}
 
 
 \subsection{Sonstige Dokumente}\label{subsec:other_documents}
 
-\lstinputlisting[language=JSON, caption={JSON-Schema KG5b}, captionpos=b,label={lst:lstsonstiges}]{listings/vertrag.json}
+\lstinputlisting[language=Python, caption={JSON-Schema Sonstiges}, captionpos=b,label={lst:lstsonstiges}]{listings/sonstiges.json}
 
 
 \section{Datenschutz}\label{sec:data_privacy}

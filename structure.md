@@ -64,6 +64,7 @@
 - Vergleich der Modelle
   - Performance
   - Wie konstant war der JSON Output?
+  - Base Modell Probleme bei Handwerkskammer wo die Daten in Kästchen steht
 
 
 ## 6. Diskussion
@@ -72,8 +73,10 @@
 - Wo machen die Modelle Fehler?
 - Was ist an der Implementierung eventuell zu verbessern?
 - Was können die Modelle besonders gut?
+- Logikfehler im dokument wie das bei kg5b beides angekreuzt wird funktioniert besser
 
 ## 7. Fazit und Ausblick
 
 - Wie geht es weiter?
+- ToolCall für Datum?
 - Wird das LLM die Pipeline ersetzen?

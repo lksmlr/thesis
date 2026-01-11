@@ -74,6 +74,7 @@
 - Was ist an der Implementierung eventuell zu verbessern?
 - Was können die Modelle besonders gut?
 - Logikfehler im dokument wie das bei kg5b beides angekreuzt wird funktioniert besser
+- eingehen auf schlechtes Dokument aus 3. Datenbasis
 
 ## 7. Fazit und Ausblick
 

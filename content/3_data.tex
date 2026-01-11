@@ -77,18 +77,34 @@ Zusätzlich werden die Stempel häufig zusammen mit der Unterschrift auf der lin
 % TODO: Beispiel erstellen für diese Felder. Eventuell Dokument drucken, ausfüllen mit richtigem Stempel usw und wieder einscannen.
 
 
+\newpage
 \subsection{Ausbildungsvertrag}\label{subsec:vertraege}
 
-Die Ausbildungsverträge haben eine deutlich höhere Varianz als die KG5b-Formulare, da hier die verschiedenen Firmen und Kammern ein anderes Layout haben.
-Es gibt sowohl strukturierte Verträge die aus einzelnen Felder bestehen, als auch Verträge die ein reiner Fließtext sind.
-Des Weiteren haben solche Verträge häufig mehrere Seiten, wodurch es schwieriger für das Modell wird den Kontext zu bewahren.
-Durch Anhänge wie Rechtsbelehrungen usw. haben die Dokumente einen
 
+Im Gegensatz zu den standardisierten KG5b-Formularen weisen die Ausbildungsverträge eine signifikant höhere Varianz auf.
+Dies ist auf die Vielzahl unterschiedlicher zuständiger Stellen (z.,B. Industrie- und Handelskammern, Handwerkskammern, Ärztekammern) und Firmen zurückzuführen, die jeweils ein eigenes Layout definieren.
+Die Vielfalt der Dokumentenstruktur reicht dabei von formularbasierten Layouts bis hin zu unstrukturierten Fließtexten.
+
+Eine weitere Herausforderung stellt der Umfang der Dokumente dar.
+Ausbildungsverträge umfassen häufig mehrere Seiten, wobei relevante Informationen und irrelevante Informationen, wie zum Beispiel gesetzliche Rahmenbedingungen, AGBs oder Rechtsbelehrungen, gemischt auftreten.
+Dies erschwert die Fokussierung des Modells auf die relevanten Daten.
+
+Analog zu den KG5b-Formularen liegt auch hier durch die notwendigen Unterschriften und Stempel ein Medienbruch vor.
+Ein wesentlicher Vorteil gegenüber den handschriftlich ausgefüllten Anträgen besteht jedoch darin, dass die inhaltlichen Daten der Verträge fast ausschließlich maschinenschriftlich vorliegen, was die Zeichenerkennung erleichtert.
+
+Das Zielformat für die Extraktion wird durch das folgende \gls{JSON}-Schema definiert:
 
 \lstinputlisting[language=Python, caption={JSON-Schema Vertrag}, captionpos=b,label={lst:lstvertrag}]{listings/vertrag.json}
 
+Die Felder stimmen weitestgehend mit denen der KG5b-Formulare überein, jedoch entfallen die Felder \texttt{exam\_month} und \texttt{apprenticeship\_ended}, da diese selten auf Verträgen zu finden sind.
+
 
 \subsection{Sonstige Dokumente}\label{subsec:other_documents}
+
+Die Kategorie \texttt{Sonstiges} steht als Auffangklasse für alle restlichen Dokumente bereit.
+Hier gehören zum Beispiel Schulbescheinigungen, Anträge auf Eintragung bei der Handelskammer oder Studienbescheinigungen dazu.
+Da diese Dokumente keine relevanz für die Weiterbeantragung des Kindergeldes bei volljährigen Auszubildenden hat, werden keine Information benötigt.
+Somit ist rein die Klassifizierung wichtig, weshalb das extrahierte \gls{JSON}-Schema folgendermaßen aussieht:
 
 \lstinputlisting[language=Python, caption={JSON-Schema Sonstiges}, captionpos=b,label={lst:lstsonstiges}]{listings/sonstiges.json}
 
@@ -96,5 +112,12 @@ Durch Anhänge wie Rechtsbelehrungen usw. haben die Dokumente einen
 \section{Datenschutz}\label{sec:data_privacy}
 
 
+Da es sich bei allen verwendeten Dokumenten um Echtdaten aus den Fachverfahren handelt, enthalten diese sensible personenbezogene Daten.
+Der Schutz dieser Daten hat höchste Priorität.
 
+Um die Sicherheit bei der Verarbeitung der Echtdaten zu gewährleisten, wurde ausschließlich auf die Infrastruktur der Bundesagentur für Arbeit zurückgegriffen.
+Die Daten liegen in einem gesicherten Netzwerkbereich, auf den nur ein autorisierter Personenkreis Zugriff hat.
+Durch die Verwendung von Echtdaten wird die Qualität der Ergebnisse deutlich gesteigert.
+
+Alle in dieser Arbeit abgebildeten Dokumentenbeispiele wurden jedoch synthetisch erzeugt und beinhalten keinerlei sensible Daten.
 

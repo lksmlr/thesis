@@ -29,6 +29,23 @@ Mit der Entwicklung der \gls{VLM}s ergibt sich die Chance auf eine weitere Verbe
 
 \section{Problemstellung}\label{sec:problem}
 
+Trotz der Einführung der teilautomatisierten Pipeline im Oktober 2025 steht die Verarbeitung der Dokumente noch vor großen technischen Herausforderungen.
+Schon während der Entwicklung der \gls{YOLO}/\gls{OCR}-Pipeline kamen Probleme auf.
+Vornehmlich durch die hohe Varianz der einzelnen Dokumentearten stößt die aktuelle Pipeline an ihre Grenzen.
+
+Ein Kernproblem stellt die Layout-Heterogenität der Ausbildungsverträge dar.
+Die verschiedenen Firmen und Kammern nutzen meist alle unterschiedliche Vertragsmuster, wodurch das Training der \gls{YOLO}-Modelle komplex ist.
+Um mit den \gls{YOLO}-Modellen ein zufriedenstellendes Ergebnis zu erhalten, benötigt es viele Trainingsdaten, was sehr zeit- und ressourcenintensiv ist.
+Herkömmliche \gls{OCR}-Modelle liefern oft nur unstrukturierten Text, wodurch semantischer Kontext verloren geht.
+Bei schwierigen Layouts wird zum Beispiel die Unterscheidung von mehreren Daten wie Beginn und Ende der Ausbildung zunehmend problematisch, da diese eventuell falsch zugeordnet werden (semantic gap).
+Erschwerend kommt die Qualität der Eingabedaten hinzu.
+Die Dokumente liegen häufig als niedrig aufgelöste Scans oder Fotos vor und werden handschriftlich ausgefüllt.
+
+Neben den Problemen der Erkennung stellt die Infrastruktur ein weiteres Problem dar.
+Da es sich um sensible Sozialdaten handelt, ist die Nutzung leistungsfähiger Cloud-APIs ausgeschlossen.
+Die Lösung muss demnach On-Premise sein, was einen Konflikt zwischen Modellgröße und Ressourcenverbrauch darstellt
+
+
 \section{Zielsetzung}\label{sec:goal}
 
 - Forschungsfragen

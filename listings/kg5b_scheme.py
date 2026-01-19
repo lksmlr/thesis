@@ -1,4 +1,4 @@
-import ExactComparator, NameComparator, DateComparator, BooleanComparator
+import ExactComparator, NameComparator, DateComparator, BooleanComparator, MonthComparator
 
 SCHEME = {
     "type": {"type": "string", "comparator": ExactComparator()},
@@ -12,5 +12,5 @@ SCHEME = {
     "signature_child": {"type": "boolean", "comparator": BooleanComparator()},
     "signature_legal_guardian": {"type": "boolean", "comparator": BooleanComparator()},
     "apprenticeship_ended": {"type": "boolean", "comparator": BooleanComparator()},
-    "exam_month": {"type": "date", "comparator": DateComparator()}
+    "exam_month": {"type": "date", "comparator": MonthComparator()}
 }

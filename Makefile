@@ -1,4 +1,3 @@
-SHELL=/bin/bash
 THESIS=thesis
 
 .SUFFIXES:
@@ -6,6 +5,13 @@ THESIS=thesis
 .PHONY: clean
 
 run: $(THESIS).pdf
+
+deploy:
+	pdflatex $(THESIS).tex
+	bibtex $(THESIS)
+	pdflatex $(THESIS).tex
+	pdflatex $(THESIS).tex
+	$(MAKE) clean
 
 
 $(THESIS).pdf: SB_0050_FO $(THESIS).bbl $(THESIS).tex
@@ -31,5 +37,4 @@ $(THESIS).aux: refs.bib
 	pdflatex $(THESIS).tex -draftmode
 
 clean:
-	rm -f *.{aux,lof,log,lot,lol,bcf,toc,bbl,blg,run.xml,out}
-	rm -f content/*.{aux,lof,log,lot,lol,bcf,toc,bbl,blg,run.xml,out}
+	-del /s /q *.aux *.lof *.log *.lot *.lol *.bcf *.toc *.bbl *.blg *.run.xml *.out

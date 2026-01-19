@@ -43,7 +43,11 @@ Die Dokumente liegen häufig als niedrig aufgelöste Scans oder Fotos vor und we
 
 Neben den Problemen der Erkennung stellt die Infrastruktur ein weiteres Problem dar.
 Da es sich um sensible Sozialdaten handelt, ist die Nutzung leistungsfähiger Cloud-APIs ausgeschlossen.
-Die Lösung muss demnach On-Premise sein, was einen Konflikt zwischen Modellgröße und Ressourcenverbrauch darstellt
+Die Lösung muss demnach On-Premise sein, was einen Konflikt zwischen Modellgröße und Ressourcenverbrauch darstellt.
+
+Eine weitere Herausforderung der \gls{YOLO}/\gls{OCR}-Pipeline ist die Wartung und Komplexität des Ist-Zustands.
+Durch die Kombination aus Klassifikatoren, \gls{YOLO}-Modellen und \gls{OCR}-Modellen wird eine Anpassung an neue Gegebenheiten ein zeitaufwändiger Prozess.
+Schon die Änderung der Python-Version erfordert meistens ein erneutes Training der Modelle.
 
 
 \section{Zielsetzung}\label{sec:goal}

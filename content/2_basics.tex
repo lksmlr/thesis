@@ -3,14 +3,65 @@
 
 \section{Fachliche Grundlagen}\label{sec:domain}
 
-\subsection{Analyse des Ist-Zustands}\label{subsec:current}
+\subsection{Der Ist-Zustand}\label{subsec:current}
 
-- kurze erklärung kg5b, vertrag und sonstiges, dass es dokumententypen sind. mehr muss man hier nohc nicht wissen
-- Abbildung aube
+Wie bereits in der Einleitung angedeutet, setzt sich das aktuelle System, im Folgenden unter dem Projektnamen \gls{AuBe} geführt, aus einer mehrstufigen Pipeline zusammen.
+Der schematische Ablauf ist in Abbildung\ref{fig:aube} dargestellt und lässt sich in drei logische Phasen unterteilen: Eingangsverarbeitung, Klassifikation und Informationsextraktion.
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=\textwidth]{figures/aube}
+    \caption{Schematischer Workflow der aktuellen AuBe-Pipeline}
+    \label{fig:aube}
+\end{figure}
+
+Der Prozess beginnt mit dem Upload eines Dokuments durch den Kunden.
+Ein vorgeschaltetes System nimmt diese Dateien entgegen, die als PDF oder Bildformate vorliegen können.
+In diesem Schritt findet eine initiale \gls{OCR}-Verarbeitung statt.
+Das Ergebnis, welches an die \gls{AuBe}-Pipeline übergeben wird, ist ein standardisiertes PDF/A-Dokument sowie der extrahierte Text.
+
+Im ersten Schritt der eigentlichen \gls{AuBe}-Pipeline entscheidet ein Text-Klassifikator auf Basis des \gls{OCR}-Textes, um welche Art von Dokument es sich handelt.
+Hierbei wird zwischen drei Kategorien unterschieden:
+
+\begin{itemize}
+    \item \textbf{KG5b:} Eine spezifische Arbeitgeberbescheinigung, die für das Kindergeld relevant ist.
+    \item \textbf{Vertrag:} Ein klassischer Berufsausbildungsvertrag.
+    \item \textbf{Sonstiges:} Alle Dokumente, die nicht den beiden oben genannten Typen entsprechen.
+\end{itemize}
+
+Eine detaillierte Beschreibung der Dokumentenarten erfolgt in Kapitel\ref{ch:data}.
+
+Wird ein Dokument als „Sonstiges“ klassifiziert, endet die Verarbeitung an dieser Stelle.
+Nur die für den Fachprozess relevanten Typen (KG5b und Vertrag) werden weiterverarbeitet.
+
+Für die relevanten Typen wird das PDF/A in ein Bild konvertiert und einem \gls{YOLO}-Modell übergeben.
+Dieses \gls{YOLO}-Modell zeichnet Bounding-Boxen um die relevanten Felder, wobei daraufhin, ein weiteres \gls{OCR}-Modell die Erkennung in diesen Boxen durchführt
+
 
 \subsection{Rahmenbedingungen und Infrastruktur}\label{subsec:infrastructure}
 
 
+Die Entwicklung und Evaluation der Modelle erfolgt unter strengen datenschutzrechtlichen Auflagen.
+Da im Rahmen dieser Arbeit personenbezogene Echtdaten verarbeitet werden, ist eine Nutzung öffentlicher Cloud-API-Dienste (wie OpenAI oder Anthropic) ausgeschlossen.
+Stattdessen wird eine vollständig isolierte On-Premise-Infrastruktur verwendet.
+
+Die technische Architektur ist in Abbildung\ref{fig:infrastructure} schematisch dargestellt.
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/infrastructure}
+    \caption{Schematische Darstellung der Trainings- und Inferenzinfrastruktur}
+    \label{fig:infrastructure}
+\end{figure}
+
+Das System basiert auf einem abgeschotteten Kubernetes-Cluster.
+Der Zugang zur Entwicklungsumgebung erfolgt für den Entwickler ausschließlich über eine noVNC-Schnittstelle (browserbasierter Remote-Desktop).
+Dies stellt sicher, dass keine sensiblen Daten die gesicherte Umgebung verlassen.
+
+Die Orchestrierung der Machine-Learning-Workflows erfolgt über Kubeflow.
+Kubeflow ist eine Open-Source-Plattform die speziell für das Entwickeln, Trainieren und Deployen von Machine-Learning-Modellen entwickelt wurde.
+
+Für die rechenintensiven Aufgaben, insbesondere das Fine-Tuning und die Inferenz der \gls{VLM}s, stehen innerhalb des Clusters zwei NVIDIA A40 GPUs, mit jeweils 48 GB vRAM\cite{NVIDIAA40}, zur Verfügung.
 
 
 \section{Vision-Language Models (VLMs)}\label{sec:vlms}
@@ -24,7 +75,7 @@
 
 \subsection{Qwen-2.5-VL}\label{subsec:qwen2.5vl}
 
-\subsection{Pixtral-12B}\label{subsec:Pixtral}
+\subsection{Pixtral-12B}\label{subsec:pixtral}
 
 
 \section{Fine-Tuning}\label{sec:finetuning}

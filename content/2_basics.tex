@@ -5,7 +5,7 @@
 
 \subsection{Der Ist-Zustand}\label{subsec:current}
 
-Wie bereits in der Einleitung angedeutet, setzt sich das aktuelle System, im Folgenden unter dem Projektnamen \gls{AuBe} geführt, aus einer mehrstufigen Pipeline zusammen.
+Wie bereits in der Einleitung angedeutet, setzt sich das aktuelle System aus einer mehrstufigen Pipeline zusammen.
 Der schematische Ablauf ist in Abbildung\ref{fig:aube} dargestellt und lässt sich in drei logische Phasen unterteilen: Eingangsverarbeitung, Klassifikation und Informationsextraktion.
 
 \begin{figure}[!ht]
@@ -58,7 +58,7 @@ Das System basiert auf einem abgeschotteten Kubernetes-Cluster.
 Der Zugang zur Entwicklungsumgebung erfolgt für den Entwickler ausschließlich über eine noVNC-Schnittstelle (browserbasierter Remote-Desktop).
 Dies stellt sicher, dass keine sensiblen Daten die gesicherte Umgebung verlassen.
 
-Die Orchestrierung der Machine-Learning-Workflows erfolgt über Kubeflow.
+Um die Bereitstellung der \gls{VLM}s zu erleichtern, wird auf dem Cluster Kubeflow verwendet.
 Kubeflow ist eine Open-Source-Plattform die speziell für das Entwickeln, Trainieren und Deployen von Machine-Learning-Modellen entwickelt wurde.
 
 Für die rechenintensiven Aufgaben, insbesondere das Fine-Tuning und die Inferenz der \gls{VLM}s, stehen innerhalb des Clusters zwei NVIDIA A40 GPUs, mit jeweils 48 GB vRAM\cite{NVIDIAA40}, zur Verfügung.
@@ -68,7 +68,61 @@ Für die rechenintensiven Aufgaben, insbesondere das Fine-Tuning und die Inferen
 
 \subsection{Vom Sprachmodell zum multimodalen Modell}\label{subsec:mllm}
 
+Moderne Large Language Models bauen auf einer Transformerarchitektur auf.
+Diese Transformer bestehen aus zwei Teilen, dem Encoder und dem Decoder.
+Ein Encoder nimmt eine Eingabe entgegen und wandelt diese in einen Vektor um.
+Ein Decoder nimmt einen solchen Vektor und generiert daraus Schritt für Schritt die Ausgabesequenz.
+Modelle, die ausschließlich Text generieren, implementieren nur den Decoder des Transformers, weshalb man \gls{LLM}s auch Decoder-Only Modelle nennt.
+
+Die Stärke dieser Decoder-Only Modelle liegt in ihrer Fähigkeit, natürliche Sprache zu verstehen und zu generieren.
+Um auch visuelle Informationen verarbeiten zu können, wurden \gls{VLM} entwickelt.
+Diese erweitern die Decoder-Only Architektur um eine Vision-Komponente, die es ermöglicht, Bilder als Eingabe zu verwenden.
+Der grundlegende Ansatz besteht darin, visuelle Informationen in eine Form zu bringen, die das Sprachmodell verarbeiten kann.
+Dafür wird ein separater Vision Encoder verwendet, der Bilder in Vektorrepräsentationen transformiert, die dann zusammen mit textuellen Tokens dem Sprachmodell übergeben werden.
+
 \subsection{Architekturkomponenten}\label{subsec:components}
+
+Ein \gls{VLM} besteht aus drei Hauptkomponenten, die in Abbildung\ref{fig:vlm} dargestellt sind.
+
+Der Vision Encoder verarbeitet die Bildeingabe und extrahiert visuelle Features.
+Hierfür kommen häufig vortrainierte Modelle wie Vision Transformer (ViT) oder CLIP zum Einsatz.
+Diese Modelle zerlegen ein Bild in kleinere Patches, die ähnlich wie Tokens in Sprachmodellen behandelt werden.
+Jeder Patch wird in einen hochdimensionalen Vektor verwandelt, der die visuellen Gegebenheiten dieses Bildausschnitts repräsentiert.
+Das Ergebnis ist eine Sequenz von Bildvektoren, die die visuelle Information des gesamten Bildes kodieren.
+
+Der Adapter verbindet den Vision Encoder mit dem Sprachmodell.
+Diese Schicht transformiert die Ausgabe des Vision Encoders in ein Format, das mit den Textembeddings des Sprachmodells kompatibel ist.
+Dabei werden die visuellen Vektoren in denselben Vektorraum projiziert, in dem auch die textuellen Tokens liegen.
+Diese Komponente ist entscheidend, damit das Sprachmodell visuelle und textuelle Informationen gemeinsam verarbeiten kann.
+In vielen Architekturen besteht diese Schicht aus einem einfachen linearen Layer oder einem kleinen neuronalen Netz.
+
+Das Language Model bildet die dritte Komponente und ist für die eigentliche Verarbeitung und Generierung zuständig.
+Hier kommen etablierte \gls{LLM}-Architekturen zum Einsatz, die auf großen Textkorpora vortrainiert wurden.
+Das Sprachmodell erhält als Eingabe eine gemischte Sequenz aus projizierten Bildvektoren und Textembeddings.
+Durch die Attention-Mechanismen des Transformers kann das Modell Beziehungen zwischen visuellen und textuellen Elementen lernen.
+So ist es möglich, Fragen zu Bildinhalten zu beantworten oder Bildbeschreibungen zu generieren.
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/vlm}
+    \caption{Architektur eines Vision Language Models}
+    \label{fig:vlm}
+\end{figure}
+
+\subsection{VLMs für Document Understanding}\label{subsec:vlm-documents}
+
+Für die Extraktion von Informationen aus Dokumenten bieten \glspl{VLM} entscheidende Vorteile gegenüber traditionellen Ansätzen.
+Klassische \gls{OCR}-Systeme extrahieren zwar Text aus Bildern, verlieren dabei aber wichtige strukturelle Informationen wie Layout, Tabellen oder die Anordnung von Textfeldern.
+\glspl{VLM} hingegen verarbeiten das Dokument als Bild und können sowohl textuelle als auch visuelle Hinweise nutzen.
+
+Bei Formularen und Bescheinigungen ist diese Fähigkeit besonders wertvoll.
+Solche Dokumente folgen oft standardisierten Layouts, bei denen die Position eines Textfeldes seine Bedeutung bestimmt.
+Ein \gls{VLM} kann beispielsweise erkennen, dass ein Datum rechts oben in einem Formular wahrscheinlich das Ausstellungsdatum ist, während dasselbe Datum an anderer Stelle eine andere Bedeutung haben könnte.
+
+Zudem können \glspl{VLM} mit verschiedenen Dokumentqualitäten umgehen.
+Gescannte Formulare mit schlechter Bildqualität, handschriftlichen Einträgen oder teilweise unleserlichen Bereichen stellen für reine \gls{OCR}-Systeme oft Probleme dar.
+\glspl{VLM} können durch ihr Verständnis der Gesamtstruktur und des Kontextes auch in solchen Fällen noch relevante Informationen extrahieren.
+Die Modelle nutzen ihr trainiertes Wissen über typische Dokumentstrukturen, um fehlende oder unleserliche Informationen zu kompensieren.
 
 
 \section{Vorstellung der Modelle}\label{sec:models}

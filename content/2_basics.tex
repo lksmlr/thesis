@@ -32,7 +32,7 @@ Hierbei wird zwischen drei Kategorien unterschieden:
 Eine detaillierte Beschreibung der Dokumentenarten erfolgt in Kapitel\ref{ch:data}.
 
 Wird ein Dokument als „Sonstiges“ klassifiziert, endet die Verarbeitung an dieser Stelle.
-Nur die für den Fachprozess relevanten Typen (KG5b und Vertrag) werden weiterverarbeitet.
+Nur die für den Fachprozess relevanten Typen werden weiterverarbeitet.
 
 Für die relevanten Typen wird das PDF/A in ein Bild konvertiert und einem \gls{YOLO}-Modell übergeben.
 Dieses \gls{YOLO}-Modell zeichnet Bounding-Boxen um die relevanten Felder, wobei daraufhin, ein weiteres \gls{OCR}-Modell die Erkennung in diesen Boxen durchführt
@@ -115,7 +115,7 @@ Für die Extraktion von Informationen aus Dokumenten bieten \glspl{VLM} entschei
 Klassische \gls{OCR}-Systeme extrahieren zwar Text aus Bildern, verlieren dabei aber wichtige strukturelle Informationen wie Layout, Tabellen oder die Anordnung von Textfeldern.
 \glspl{VLM} hingegen verarbeiten das Dokument als Bild und können sowohl textuelle als auch visuelle Hinweise nutzen.
 
-Bei Formularen und Bescheinigungen ist diese Fähigkeit besonders wertvoll.
+Bei Formularen und Bescheinigungen ist diese Fähigkeit besonders nützlich.
 Solche Dokumente folgen oft standardisierten Layouts, bei denen die Position eines Textfeldes seine Bedeutung bestimmt.
 Ein \gls{VLM} kann beispielsweise erkennen, dass ein Datum rechts oben in einem Formular wahrscheinlich das Ausstellungsdatum ist, während dasselbe Datum an anderer Stelle eine andere Bedeutung haben könnte.
 
@@ -130,6 +130,9 @@ Die Modelle nutzen ihr trainiertes Wissen über typische Dokumentstrukturen, um 
 \subsection{Qwen-2.5-VL}\label{subsec:qwen2.5vl}
 
 \subsection{Pixtral-12B}\label{subsec:pixtral}
+
+\subsection{Benchmarks}\label{subsec:benchmarks}
+
 
 
 \section{Fine-Tuning}\label{sec:finetuning}

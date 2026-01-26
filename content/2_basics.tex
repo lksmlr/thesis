@@ -68,7 +68,7 @@ Für die rechenintensiven Aufgaben, insbesondere das Fine-Tuning und die Inferen
 
 \subsection{Vom Sprachmodell zum multimodalen Modell}\label{subsec:mllm}
 
-Moderne Large Language Models bauen auf einer Transformerarchitektur auf.
+Moderne Large Language Models bauen auf einer Transformer-Architektur auf.
 Diese Transformer bestehen aus zwei Teilen, dem Encoder und dem Decoder.
 Ein Encoder nimmt eine Eingabe entgegen und wandelt diese in einen Vektor um.
 Ein Decoder nimmt einen solchen Vektor und generiert daraus Schritt für Schritt die Ausgabesequenz.
@@ -127,17 +127,64 @@ Die Modelle nutzen ihr trainiertes Wissen über typische Dokumentstrukturen, um 
 
 \section{Vorstellung der Modelle}\label{sec:models}
 
-\subsection{Qwen-2.5-VL}\label{subsec:qwen2.5vl}
+Für die Klassifikation und der Extraktion der Informationen aus den Dokumenten wurden drei verschiedene \glspl{VLM} evaluiert.
+Neben einem europäischen Mitstreiter von der französischen Firma Mistral AI werden Modelle des chinesischen Unternehmens Alibaba Cloud hinzugezogen.
+
 
 \subsection{Pixtral-12B}\label{subsec:pixtral}
 
+Das Pixtral-12B-2409\cite{Pixtral12B} wurde im Jahr 2024 von Mistral AI veröffentlicht.
+Es basiert auf einem 12 Milliarden Parameter großen Text-Decoder mit einem zusätzlich 400 Millionen Parameter Vision-Encoder.
+Es ist speziell auf das Verständnis von Bildern und Dokumenten\cite{PixtralPaper} trainiert wurden, weshalb es einen optimalen Kandidaten für die vorliegende Arbeit darstellt.
+
+Mit einem theoretischen Kontextfenster von 128000 Tokens, ermöglicht das Modell eine Verarbeitung von mehreren Bildern gleichzeitig.
+Das Kontextfenster wird in der Realität aber durch die gegebenen Ressourcen beschränkt.
+
+
+\subsection{Qwen-2.5-VL}\label{subsec:qwen2.5vl}
+
+Das Qwen2.5-VL-7B-instruct\cite{Qwen7B} als auch das Qwen2.5-VL-32B-instruct\cite{Qwen32B} wurden im Jahr 2025 von Alibaba Cloud veröffentlicht.
+Das kleinere Modell mit 7 Milliarden Parametern ist speziell für den Einsatz in limitierten Umgebungen konzipiert und bietet dennoch eine wettbewerbsfähige Leistung im Vergleich zu deutlich größeren Modellen.
+Ein wesentliches Merkmal der Architektur ist die Native Dynamic Resolution, welche es ermöglicht, Bilder in ihrer ursprünglichen Auflösung zu verarbeiten, anstatt sie auf eine feste Größe zu skalieren.
+In Kombination mit Window Attention wird der Rechenaufwand reduziert, was insbesondere bei der Erkennung feiner Details in Dokumenten von Vorteil ist.
+Zur präzisen räumlichen Einordnung nutzt das Modell das Multimodal Rotary Positional Embedding, welches Positionsinformationen in Zeit-, Höhen- und Breitenkomponenten zerlegt und so das Verständnis komplexer Dokumentenlayouts verbessert.
+Zudem wurde das Modell auf einem umfangreichen Datensatz trainiert, der spezifisch auf Document Omni-Parsing ausgelegt ist, wodurch es sich besonders für die Extraktion strukturierter Daten aus Formularen und Tabellen eignet\cite{QwenPaper}.
+
+
 \subsection{Benchmarks}\label{subsec:benchmarks}
 
+Im Folgenden sind die Benchmarks der einzelnen Modelle gelistet.
+Besonders das Ergebnis des DocVQA-Benchmarks ist interessant, da hier ein Visual Question Answering (\gls{VQA}) auf Bildern von Dokumenten gemacht wird\cite{DocVQA}.
+
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{lccc}
+        \hline
+        \textbf{Modell} & \textbf{Pixtral-12B} & \textbf{Qwen2.5-VL-7B} & \textbf{Qwen2.5-VL-32B} \\
+        \hline
+        \textbf{DocVQA} & 90.7 & 95.7 & 94.8 \\
+        \textbf{MMMU} & 52.0 & 58.6 & 70 \\
+        \hline
+    \end{tabular}
+    \caption{Benchmark-Ergebnisse der evaluierten Modelle\cite{QwenPaper,Qwen32B, PixtralPaper}}
+    \label{tab:benchmark}
+\end{table}
 
 
-\section{Fine-Tuning}\label{sec:finetuning}
+\section{Parameter-Efficient Fine-Tuning (PEFT)}\label{sec:peft}
 
-\subsection{Parameter-Efficient Fine-Tuning (PEFT)}\label{subsec:peft}
+Um eines der vorgestellten Modelle domänenspezifisch anzupassen, wurde ein \gls{PEFT} angestrebt.
+Hierbei werden im Gegensatz zu einem Full-Finetuning nicht alle Modellparameter angepasst, was den Ressourcenverbrauch erheblich senkt.
+Statt sämtliche Gewichte des Modells zu verändern, werden beim \gls{PEFT} kleine, zusätzliche Parameterstrukturen in das Modell eingefügt, während der Großteil des neuronalen Netzes eingefroren bleibt.
+
+Eine der etabliertesten Methoden im Bereich des \gls{PEFT} ist die Low-Rank Adaptation (\gls{LoRA}).
+Anstatt das gesamte Modell neu zu trainieren, friert \gls{LoRA} die Pre-trained Weights ein und integriert stattdessen Low-Rank Matrizen in die Linear-Layers der Transformer-Architektur.
+Dieser Ansatz reduziert die Anzahl der trainierbaren Parameter drastisch, ohne die Performance signifikant zu beeinträchtigen.
+Da für das eingefrorene Basismodell keine Gradienten berechnet werden müssen, sinkt der Speicherbedarf massiv, was das Training auch auf Hardware mit begrenztem vRAM ermöglicht.
+
+Für die technische Umsetzung dieser Methode kommt die Bibliothek Unsloth zum Einsatz.
+Unsloth ist eine optimierte Bibliothek für das Fine-Tuning von \glspl{LLM}, die speziell darauf ausgelegt ist, den Trainingsprozess zu beschleunigen und den Speicherbedarf zu minimieren.
+Dies wird durch spezielle GPU-Kernel erreicht, welche die \gls{LoRA} und die Backpropagation effizienter berechnen.
 
 
 \section{Information Extraction und Metriken}\label{sec:ieandmetrics}

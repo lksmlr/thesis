@@ -143,12 +143,16 @@ Das Kontextfenster wird in der Realität aber durch die gegebenen Ressourcen bes
 
 \subsection{Qwen-2.5-VL}\label{subsec:qwen2.5vl}
 
-Das Qwen2.5-VL-7B-instruct\cite{Qwen7B} als auch das Qwen2.5-VL-32B-instruct\cite{Qwen32B} wurden im Jahr 2025 von Alibaba Cloud veröffentlicht.
-Das kleinere Modell mit 7 Milliarden Parametern ist speziell für den Einsatz in limitierten Umgebungen konzipiert und bietet dennoch eine wettbewerbsfähige Leistung im Vergleich zu deutlich größeren Modellen.
-Ein wesentliches Merkmal der Architektur ist die Native Dynamic Resolution, welche es ermöglicht, Bilder in ihrer ursprünglichen Auflösung zu verarbeiten, anstatt sie auf eine feste Größe zu skalieren.
-In Kombination mit Window Attention wird der Rechenaufwand reduziert, was insbesondere bei der Erkennung feiner Details in Dokumenten von Vorteil ist.
-Zur präzisen räumlichen Einordnung nutzt das Modell das Multimodal Rotary Positional Embedding, welches Positionsinformationen in Zeit-, Höhen- und Breitenkomponenten zerlegt und so das Verständnis komplexer Dokumentenlayouts verbessert.
-Zudem wurde das Modell auf einem umfangreichen Datensatz trainiert, der spezifisch auf Document Omni-Parsing ausgelegt ist, wodurch es sich besonders für die Extraktion strukturierter Daten aus Formularen und Tabellen eignet\cite{QwenPaper}.
+Das Qwen2.5-VL-7B-instruct\cite{Qwen7B} sowie das Qwen2.5-VL-32B-instruct\cite{Qwen32B} wurden im Jahr 2025 von Alibaba Cloud veröffentlicht.
+Das kleinere Modell mit 7 Milliarden Parametern ist speziell für den Einsatz in ressourcenbeschränkten Umgebungen konzipiert und bietet dennoch eine wettbewerbsfähige Leistung im Vergleich zu deutlich größeren Modellen.
+
+Ein zentraler Bestandteil der Architektur ist die Nutzung der Native Dynamic Resolution.
+Ähnlich wie das Pixtral verarbeitet Qwen Bilder in ihrer ursprünglichen Auflösung, optimiert diesen Ansatz jedoch durch die Integration von Multimodal Rotary Positional Embeddings (M-RoPE).
+Diese Technik zerlegt die Positionsinformationen in Zeit-, Höhen- und Breitenkomponenten, wodurch das Modell in der Lage ist, 1D-Textinformationen, 2D-Visuelle-Informationen und 3D-Video-Informationen in einem einheitlichen Kontext zu verknüpfen.
+Dies ist besonders vorteilhaft für das Verständnis komplexer Dokumentenlayouts, da feine Details und räumliche Beziehungen präziser erfasst werden.
+
+Ein entscheidender Vorteil gegenüber generalistischen Modellen liegt in den Trainingsdaten: Qwen-2.5-VL wurde intensiv auf Document Omni-Parsing trainiert.
+Dadurch eignet es sich besonders gut für die hier geforderte Extraktion strukturierter Daten aus Formularen und Tabellen, da es nicht nur den Text erkennt, sondern auch dessen semantische Struktur innerhalb des Layouts interpretiert\cite{QwenPaper}.
 
 
 \subsection{Benchmarks}\label{subsec:benchmarks}
@@ -191,7 +195,47 @@ Dies wird durch spezielle GPU-Kernel erreicht, welche die \gls{LoRA} und die Bac
 
 \subsection{Information Extraction}\label{subsec:ie}
 
-\subsection{Metriken}\label{subsec:metrics}
+Information Extraction (\gls{IE}) umfasst nach Jurafsky und Martin die Aufgabe, wiederkehrende Ereignisse oder Situationen in Dokumenten zu identifizieren und die entsprechenden Felder eines vorgegebenen Templates zu füllen\cite{IE}.
+Ziel hierbei ist es, vordefinierte Entitäten aus einem Dokumentenbild zu extrahieren und diese in ein maschinenlesbares Schema zu überführen.
 
+
+\subsection{Metriken}\label{subsec:metriken}
+Für die Bewertung von der Klassifikation und der Information Extraction werden verschiedene Metriken herangezogen.
+
+Die Güte der Multi-Class Klassifikation wird mit den klassischen Metriken Accuracy, Precision, Recall und dem F1-Score bewertet.
+\begin{equation}\label{eq:accuracy}
+Accuracy = \frac{TP + TN}{TP + TN + FP + FN}
+\end{equation}
+
+\begin{equation}\label{eq:precision}
+    P = \frac{TP}{TP + FP}
+\end{equation}
+
+\begin{equation}\label{eq:recall}
+    R = \frac{TP}{TP + FN}
+\end{equation}
+
+\begin{equation}\label{eq:f1score}
+    F1 = 2 \cdot \frac{P \cdot R}{P + R} = \frac{2 \cdot TP}{2 \cdot TP + FP + FN}
+\end{equation}
+
+
+Die Bewertung der Information Extraction ist um einiges komplexer als die der Klassifikation.
+Um dennoch die Güte der \gls{IE} bewerten zu können, wurde ein feld-basiertet Ansatz gewählt.
+Dabei wird jedes einzelne Feld der generierten \gls{JSON} mit dem der Ground Truth verglichen.
+Ein Feld gilt hierbei als True Positive (\gls{TP}), wenn das Key des Feldes vorhanden ist, als auch der Value des Feldes mit dem der Ground Truth übereinstimmt\cite{ICDAR}.
+
+Des Weiteren werden zum Beispiel Namen nicht exakt, sondern mithilfe der Levenshtein-Similarity verglichen.
+Die Levenshtein-Similarity ist ein aus der Levenshtein-Distanz normalisierter Ähnlichkeitswert zwischen zwei Zeichenketten.
+Formal basiert sie auf der Levenshtein-Distanz also der minimalen Anzahl von Einfügungen, Löschungen oder Ersetzungen, die nötig sind, um eine Zeichenkette in eine andere Zeichenkette zu überführen\cite{gld}.
+
+
+\subsection{Ressourceneffizienz}\label{subsec:ressources}
+Neben der Qualität der Vorhersagen spielen beim Einsatz von \glspl{VLM} in lokalen Umgebungen Effizienzmetriken eine entscheidende Rolle:
+\begin{itemize}
+    \item \textbf{Latenz:} Die Zeitdauer, die das System für die Inferenz einer einzigen Antwort benötigt.
+    \item \textbf{\gls{VRAM}-Auslastung:} Der maximale Bedarf an Grafikspeicher während der Verarbeitung.
+    \item \textbf{Leistungsaufnahme:} Der durchschnittliche Energieverbrauch der GPU während der Inferenz.
+\end{itemize}
 
 \section{Verwandte Arbeiten}\label{sec:relatedwork}

@@ -8,7 +8,7 @@ Zu den anerkannten Dokumententypen zählen der offizielle Vordruck der Bundesage
 Zusätzlich laden Kunden häufig weitere Unterlagen, wie beispielsweise Schulbescheinigungen, im Portal hoch.
 Da diese für den Kindergeldantrag nicht im Fokus stehen, werden sie im Folgenden unter der Kategorie „Sonstiges“ zusammengefasst.
 
-Ziel der Arbeit ist die Extraktion spezifischer Informationen aus den genannten Dokumentenklassen.
+Ziel der Arbeit ist die \gls{IE} aus den genannten Dokumentenklassen, sowie deren Klassifikation.
 Um die gewonnenen Informationen aus dem Dokument bereitzustellen, wird ein flaches \gls{JSON}-Schema verwendet.
 Die Wahl dieses Formats wird dadurch begünstigt, dass moderne \gls{LLM}s durch ihr Training bereits eine hohe Zuverlässigkeit in der Generierung valider \gls{JSON}-Strukturen aufweisen.
 
@@ -64,6 +64,8 @@ Abbildung\ref{fig:kg5b} zeigt ein exemplarisch ausgefülltes KG5b-Formular mit M
 Das Zielformat für die Extraktion wird durch das folgende \gls{JSON}-Schema definiert:
 
 \lstinputlisting[language=Python, caption={JSON-Schema für KG5b}, captionpos=b, label={lst:kg5b_schema}]{listings/kg5b.json}
+
+Das Feld \texttt{type} stellt die Klassifikation dar, wobei die restlichen Felder die Information Extraction abbilden.
 
 Eine besondere Herausforderung bei der Verarbeitung stellen die binären Informationen dar, wie etwa die Checkbox für das Feld \texttt{apprenticeship\_ended}.
 Hier muss das Modell visuell unterscheiden, ob ein Kasten leer, angekreuzt oder durchgestrichen ist.
@@ -121,15 +123,18 @@ Die Felder stimmen weitestgehend mit denen der KG5b-Formulare überein, jedoch e
 \subsection{Sonstige Dokumente}\label{subsec:other_documents}
 
 Die Kategorie \texttt{Sonstiges} steht als Auffangklasse für alle restlichen Dokumente bereit.
-Hier gehören zum Beispiel Schulbescheinigungen, Anträge auf Eintragung bei der Handelskammer oder Studienbescheinigungen dazu.
+Hier befinden sich zum Beispiel Schulbescheinigungen, Anträge auf Eintragung bei der Handelskammer oder Studienbescheinigungen.
 Da diese Dokumente keine relevanz für die Weiterbeantragung des Kindergeldes bei volljährigen Auszubildenden hat, werden keine Information benötigt.
 Somit ist rein die Klassifizierung wichtig, weshalb das extrahierte \gls{JSON}-Schema folgendermaßen aussieht:
 
 \lstinputlisting[language=Python, caption={JSON-Schema Sonstiges}, captionpos=b,label={lst:lstsonstiges}]{listings/sonstiges.json}
 
 
-\section{Datenschutz}\label{sec:data_privacy}
+\section{Test- und Trainingsdatensatz}\label{sec:dataset}
 
+
+
+\section{Datenschutz}\label{sec:data_privacy}
 
 Da es sich bei allen verwendeten Dokumenten um Echtdaten aus den Fachverfahren handelt, enthalten diese sensible personenbezogene Daten.
 Der Schutz dieser Daten hat höchste Priorität.
@@ -138,5 +143,4 @@ Um die Sicherheit bei der Verarbeitung der Echtdaten zu gewährleisten, wurde au
 Die Daten liegen in einem gesicherten Netzwerkbereich, auf den nur ein autorisierter Personenkreis Zugriff hat.
 Durch die Verwendung von Echtdaten wird die Qualität der Ergebnisse deutlich gesteigert.
 
-Alle in dieser Arbeit abgebildeten Dokumentenbeispiele wurden jedoch synthetisch erzeugt und beinhalten keinerlei sensible Daten.
-
+Alle in dieser Arbeit abgebildeten Dokumentenbeispiele wurden synthetisch erzeugt und beinhalten keine sensiblen Daten.

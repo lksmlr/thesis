@@ -1,12 +1,7 @@
-\chapter{Datenbasis}\label{ch:data}
+\chapter{Methodik und Datenaufbereitung}\label{ch:data}
 
+\section{Dokumentenarten}\label{sec:documents1}
 
-\section{Dokumentenarten}\label{sec:documents}
-
-Im Rahmen der Kindergeldbeantragung sind verschiedene Nachweise gültig.
-Zu den anerkannten Dokumententypen zählen der offizielle Vordruck der Bundesagentur für Arbeit (KG5b)\cite{KG5b} sowie Ausbildungsverträge.
-Zusätzlich laden Kunden häufig weitere Unterlagen, wie beispielsweise Schulbescheinigungen, im Portal hoch.
-Da diese für den Kindergeldantrag nicht im Fokus stehen, werden sie im Folgenden unter der Kategorie „Sonstiges“ zusammengefasst.
 
 Ziel der Arbeit ist die \gls{IE} aus den genannten Dokumentenklassen, sowie deren Klassifikation.
 Um die gewonnenen Informationen aus dem Dokument bereitzustellen, wird ein flaches \gls{JSON}-Schema verwendet.
@@ -28,38 +23,13 @@ Das Modell generierte dabei erste Vorschläge für die \gls{JSON}-Schemas, welch
 Dieser modellgestützte Annotationsprozess (Model-Assisted Labeling) ermöglichte eine effiziente Erstellung der Trainingsdaten bei gleichbleibend hoher Datenqualität.
 
 
-\subsection{KG5b}\label{subsec:kg5b}
-
-Der Vordruck KG5b ist, wie bereits erwähnt, ein offizielles Dokument der Bundesagentur für Arbeit, welches als Bescheinigung der Ausbildungsstätte dient.
-Volljährige Kinder weisen damit gegenüber der Familienkasse den Fortbestand ihrer Ausbildung nach, was die Voraussetzung für den weiteren Kindergeldbezug ist.
-
+\subsection{KG5b}\label{subsec:kg5b1}
 Da es sich um ein standardisiertes Formular handelt, ist das Layout gleichbleibend.
 Theoretisch vereinfacht dies die Extraktion der Informationen, da relevante Felder an denselben Positionen zu erwarten sind.
 In der Praxis ergibt sich jedoch eine hohe Varianz durch den Ausfüllprozess.
 Obwohl der Vordruck digital ausfüllbar angeboten wird, erfolgt die Bearbeitung in der Regel handschriftlich.
 Zudem erzwingen Unterschriften und Firmenstempeln einen doppelten Medienbruch.
 Das Dokument wird ausgedruckt, bearbeitet und anschließend wieder digitalisiert.
-
-Abbildung\ref{fig:kg5b} zeigt ein exemplarisch ausgefülltes KG5b-Formular mit Markierung der zu extrahierenden Felder.
-
-\begin{figure}[!ht]
-    \centering
-    \begin{subfigure}[b]{0.49\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{figures/kg5b_page_1}
-        \caption{Erste Seite}
-        \label{fig:kg5bpage1}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.49\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{figures/kg5b_page_2}
-        \caption{Zweite Seite}
-        \label{fig:kg5bpage2}
-    \end{subfigure}
-    \caption{KG5b-Formular}
-    \label{fig:kg5b}
-\end{figure}
 
 Das Zielformat für die Extraktion wird durch das folgende \gls{JSON}-Schema definiert:
 
@@ -80,11 +50,9 @@ Zusätzlich werden die Stempel häufig zusammen mit der Unterschrift auf der lin
 
 
 \newpage
-\subsection{Ausbildungsvertrag}\label{subsec:vertraege}
+\subsection{Ausbildungsvertrag}\label{subsec:vertraege1}
 
-Im Gegensatz zu den standardisierten KG5b-Formularen weisen die Ausbildungsverträge eine signifikant höhere Varianz auf.
-Dies ist auf die Vielzahl unterschiedlicher zuständiger Stellen (z.,B. Industrie- und Handelskammern, Handwerkskammern, Ärztekammern) und Firmen zurückzuführen, die jeweils ein eigenes Layout definieren.
-Die Vielfalt der Dokumentenstruktur reicht dabei von formularbasierten Layouts bis hin zu unstrukturierten Fließtexten.
+
 
 Eine weitere Herausforderung stellt der Umfang der Dokumente dar.
 Ausbildungsverträge umfassen häufig mehrere Seiten, wobei relevante Informationen und irrelevante Informationen, wie zum Beispiel gesetzliche Rahmenbedingungen, AGBs oder Rechtsbelehrungen, gemischt auftreten.
@@ -92,26 +60,7 @@ Dies erschwert die Fokussierung des Modells auf die relevanten Daten.
 
 Analog zu den KG5b-Formularen liegt auch hier durch die notwendigen Unterschriften und Stempel ein Medienbruch vor.
 Ein wesentlicher Vorteil gegenüber den handschriftlich ausgefüllten Anträgen besteht jedoch darin, dass die inhaltlichen Daten der Verträge fast ausschließlich maschinenschriftlich vorliegen, was die Zeichenerkennung erleichtert.
-In der folgenden Abbildung\ref{fig:vertrag} ist ein synthetischer Ausbildungsvertrag der Industrie- und Handelskammer\cite{Vertrag} abgebildet.
 
-\begin{figure}[!ht]
-    \centering
-    \begin{subfigure}[b]{0.49\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{figures/vertrag_page_1}
-        \caption{Erste Seite}
-        \label{fig:vertragpage1}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.49\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{figures/vertrag_page_2}
-        \caption{Zweite Seite}
-        \label{fig:vertragpage2}
-    \end{subfigure}
-    \caption{Ausbildungsvertrag der Industrie- und Handwerkskammer}
-    \label{fig:vertrag}
-\end{figure}
 
 Das Zielformat für die Extraktion wird durch das folgende \gls{JSON}-Schema definiert:
 
@@ -120,7 +69,7 @@ Das Zielformat für die Extraktion wird durch das folgende \gls{JSON}-Schema def
 Die Felder stimmen weitestgehend mit denen der KG5b-Formulare überein, jedoch entfallen die Felder \texttt{exam\_month} und \texttt{apprenticeship\_ended}, da diese selten auf Verträgen zu finden sind.
 
 
-\subsection{Sonstige Dokumente}\label{subsec:other_documents}
+\subsection{Sonstige Dokumente}\label{subsec:other_documents1}
 
 Die Kategorie \texttt{Sonstiges} steht als Auffangklasse für alle restlichen Dokumente bereit.
 Hier befinden sich zum Beispiel Schulbescheinigungen, Anträge auf Eintragung bei der Handelskammer oder Studienbescheinigungen.

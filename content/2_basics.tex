@@ -1,5 +1,73 @@
 \chapter{Theoretische Grundlagen}\label{ch:basics}
 
+\section{Dokumentenarten}\label{sec:documenttypes}
+
+Im Rahmen der Kindergeldbeantragung sind verschiedene Nachweise gültig.
+Zu den anerkannten Dokumententypen zählen der offizielle Vordruck der Bundesagentur für Arbeit (KG5b)\cite{KG5b} sowie Ausbildungsverträge.
+Zusätzlich laden Kunden häufig weitere Unterlagen, wie beispielsweise Schulbescheinigungen, im Portal hoch.
+Da diese für den Kindergeldantrag nicht im Fokus stehen, werden sie im Folgenden unter der Kategorie „Sonstiges“ zusammengefasst.
+
+\subsection{KG5b}\label{subsec:kg5b}
+
+Der Vordruck KG5b ist, wie bereits erwähnt, ein offizielles Dokument der Bundesagentur für Arbeit, welches als Bescheinigung der Ausbildungsstätte dient.
+Volljährige Kinder weisen damit gegenüber der Familienkasse den Fortbestand ihrer Ausbildung nach, was die Voraussetzung für den weiteren Kindergeldbezug ist.
+
+Abbildung\ref{fig:kg5b} zeigt ein exemplarisch ausgefülltes KG5b-Formular mit Markierung der für den Kindergeldantrag relevanten Felder.
+
+\begin{figure}[!ht]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/kg5b_page_1}
+        \caption{Erste Seite}
+        \label{fig:kg5bpage1}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/kg5b_page_2}
+        \caption{Zweite Seite}
+        \label{fig:kg5bpage2}
+    \end{subfigure}
+    \caption{KG5b-Formular}
+    \label{fig:kg5b}
+\end{figure}
+
+
+\subsection{Ausbildungsvertrag}\label{subsec:vertraege}
+
+Im Gegensatz zu den standardisierten KG5b-Formularen weisen die Ausbildungsverträge eine signifikant höhere Varianz auf.
+Dies ist auf die Vielzahl unterschiedlicher zuständiger Stellen (z.,B. Industrie- und Handelskammern, Handwerkskammern, Ärztekammern) und Firmen zurückzuführen, die jeweils ein eigenes Layout definieren.
+Die Vielfalt der Dokumentenstruktur reicht dabei von formularbasierten Layouts bis hin zu unstrukturierten Fließtexten.
+
+In der folgenden Abbildung\ref{fig:vertrag} ist ein synthetischer Ausbildungsvertrag der Industrie- und Handelskammer\cite{Vertrag} abgebildet in dem die relevanten Felder markiert sind.
+
+\begin{figure}[!ht]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/vertrag_page_1}
+        \caption{Erste Seite}
+        \label{fig:vertragpage1}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/vertrag_page_2}
+        \caption{Zweite Seite}
+        \label{fig:vertragpage2}
+    \end{subfigure}
+    \caption{Ausbildungsvertrag der Industrie- und Handwerkskammer}
+    \label{fig:vertrag}
+\end{figure}
+
+
+\subsection{Sonstige Dokumente}\label{subsec:other_documents}
+
+Die Kategorie \texttt{Sonstiges} steht als Auffangklasse für alle restlichen Dokumente bereit.
+Hier befinden sich zum Beispiel Schulbescheinigungen, Anträge auf Eintragung bei der Handelskammer oder Studienbescheinigungen.
+Da diese Dokumente keine relevanz für die Weiterbeantragung des Kindergeldes bei volljährigen Auszubildenden hat, werden keine Information aus diesen benötigt.
+
 
 \section{Fachliche Grundlagen}\label{sec:domain}
 
@@ -39,7 +107,6 @@ Dieses \gls{YOLO}-Modell zeichnet Bounding-Boxen um die relevanten Felder, wobei
 
 
 \subsection{Rahmenbedingungen und Infrastruktur}\label{subsec:infrastructure}
-
 
 Die Entwicklung und Evaluation der Modelle erfolgt unter strengen datenschutzrechtlichen Auflagen.
 Da im Rahmen dieser Arbeit personenbezogene Echtdaten verarbeitet werden, ist eine Nutzung öffentlicher Cloud-API-Dienste (wie OpenAI oder Anthropic) ausgeschlossen.
@@ -208,15 +275,15 @@ Accuracy = \frac{TP + TN}{TP + TN + FP + FN}
 \end{equation}
 
 \begin{equation}\label{eq:precision}
-    P = \frac{TP}{TP + FP}
+    Precision (P) = \frac{TP}{TP + FP}
 \end{equation}
 
 \begin{equation}\label{eq:recall}
-    R = \frac{TP}{TP + FN}
+    Recall (R) = \frac{TP}{TP + FN}
 \end{equation}
 
 \begin{equation}\label{eq:f1score}
-    F1 = 2 \cdot \frac{P \cdot R}{P + R} = \frac{2 \cdot TP}{2 \cdot TP + FP + FN}
+    F1-Score = 2 \cdot \frac{P \cdot R}{P + R} = \frac{2 \cdot TP}{2 \cdot TP + FP + FN}
 \end{equation}
 
 

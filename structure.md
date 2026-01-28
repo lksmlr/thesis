@@ -38,7 +38,7 @@
   - Schwierigkeiten bei einzelnen Feldern
 
 
-## 4. Methodik und Implementierung
+## 4. Implementierung
 
 - Auswahl des Modells
   - Architektur der Pipeline

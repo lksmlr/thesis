@@ -3,66 +3,53 @@
 
 \section{Motivation}\label{sec:motivation}
 
-Die öffentliche Verwaltung in Deutschland steht vor einer der größten Entwicklungen ihrer Geschichte.
-Durch den demografischen Wandel verliert der öffentliche Sektor in den kommenden Jahren eine signifikante Anzahl an erfahrenen Sachbearbeitern, während die Erwartungshaltung der Bürger an digitale und schnell verfügbare Dienstleistungen steigt.
-Wegen des Personalmangels und gleichzeitig wachsendem Leistungsanspruch rückt die automatisierte oder teilautomatisierte Bearbeitung von Verwaltungsprozessen in den Vordergrund.
-Diese Unterstützung für die Sachbearbeiter ist keine Option, sondern eine Notwendigkeit um in den kommenden Jahren handlungsfähig zu bleiben.
+Die öffentliche Verwaltung in Deutschland steht vor einer großen Herausforderung.
+Durch den demografischen Wandel verliert der öffentliche Sektor eine hohe Anzahl an erfahrenen Sachbearbeiter, während der Anspruch der Bürger steigt.
+Dieser Wandel wird ohne Digitalisierung und Automatisierung der Prozesse kaum abzufangen sein.
 
-Ein Beispiel hierfür ist die Bearbeitung von Kindergeldanträgen bei der Familienkasse der Bundesagentur für Arbeit.
-Mit einem jährlichen Aufkommen von mehreren Millionen Anträgen\cite{AnzahlAntraegeProJahr} und starken saisonale Spitzen, etwa mit Beginn der Ausbildungen im Herbst, stößt die Familienkasse an ihre Kapazitätsgrenze.
+Auch in der Bundesagentur für Arbeit (\gls{BA}) macht sich dieser Wandel, hin zu mehr Digitalisierung, bemerkbar.
+Ein Beispiel hierfür ist die Bearbeitung von Kindergeldanträgen.
+Mit einem jährlichen Aufkommen von mehreren Millionen Anträgen\cite{AnzahlAntraegeProJahr} und saisonalen Spitzen, kommen hier die Sachbearbeiter an ihre Grenzen.
 
-Um sich dieser Herausforderung zu stellen, wurde bereits im Oktober 2025 ein erstes teilautomatisiertes System produktiv gesetzt.
-Dieses System basiert zu einem großen Teil auf einer Kombination aus \gls{OCR}-Erkennung und Objektklassifizierung mittels \gls{YOLO}-Modellen.
+Um sich dieser Herausforderung zu stellen, wurde bereits im Oktober 2025 ein teilautomatisiertes System produktiv gesetzt.
+Hierbei wird sich auf die Kindergeldanträge von volljährigen Auszubildenden konzentriert.
+Mithilfe von einer Klassifikation, \gls{YOLO}-Modellen und \gls{OCR}-Modellen werden hier hochgeladene Dokumente erkannt und dem Sachbearbeiter Vorschläge angezeigt.
+Diese aktuelle \gls{YOLO}/\gls{OCR}-Pipeline wertet die Bearbeitung der Kindergeldanträge für die Sachbearbeiter bereits auf, stößt jedoch an ihre Grenzen.
 
-Obwohl dieses System einen wichtigen Schritt macht, zeigen sich während des operativen Einsatzes und der Entwicklung schon erste Grenzen.
-Besonders die Erkennung der handschriftlich ausgefüllten Dokumente stellen für diese Pipeline eine enorme Herausforderung dar.
-
-Genau an diesem Punkt setzt die Thesis an.
-Durch den rasanten Fortschritt im Bereich der Generativen künstlichen Intelligenz öffnen sich neue Lösungen für Bearbeitung der Anträge.
-Insbesondere \gls{VLM}s, die visuelle Informationen und Texte simultan verarbeiten, stellen eine vielversprechende Möglichkeit dar, die \gls{YOLO}-\gls{OCR}-Pipeline zu ersetzen.
-Sie können flexibel auf unbekannte Layouts reagieren, handschriftlichen Text extrahieren und den Kontext interpretieren.
-
-Mit der Entwicklung der \gls{VLM}s ergibt sich die Chance auf eine weitere Verbesserung für die Sachbearbeiter, jedoch muss getestet werden, ob diese Technologie bereits reif genug ist, um im öffentlichen Sektor eingesetzt zu werden.
+Aufgrund der rasanten Entwicklung im Bereich der Vision Language Models (\glspl{VLM}) werden diese zunehmend interessanter.
+In der vorliegenden Arbeit soll evaluiert werden, inwiefern ein solches Modell Potenzial hat, die \gls{YOLO}/\gls{OCR}-Pipeline zu ersetzen.
 
 
 \section{Problemstellung}\label{sec:problem}
 
-Trotz der Einführung der teilautomatisierten Pipeline im Oktober 2025 steht die Verarbeitung der Dokumente noch vor großen technischen Herausforderungen.
-Vornehmlich durch die hohe Varianz der einzelnen Dokumentenarten stößt die aktuelle Pipeline an ihre Grenzen.
+Seitdem die aktuelle Pipeline produktiv ist, zeigen sich verschiedene Herausforderung auf.
 
-Ein Kernproblem stellt die Layout-Heterogenität der Ausbildungsverträge dar.
-Die verschiedenen Firmen und Kammern nutzen meist alle unterschiedliche Vertragsmuster, wodurch das Training der \gls{YOLO}-Modelle komplex ist.
-Um mit den \gls{YOLO}-Modellen ein zufriedenstellendes Ergebnis zu erhalten, benötigt es viele Trainingsdaten, was sehr zeit- und ressourcenintensiv ist.
-Herkömmliche \gls{OCR}-Modelle liefern oft nur unstrukturierten Text, wodurch semantischer Kontext verloren geht.
-Bei schwierigen Layouts wird zum Beispiel die Unterscheidung von mehreren Daten wie Beginn und Ende der Ausbildung zunehmend problematisch, da diese eventuell falsch zugeordnet werden (semantic gap).
-Erschwerend kommt die Qualität der Eingabedaten hinzu.
-Die Dokumente liegen häufig als niedrig aufgelöste Scans oder Fotos vor und werden handschriftlich ausgefüllt.
+Das Hauptproblem ist die hohe Varianz der hochgeladenen Dokumente, insbesondere der Ausbildungsverträge.
+Die verschiedenen Firmen und Kammern nutzen alle unterschiedliche Layouts, wodurch das Training der Modelle komplex ist.
+Es ist schwierig die Varianz in den Trainingsdaten abzubilden, zudem es zeit- und ressourcenintensiv ist, eine solche Menge an Trainingsdaten bereitzustellen.
 
-Eine weitere Schwachstelle der \gls{YOLO}/\gls{OCR}-Pipeline ist die Wartung und Komplexität des Ist-Zustands.
-Durch die Kombination aus Klassifikatoren, \gls{YOLO}-Modellen und \gls{OCR}-Modellen wird eine Anpassung an neue Gegebenheiten ein zeitaufwändiger Prozess.
-Schon kleine Änderungen an der Laufzeitumgebung, wie zum Beispiel der Python-Version, erfordert meistens ein erneutes Training der Modelle.
+Ein weiteres Problem ist die Qualität der hochgeladenen Dokumente.
+Die Dokumente, die relevant für den Kindergeldantrag bei volljährigen Auszubildenden sind, benötigen in allen Fällen eine Unterschrift.
+Dadurch werden die Dokumente zwingender Weise ausgedruckt, ausgefüllt und unterschrieben, um schlussendlich wieder eingescannt zu werden.
+Dieser Prozess, den man auch Medienbruch nennt, hat eine schlechte Qualität zufolge.
 
-Neben den Problemen der Erkennung stellt die Infrastruktur ein weiteres Problem dar.
-Da es sich um sensible Sozialdaten handelt, ist die Nutzung leistungsfähiger Cloud-APIs ausgeschlossen.
-Die Lösung muss demnach On-Premise sein, was einen Konflikt zwischen Modellgröße und Ressourcenverbrauch darstellt.
+Angesichts der Verwendung von vielen unterschiedlichen Modellen ist die Wartung des Systems aufwändig.
+Eine Anpassung an neue Gegebenheiten ist ein zeitaufwändiger Prozess.
+Schon kleine Änderungen an der Laufzeitumgebung, wie zum Beispiel eine neue Python-Version, erfordert meistens ein erneutes Training der Modelle.
 
 
 \section{Zielsetzung}\label{sec:goal}
 
 Das Ziel dieser Bachelorarbeit ist die Entwicklung und Evaluation eines prototypischen Systems zur teilautomatisierten Klassifikation und Informationsextraktion von Dokumenten.
-Angesichts der hohen Anzahl manuell zu verarbeitender Eingänge, wie Ausbildungsverträgen oder KG5b-Formularen, soll untersucht werden, inwieweit moderne Vision-Language Models (\gls{VLM}s) diesen Prozess effizienter gestalten können.
+Angesichts der hohen Anzahl manuell soll untersucht werden, inwieweit \glspl{VLM} diesen Prozess effizienter gestalten können.
 
 Es wird eine Pipeline implementiert, die in der Lage ist, gescannte Dokumente als Bilddaten zu verarbeiten.
-Das System soll den Dokumententyp eigenständig erkennen und definierte Inhalte, darunter handschriftliche Merkmale wie Unterschriften oder Stempel, in ein standardisiertes \gls{JSON}-Format überführen.
+Das System soll den Dokumententyp eigenständig erkennen und definierte Inhalte, darunter handschriftliche Merkmale wie Unterschriften oder Stempel, in ein standardisiertes Format überführen.
 
 Ein weiteres Ziel ist der Vergleich unterschiedlicher Modellansätze hinsichtlich ihrer Extraktionsperformance und Effizienz.
 Hierbei wird ein kleineres, domänenspezifisch nachtrainiertes Modell gegen leistungsstärkere Modelle mit höherer Parameteranzahl antreten.
 Es soll ermittelt werden, ob durch Fine-Tuning mit einem begrenzten Datensatz vergleichbare oder bessere Ergebnisse erzielt werden können als durch den Einsatz größerer Basismodelle.
 
-Des Weiteren wird untersucht, inwiefern ein solches \gls{VLM} gegenüber der aktuellen Pipeline abschneidet.
-Hierbei stehen der Ressourcenverbrauch der beiden Pipelines, wie auch die Güte der Extraktion gegenüber.
-
-Diese Arbeit konzentriert sich auf die technologische Machbarkeit und die quantitative Evaluation der Modelle anhand eines Testdatensatzes.
+Diese Arbeit konzentriert sich auf die Machbarkeit und die Evaluation der Modelle anhand eines Testdatensatzes.
 Die Entwicklung zielt auf einen funktionsfähigen Prototyp ab, der lokal betrieben wird.
 Eine vollständige Integration in das bestehende operativen Fachverfahren ist nicht Gegenstand dieser Arbeit.
-Ebenso werden Aspekte der IT-Sicherheit und des Datenschutzes zwar berücksichtigt, jedoch erfolgt keine produktive Verarbeitung von Echt-Daten außerhalb der geschützten Entwicklungsumgebung.

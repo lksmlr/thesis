@@ -1,7 +1,18 @@
 \chapter{Methodik und Datenaufbereitung}\label{ch:data}
 
-\section{Dokumentenarten}\label{sec:documents1}
+\section{Modellierung der Dokumentenarten als JSON}\label{sec:documents_as_json}
 
+\section{Datenvorbereitung}\label{sec:preprocessing}
+
+\section{Evaluation}\label{sec:evaluation}
+
+\section{Modellauswahl}\label{sec:modelselection}
+
+\section{Fine-Tuning}\label{sec:fine_tuning}
+
+
+
+\section{Dokumentenarten}\label{sec:documents1}
 
 Ziel der Arbeit ist die \gls{IE} aus den genannten Dokumentenklassen, sowie deren Klassifikation.
 Um die gewonnenen Informationen aus dem Dokument bereitzustellen, wird ein flaches \gls{JSON}-Schema verwendet.
@@ -24,6 +35,7 @@ Dieser modellgestützte Annotationsprozess (Model-Assisted Labeling) ermöglicht
 
 
 \subsection{KG5b}\label{subsec:kg5b1}
+
 Da es sich um ein standardisiertes Formular handelt, ist das Layout gleichbleibend.
 Theoretisch vereinfacht dies die Extraktion der Informationen, da relevante Felder an denselben Positionen zu erwarten sind.
 In der Praxis ergibt sich jedoch eine hohe Varianz durch den Ausfüllprozess.
@@ -83,13 +95,4 @@ Somit ist rein die Klassifizierung wichtig, weshalb das extrahierte \gls{JSON}-S
 
 
 
-\section{Datenschutz}\label{sec:data_privacy}
 
-Da es sich bei allen verwendeten Dokumenten um Echtdaten aus den Fachverfahren handelt, enthalten diese sensible personenbezogene Daten.
-Der Schutz dieser Daten hat höchste Priorität.
-
-Um die Sicherheit bei der Verarbeitung der Echtdaten zu gewährleisten, wurde ausschließlich auf die Infrastruktur der Bundesagentur für Arbeit zurückgegriffen.
-Die Daten liegen in einem gesicherten Netzwerkbereich, auf den nur ein autorisierter Personenkreis Zugriff hat.
-Durch die Verwendung von Echtdaten wird die Qualität der Ergebnisse deutlich gesteigert.
-
-Alle in dieser Arbeit abgebildeten Dokumentenbeispiele wurden synthetisch erzeugt und beinhalten keine sensiblen Daten.

@@ -1,11 +1,13 @@
 \chapter{Theoretische Grundlagen}\label{ch:basics}
 
+
 \section{Dokumentenarten}\label{sec:documenttypes}
 
 Im Rahmen der Kindergeldbeantragung sind verschiedene Nachweise gültig.
 Zu den anerkannten Dokumententypen zählen der offizielle Vordruck der Bundesagentur für Arbeit (KG5b)\cite{KG5b} sowie Ausbildungsverträge.
 Zusätzlich laden Kunden häufig weitere Unterlagen, wie beispielsweise Schulbescheinigungen, im Portal hoch.
 Da diese für den Kindergeldantrag nicht im Fokus stehen, werden sie im Folgenden unter der Kategorie „Sonstiges“ zusammengefasst.
+
 
 \subsection{KG5b}\label{subsec:kg5b}
 
@@ -69,6 +71,18 @@ Hier befinden sich zum Beispiel Schulbescheinigungen, Anträge auf Eintragung be
 Da diese Dokumente keine relevanz für die Weiterbeantragung des Kindergeldes bei volljährigen Auszubildenden hat, werden keine Information aus diesen benötigt.
 
 
+\section{Datenschutz}\label{sec:data_privacy}
+
+Da es sich bei allen verwendeten Dokumenten um Echtdaten aus den Fachverfahren handelt, enthalten diese sensible personenbezogene Daten.
+Der Schutz dieser Daten hat höchste Priorität.
+
+Um die Sicherheit bei der Verarbeitung der Echtdaten zu gewährleisten, wurde ausschließlich auf die Infrastruktur der Bundesagentur für Arbeit zurückgegriffen.
+Die Daten liegen in einem gesicherten Netzwerkbereich, auf den nur ein autorisierter Personenkreis Zugriff hat.
+Durch die Verwendung von Echtdaten wird die Qualität der Ergebnisse deutlich gesteigert.
+
+Alle in dieser Arbeit abgebildeten Dokumentenbeispiele wurden synthetisch erzeugt und beinhalten keine sensiblen Daten.
+
+
 \section{Fachliche Grundlagen}\label{sec:domain}
 
 \subsection{Der Ist-Zustand}\label{subsec:current}
@@ -85,32 +99,21 @@ Der schematische Ablauf ist in Abbildung\ref{fig:aube} dargestellt und lässt si
 
 Der Prozess beginnt mit dem Upload eines Dokuments durch den Kunden.
 Ein vorgeschaltetes System nimmt diese Dateien entgegen, die als PDF oder Bildformate vorliegen können.
-In diesem Schritt findet eine initiale \gls{OCR}-Verarbeitung statt.
-Das Ergebnis, welches an die \gls{AuBe}-Pipeline übergeben wird, ist ein standardisiertes PDF/A-Dokument sowie der extrahierte Text.
+In diesem Schritt findet eine erste \gls{OCR}-Verarbeitung statt.
+Das Ergebnis, welches an die \gls{YOLO}/\gls{OCR}-Pipeline übergeben wird, ist ein standardisiertes PDF/A-Dokument sowie der extrahierte Text.
 
-Im ersten Schritt der eigentlichen \gls{AuBe}-Pipeline entscheidet ein Text-Klassifikator auf Basis des \gls{OCR}-Textes, um welche Art von Dokument es sich handelt.
-Hierbei wird zwischen drei Kategorien unterschieden:
-
-\begin{itemize}
-    \item \textbf{KG5b:} Eine spezifische Arbeitgeberbescheinigung, die für das Kindergeld relevant ist.
-    \item \textbf{Vertrag:} Ein klassischer Berufsausbildungsvertrag.
-    \item \textbf{Sonstiges:} Alle Dokumente, die nicht den beiden oben genannten Typen entsprechen.
-\end{itemize}
-
-Eine detaillierte Beschreibung der Dokumentenarten erfolgt in Kapitel\ref{ch:data}.
-
+Im ersten Schritt der eigentlichen Pipeline entscheidet ein Text-Klassifikator auf Basis des \gls{OCR}-Textes, um welche Art von Dokument es sich handelt.
 Wird ein Dokument als „Sonstiges“ klassifiziert, endet die Verarbeitung an dieser Stelle.
 Nur die für den Fachprozess relevanten Typen werden weiterverarbeitet.
 
 Für die relevanten Typen wird das PDF/A in ein Bild konvertiert und einem \gls{YOLO}-Modell übergeben.
-Dieses \gls{YOLO}-Modell zeichnet Bounding-Boxen um die relevanten Felder, wobei daraufhin, ein weiteres \gls{OCR}-Modell die Erkennung in diesen Boxen durchführt
+Dieses \gls{YOLO}-Modell zeichnet Bounding-Boxen um die relevanten Felder, wobei daraufhin, ein weiteres \gls{OCR}-Modell die Erkennung in diesen Boxen durchführt.
 
 
 \subsection{Rahmenbedingungen und Infrastruktur}\label{subsec:infrastructure}
 
-Die Entwicklung und Evaluation der Modelle erfolgt unter strengen datenschutzrechtlichen Auflagen.
-Da im Rahmen dieser Arbeit personenbezogene Echtdaten verarbeitet werden, ist eine Nutzung öffentlicher Cloud-API-Dienste (wie OpenAI oder Anthropic) ausgeschlossen.
-Stattdessen wird eine vollständig isolierte On-Premise-Infrastruktur verwendet.
+Die Entwicklung und Evaluation der Modelle erfolgt unter datenschutzrechtlichen Auflagen.
+Da im Rahmen dieser Arbeit personenbezogene Echtdaten verarbeitet werden, wird eine isolierte On-Premise-Infrastruktur verwendet.
 
 Die technische Architektur ist in Abbildung\ref{fig:infrastructure} schematisch dargestellt.
 
@@ -122,14 +125,19 @@ Die technische Architektur ist in Abbildung\ref{fig:infrastructure} schematisch 
 \end{figure}
 
 Das System basiert auf einem abgeschotteten Kubernetes-Cluster.
-Der Zugang zur Entwicklungsumgebung erfolgt für den Entwickler ausschließlich über eine noVNC-Schnittstelle (browserbasierter Remote-Desktop).
-Dies stellt sicher, dass keine sensiblen Daten die gesicherte Umgebung verlassen.
-
-Um die Bereitstellung der \gls{VLM}s zu erleichtern, wird auf dem Cluster Kubeflow verwendet.
+Für die rechenintensiven Aufgaben, insbesondere das Fine-Tuning und die Inferenz der \gls{VLM}s, stehen innerhalb des Clusters zwei NVIDIA A40 GPUs, mit jeweils 48 GB vRAM\cite{NVIDIAA40}, zur Verfügung.
+Um die Bereitstellung der \glspl{VLM} zu erleichtern, wird auf dem Cluster Kubeflow verwendet.
 Kubeflow ist eine Open-Source-Plattform die speziell für das Entwickeln, Trainieren und Deployen von Machine-Learning-Modellen entwickelt wurde.
 
-Für die rechenintensiven Aufgaben, insbesondere das Fine-Tuning und die Inferenz der \gls{VLM}s, stehen innerhalb des Clusters zwei NVIDIA A40 GPUs, mit jeweils 48 GB vRAM\cite{NVIDIAA40}, zur Verfügung.
+Der Zugang zu dem Cluster, als auch zum Integrated Development Environment (\gls{IDE}), erfolgt über eine noVNC-Schnittstelle (browserbasierter Remote-Desktop).
 
+Um einen Test- oder Trainingslauf durchzuführen, wird der folgende Prozess ausgeführt.
+\begin{enumerate}
+    \item \textbf{Initialisierung:} Ein Python-Skript in der \gls{IDE} triggert den Kubeflow-Job.
+    \item \textbf{Datenbereitstellung:} Die Pipeline lädt sowohl das \gls{VLM} als auch die zu klassifizierenden Dokumentenbilder aus dem S3-Store in den GPU-Cluster.
+    \item \textbf{Verarbeitung:} Die Inferenz oder das Training findet im Kubernetes-Cluster statt.
+    \item \textbf{Persistierung:} Die Ergebnisse werden zurück in den S3-Store geladen.
+\end{enumerate}
 
 \section{Vision-Language Models (VLMs)}\label{sec:vlms}
 
@@ -146,6 +154,7 @@ Um auch visuelle Informationen verarbeiten zu können, wurden \gls{VLM} entwicke
 Diese erweitern die Decoder-Only Architektur um eine Vision-Komponente, die es ermöglicht, Bilder als Eingabe zu verwenden.
 Der grundlegende Ansatz besteht darin, visuelle Informationen in eine Form zu bringen, die das Sprachmodell verarbeiten kann.
 Dafür wird ein separater Vision Encoder verwendet, der Bilder in Vektorrepräsentationen transformiert, die dann zusammen mit textuellen Tokens dem Sprachmodell übergeben werden.
+
 
 \subsection{Architekturkomponenten}\label{subsec:components}
 
@@ -175,6 +184,7 @@ So ist es möglich, Fragen zu Bildinhalten zu beantworten oder Bildbeschreibunge
     \caption{Architektur eines Vision Language Models}
     \label{fig:vlm}
 \end{figure}
+
 
 \subsection{VLMs für Document Understanding}\label{subsec:vlm-documents}
 

@@ -1,9 +1,2 @@
 \chapter{Methode und Implementierung}\label{ch:method}
 
-Der Workflow
-\begin{enumerate}
-    \item \textbf{Initialisierung:} Ein Python-Skript in der Entwicklungsumgebung triggert die Kubeflow-Pipeline.
-    \item \textbf{Datenbereitstellung:} Die Pipeline lädt sowohl das Basis-Modell als auch die zu klassifizierenden Dokumentenbilder aus dem S3-Store in den GPU-Cluster.
-    \item \textbf{Verarbeitung:} Die Inferenz oder das Training findet isoliert im Kubernetes-Cluster statt.
-    \item \textbf{Persistierung:} Die generierten Ergebnisse (Responses) werden nicht direkt an den Client zurückgegeben, sondern als CSV-Dateien zurück in den S3-Store geladen.
-\end{enumerate}

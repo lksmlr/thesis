@@ -3,7 +3,7 @@
 
 \section{Dokumentenarten}\label{sec:documenttypes}
 
-Im Rahmen der Kindergeldbeantragung sind verschiedene Nachweise gültig.
+Im Rahmen der Kindergeldbeantragung für Auszubildende sind verschiedene Nachweise gültig.
 Zu den anerkannten Dokumententypen zählen der offizielle Vordruck der Bundesagentur für Arbeit (KG5b)\cite{KG5b} sowie Ausbildungsverträge.
 Zusätzlich laden Kunden häufig weitere Unterlagen, wie beispielsweise Schulbescheinigungen, im Portal hoch.
 Da diese für den Kindergeldantrag nicht im Fokus stehen, werden sie im Folgenden unter der Kategorie „Sonstiges“ zusammengefasst.
@@ -12,7 +12,7 @@ Da diese für den Kindergeldantrag nicht im Fokus stehen, werden sie im Folgende
 \subsection{KG5b}\label{subsec:kg5b}
 
 Der Vordruck KG5b ist, wie bereits erwähnt, ein offizielles Dokument der Bundesagentur für Arbeit, welches als Bescheinigung der Ausbildungsstätte dient.
-Volljährige Kinder weisen damit gegenüber der Familienkasse den Fortbestand ihrer Ausbildung nach, was die Voraussetzung für den weiteren Kindergeldbezug ist.
+Volljährige Kinder weisen damit gegenüber der Familienkasse den Status ihrer Ausbildung nach, was die Voraussetzung für den weiteren Kindergeldbezug ist.
 
 Abbildung\ref{fig:kg5b} zeigt ein exemplarisch ausgefülltes KG5b-Formular mit Markierung der für den Kindergeldantrag relevanten Felder.
 
@@ -38,7 +38,7 @@ Abbildung\ref{fig:kg5b} zeigt ein exemplarisch ausgefülltes KG5b-Formular mit M
 
 \subsection{Ausbildungsvertrag}\label{subsec:vertraege}
 
-Im Gegensatz zu den standardisierten KG5b-Formularen weisen die Ausbildungsverträge eine signifikant höhere Varianz auf.
+Im Gegensatz zu den standardisierten KG5b-Formularen weisen die Ausbildungsverträge eine deutlich höhere Varianz auf.
 Dies ist auf die Vielzahl unterschiedlicher zuständiger Stellen (z.,B. Industrie- und Handelskammern, Handwerkskammern, Ärztekammern) und Firmen zurückzuführen, die jeweils ein eigenes Layout definieren.
 Die Vielfalt der Dokumentenstruktur reicht dabei von formularbasierten Layouts bis hin zu unstrukturierten Fließtexten.
 
@@ -67,28 +67,15 @@ In der folgenden Abbildung\ref{fig:vertrag} ist ein synthetischer Ausbildungsver
 \subsection{Sonstige Dokumente}\label{subsec:other_documents}
 
 Die Kategorie \texttt{Sonstiges} steht als Auffangklasse für alle restlichen Dokumente bereit.
-Hier befinden sich zum Beispiel Schulbescheinigungen, Anträge auf Eintragung bei der Handelskammer oder Studienbescheinigungen.
+Darin befinden sich zum Beispiel Schulbescheinigungen, Anträge auf Eintragung bei der Handelskammer oder Studienbescheinigungen.
 Da diese Dokumente keine relevanz für die Weiterbeantragung des Kindergeldes bei volljährigen Auszubildenden hat, werden keine Information aus diesen benötigt.
-
-
-\section{Datenschutz}\label{sec:data_privacy}
-
-Da es sich bei allen verwendeten Dokumenten um Echtdaten aus den Fachverfahren handelt, enthalten diese sensible personenbezogene Daten.
-Der Schutz dieser Daten hat höchste Priorität.
-
-Um die Sicherheit bei der Verarbeitung der Echtdaten zu gewährleisten, wurde ausschließlich auf die Infrastruktur der Bundesagentur für Arbeit zurückgegriffen.
-Die Daten liegen in einem gesicherten Netzwerkbereich, auf den nur ein autorisierter Personenkreis Zugriff hat.
-Durch die Verwendung von Echtdaten wird die Qualität der Ergebnisse deutlich gesteigert.
-
-Alle in dieser Arbeit abgebildeten Dokumentenbeispiele wurden synthetisch erzeugt und beinhalten keine sensiblen Daten.
 
 
 \section{Fachliche Grundlagen}\label{sec:domain}
 
 \subsection{Der Ist-Zustand}\label{subsec:current}
 
-Wie bereits in der Einleitung angedeutet, setzt sich das aktuelle System aus einer mehrstufigen Pipeline zusammen.
-Der schematische Ablauf ist in Abbildung\ref{fig:aube} dargestellt und lässt sich in drei logische Phasen unterteilen: Eingangsverarbeitung, Klassifikation und Informationsextraktion.
+Der schematische Ablauf der \gls{YOLO}/\gls{OCR}-Pipeline ist in Abbildung~\ref{fig:aube} dargestellt.
 
 \begin{figure}[!ht]
     \centering
@@ -97,17 +84,19 @@ Der schematische Ablauf ist in Abbildung\ref{fig:aube} dargestellt und lässt si
     \label{fig:aube}
 \end{figure}
 
-Der Prozess beginnt mit dem Upload eines Dokuments durch den Kunden.
-Ein vorgeschaltetes System nimmt diese Dateien entgegen, die als PDF oder Bildformate vorliegen können.
-In diesem Schritt findet eine erste \gls{OCR}-Verarbeitung statt.
-Das Ergebnis, welches an die \gls{YOLO}/\gls{OCR}-Pipeline übergeben wird, ist ein standardisiertes PDF/A-Dokument sowie der extrahierte Text.
+Der Prozess der Dokumentenverarbeitung lässt sich in zwei Stufen einteilen.
 
-Im ersten Schritt der eigentlichen Pipeline entscheidet ein Text-Klassifikator auf Basis des \gls{OCR}-Textes, um welche Art von Dokument es sich handelt.
-Wird ein Dokument als „Sonstiges“ klassifiziert, endet die Verarbeitung an dieser Stelle.
-Nur die für den Fachprozess relevanten Typen werden weiterverarbeitet.
+In der ersten Stufe werden die hochgeladenen Dokumente des Kunden entgegengenommen.
+Wenn ein Dokument als PDF vorliegt, wird mithilfe des Textlayers und eines \gls{OCR}-Modells der Text extrahiert, während bei einer Bilddatei lediglich das \gls{OCR}-Modell zum Einsatz kommt.
+Als Ergebnis der ersten Stufe werden dann eine PDF/A, also eine unveränderbare PDF, und der extrahierte Text zurückgeliefert.
 
-Für die relevanten Typen wird das PDF/A in ein Bild konvertiert und einem \gls{YOLO}-Modell übergeben.
-Dieses \gls{YOLO}-Modell zeichnet Bounding-Boxen um die relevanten Felder, wobei daraufhin, ein weiteres \gls{OCR}-Modell die Erkennung in diesen Boxen durchführt.
+Auf Basis des extrahierten Textes wird in der nächsten Stufe zu Beginn eine Klassifikation durchgeführt.
+Hierbei unterscheidet der Klassifikator zwischen den bereits vorgestellten Dokumententypen: KG5b, Vertrag und Sonstiges.
+Wurde das Dokument als \texttt{Sonstiges} klassifiziert, endet an dieser Stelle die Bearbeitung.
+Handelt es sich hingegen um ein KG5b oder Vertrag, dann wird je nach Dokumententyp eine Erkennung mit einem \gls{YOLO}-Modell gestartet.
+Innerhalb der Bounding-Boxen wird der Text extrahiert und dem jeweiligen Label zugeordnet.
+
+Schlussendlich stehen dann die erkannten Informationen zur weiteren Verarbeitung bereit.
 
 
 \subsection{Rahmenbedingungen und Infrastruktur}\label{subsec:infrastructure}
@@ -115,7 +104,7 @@ Dieses \gls{YOLO}-Modell zeichnet Bounding-Boxen um die relevanten Felder, wobei
 Die Entwicklung und Evaluation der Modelle erfolgt unter datenschutzrechtlichen Auflagen.
 Da im Rahmen dieser Arbeit personenbezogene Echtdaten verarbeitet werden, wird eine isolierte On-Premise-Infrastruktur verwendet.
 
-Die technische Architektur ist in Abbildung\ref{fig:infrastructure} schematisch dargestellt.
+Die technische Architektur ist in Abbildung~\ref{fig:infrastructure} schematisch dargestellt.
 
 \begin{figure}[!ht]
     \centering
@@ -125,15 +114,15 @@ Die technische Architektur ist in Abbildung\ref{fig:infrastructure} schematisch 
 \end{figure}
 
 Das System basiert auf einem abgeschotteten Kubernetes-Cluster.
-Für die rechenintensiven Aufgaben, insbesondere das Fine-Tuning und die Inferenz der \gls{VLM}s, stehen innerhalb des Clusters zwei NVIDIA A40 GPUs, mit jeweils 48 GB vRAM\cite{NVIDIAA40}, zur Verfügung.
+Für die rechenintensiven Aufgaben, insbesondere das Fine-Tuning und die Inferenz der \glspl{VLM}, stehen innerhalb des Clusters zwei NVIDIA A40 GPUs mit jeweils 48 GB vRAM\cite{NVIDIAA40} zur Verfügung.
 Um die Bereitstellung der \glspl{VLM} zu erleichtern, wird auf dem Cluster Kubeflow verwendet.
-Kubeflow ist eine Open-Source-Plattform die speziell für das Entwickeln, Trainieren und Deployen von Machine-Learning-Modellen entwickelt wurde.
+Kubeflow ist eine Open-Source-Plattform, die speziell für das Entwickeln, Trainieren und Deployen von Machine-Learning-Modellen konzipiert wurde.
 
-Der Zugang zu dem Cluster, als auch zum Integrated Development Environment (\gls{IDE}), erfolgt über eine noVNC-Schnittstelle (browserbasierter Remote-Desktop).
+Der Zugang zum Cluster sowie zur Integrated Development Environment (\gls{IDE}), erfolgt über eine noVNC-Schnittstelle (browserbasierter Remote-Desktop).
 
-Um einen Test- oder Trainingslauf durchzuführen, wird der folgende Prozess ausgeführt.
+Um einen Test- oder Trainingslauf durchzuführen, wird der folgende Prozess durchlaufen:
 \begin{enumerate}
-    \item \textbf{Initialisierung:} Ein Python-Skript in der \gls{IDE} triggert den Kubeflow-Job.
+    \item \textbf{Initialisierung:} Ein Python-Skript in der \gls{IDE} startet den Kubeflow-Job.
     \item \textbf{Datenbereitstellung:} Die Pipeline lädt sowohl das \gls{VLM} als auch die zu klassifizierenden Dokumentenbilder aus dem S3-Store in den GPU-Cluster.
     \item \textbf{Verarbeitung:} Die Inferenz oder das Training findet im Kubernetes-Cluster statt.
     \item \textbf{Persistierung:} Die Ergebnisse werden zurück in den S3-Store geladen.
@@ -280,22 +269,6 @@ Ziel hierbei ist es, vordefinierte Entitäten aus einem Dokumentenbild zu extrah
 Für die Bewertung von der Klassifikation und der Information Extraction werden verschiedene Metriken herangezogen.
 
 Die Güte der Multi-Class Klassifikation wird mit den klassischen Metriken Accuracy, Precision, Recall und dem F1-Score bewertet.
-\begin{equation}\label{eq:accuracy}
-Accuracy = \frac{TP + TN}{TP + TN + FP + FN}
-\end{equation}
-
-\begin{equation}\label{eq:precision}
-    Precision (P) = \frac{TP}{TP + FP}
-\end{equation}
-
-\begin{equation}\label{eq:recall}
-    Recall (R) = \frac{TP}{TP + FN}
-\end{equation}
-
-\begin{equation}\label{eq:f1score}
-    F1-Score = 2 \cdot \frac{P \cdot R}{P + R} = \frac{2 \cdot TP}{2 \cdot TP + FP + FN}
-\end{equation}
-
 
 Die Bewertung der Information Extraction ist um einiges komplexer als die der Klassifikation.
 Um dennoch die Güte der \gls{IE} bewerten zu können, wurde ein feld-basiertet Ansatz gewählt.

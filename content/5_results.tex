@@ -3,35 +3,48 @@
 
 \section{Ergebnisse der Basis-Modelle}\label{sec:results_basemodels}
 
+
 \begin{figure}[h]
     \centering
     \begin{tikzpicture}
         \begin{axis}[
             ybar,
-            bar width=14pt,
-            ymin=0,
-            ymax=0.9,
+            bar width=20pt,
+            width=10cm, height=7cm,
+        % --- STIL & FARBEN ---
+            axis lines*=left,
+            y axis line style={opacity=0},
+            ymajorgrids=true,
+            grid style={gray!20, dashed},
+        % --- ACHSEN ---
+            ymin=0, ymax=1.0,
             ylabel={Score},
-            symbolic x coords={KG5b, Verträge, Sonstiges},
+            ylabel style={font=\sffamily\bfseries, yshift=5pt},
+            symbolic x coords={KG5b, Vertraege, Sonstiges},
             xtick=data,
-            enlarge x limits=0.25,
-            legend style={
-                at={(0.5,-0.15)},
-                anchor=north,
-                legend columns=2
-            },
-            grid=major
-        ]
+            xticklabels={KG5b, Verträge, Sonstiges},
+            xtick style={draw=none},
+            xticklabel style={font=\sffamily, yshift=2pt},
+            yticklabel style={font=\sffamily},
+        % --- LEGENDE ---
+            legend style={at={(0.5,-0.15)}, anchor=north, legend columns=-1, draw=none, fill=none, font=\sffamily},
+        % --- BESCHRIFTUNG ---
+            nodes near coords,
+            nodes near coords style={font=\sffamily\footnotesize},
+            enlarge x limits=0.25
+        ] % <--- WICHTIG: Hier endet die Konfiguration, erst danach darf eine Leerzeile kommen
 
-            \addplot coordinates {
+            % Plot 1
+            \addplot[draw=none, fill=rred, nodes near coords style={color=rred}] coordinates {
                 (KG5b,0.82)
-                (Verträge,0.59)
+                (Vertraege,0.59)
                 (Sonstiges,0.80)
             };
 
-            \addplot coordinates {
+            % Plot 2
+            \addplot[draw=none, fill=oorange, nodes near coords style={color=oorange}] coordinates {
                 (KG5b,0.46)
-                (Verträge,0.50)
+                (Vertraege,0.50)
                 (Sonstiges,0.80)
             };
 
@@ -41,6 +54,7 @@
     \caption{Vergleich der Modellleistungen nach Dokumentenart}
     \label{fig:result_basemodels}
 \end{figure}
+
 
 \section{Ergebnisse des Fine-Tunings}\label{sec:results_fine_tuning}
 

@@ -30,10 +30,11 @@
 - Fine-Tuning Methoden
 - Vergleichbare Arbeiten einbeziehen
 - Infrastruktur in der BA / Besonderheiten
-
-### 3. Datenbasis und Datenschutz
-
 - Dokumentenarten vorstellen
+
+### 3. Methodik und Datenaufbereitung
+
+
 - Wie habe ich die Daten gelabelt
 - Was waren Test und Trainingsdaten
 - jeweilige Besonderheiten
@@ -44,9 +45,9 @@
 
 ### 4. Implementierung
 
+- Promptdesign, Entwicklung des Prompts
 - Auswahl des Modells
   - Architektur der Pipeline
-  - Promptdesign, Entwicklung des Prompts
   - Ressourcenverbrauch der einzelnen Modelle
   - Fehlerbehandlung des Outputs
   - Endgültige Auswahl
@@ -56,23 +57,26 @@
   - Framework
   - Messung des Ressourcenverbrauchs
 
-
-### 5. Evaluation
-
 - Was war die Evaluierungsstrategie? / Wie wurde sie implementiert?
-  - Field F1-Score
-  - Structural-Score vs Content-Score
-  - Comparator
-  - Schemas
+- Field F1-Score
+- Structural-Score vs Content-Score
+- Comparator
+- Schemas
+
+
+### 5. Ergebnisse
+
 - Ergebnisse der aktuellen Pipeline
-- Vergleich der Modelle
-  - Performance
-  - Wie konstant war der JSON Output?
-  - Base Modell Probleme bei Handwerkskammer wo die Daten in Kästchen steht
+- Ergebnisse Qwen, Pixtral
+- Ergebnisse Fine-Tuning
 
 
 ## 6. Diskussion
 
+- Vergleich der Modelle
+  - Performance
+  - Wie konstant war der JSON Output?
+  - Base Modell Probleme bei Handwerkskammer wo die Daten in Kästchen stehen
 - Wie groß ist der Aufwand die Anwendung umzustellen auf ein LLM?
 - Wo machen die Modelle Fehler?
 - Was ist an der Implementierung eventuell zu verbessern?
@@ -83,7 +87,6 @@
 ### 7. Fazit und Ausblick
 
 - Wie geht es weiter?
-- ToolCall für Datum?
 - Wird das LLM die Pipeline ersetzen?
 
 ## Zeitplan
@@ -129,6 +132,7 @@ KG5b:     0.79
 Vertrag:  0.84
 Sonstige: 0.83
 
-Fragen:
+# Fragen:
 
 - Feedback Vortrag
+- LoRA erklärt, zusätzlich rsLoRA erklären? -> sehr mathematisch

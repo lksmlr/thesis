@@ -1,6 +1,5 @@
 \chapter{Theoretische Grundlagen}\label{ch:basics}
 
-
 \section{Dokumentenarten}\label{sec:documenttypes}
 
 Im Rahmen der Kindergeldbeantragung für Auszubildende sind verschiedene Nachweise gültig.
@@ -8,13 +7,12 @@ Zu den anerkannten Dokumententypen zählen der offizielle Vordruck der Bundesage
 Zusätzlich laden Kunden häufig weitere Unterlagen, wie beispielsweise Schulbescheinigungen, im Portal hoch.
 Da diese für den Kindergeldantrag nicht im Fokus stehen, werden sie im Folgenden unter der Kategorie „Sonstiges“ zusammengefasst.
 
-
 \subsection{KG5b}\label{subsec:kg5b}
 
 Der Vordruck KG5b ist, wie bereits erwähnt, ein offizielles Dokument der Bundesagentur für Arbeit, welches als Bescheinigung der Ausbildungsstätte dient.
 Volljährige Kinder weisen damit gegenüber der Familienkasse den Status ihrer Ausbildung nach, was die Voraussetzung für den weiteren Kindergeldbezug ist.
 
-Abbildung\ref{fig:kg5b} zeigt ein exemplarisch ausgefülltes KG5b-Formular mit Markierung der für den Kindergeldantrag relevanten Felder.
+Abbildung~\ref{fig:kg5b} zeigt ein exemplarisch ausgefülltes KG5b-Formular mit Markierung der für den Kindergeldantrag relevanten Felder.
 
 \begin{figure}[!ht]
     \centering
@@ -35,14 +33,13 @@ Abbildung\ref{fig:kg5b} zeigt ein exemplarisch ausgefülltes KG5b-Formular mit M
     \label{fig:kg5b}
 \end{figure}
 
-
 \subsection{Ausbildungsvertrag}\label{subsec:vertraege}
 
-Im Gegensatz zu den standardisierten KG5b-Formularen weisen die Ausbildungsverträge eine deutlich höhere Varianz auf.
-Dies ist auf die Vielzahl unterschiedlicher zuständiger Stellen (z.,B. Industrie- und Handelskammern, Handwerkskammern, Ärztekammern) und Firmen zurückzuführen, die jeweils ein eigenes Layout definieren.
+Im Gegensatz zu den standardisierten KG5b-Formularen weisen Ausbildungsverträge eine deutlich höhere Varianz auf.
+Dies ist auf die Vielzahl unterschiedlicher zuständiger Stellen (z.\,B. Industrie- und Handelskammern, Handwerkskammern, Ärztekammern) und Firmen zurückzuführen, die jeweils ein eigenes Layout definieren.
 Die Vielfalt der Dokumentenstruktur reicht dabei von formularbasierten Layouts bis hin zu unstrukturierten Fließtexten.
 
-In der folgenden Abbildung\ref{fig:vertrag} ist ein synthetischer Ausbildungsvertrag der Industrie- und Handelskammer\cite{Vertrag} abgebildet in dem die relevanten Felder markiert sind.
+In der folgenden Abbildung~\ref{fig:vertrag} ist ein synthetischer Ausbildungsvertrag der Industrie- und Handelskammer\cite{Vertrag} abgebildet, in dem die relevanten Felder markiert sind.
 
 \begin{figure}[!ht]
     \centering
@@ -59,17 +56,15 @@ In der folgenden Abbildung\ref{fig:vertrag} ist ein synthetischer Ausbildungsver
         \caption{Zweite Seite}
         \label{fig:vertragpage2}
     \end{subfigure}
-    \caption{Ausbildungsvertrag der Industrie- und Handwerkskammer}
+    \caption{Ausbildungsvertrag der Industrie- und Handelskammer}
     \label{fig:vertrag}
 \end{figure}
-
 
 \subsection{Sonstige Dokumente}\label{subsec:other_documents}
 
 Die Kategorie \texttt{Sonstiges} steht als Auffangklasse für alle restlichen Dokumente bereit.
 Darin befinden sich zum Beispiel Schulbescheinigungen, Anträge auf Eintragung bei der Handelskammer oder Studienbescheinigungen.
-Da diese Dokumente keine relevanz für die Weiterbeantragung des Kindergeldes bei volljährigen Auszubildenden hat, werden keine Information aus diesen benötigt.
-
+Da diese Dokumente keine Relevanz für die Weiterbeantragung des Kindergeldes bei volljährigen Auszubildenden haben, werden keine Informationen aus ihnen benötigt.
 
 \section{Fachliche Grundlagen}\label{sec:domain}
 
@@ -88,16 +83,15 @@ Der Prozess der Dokumentenverarbeitung lässt sich in zwei Stufen einteilen.
 
 In der ersten Stufe werden die hochgeladenen Dokumente des Kunden entgegengenommen.
 Wenn ein Dokument als PDF vorliegt, wird mithilfe des Textlayers und eines \gls{OCR}-Modells der Text extrahiert, während bei einer Bilddatei lediglich das \gls{OCR}-Modell zum Einsatz kommt.
-Als Ergebnis der ersten Stufe werden dann eine PDF/A, also eine unveränderbare PDF, und der extrahierte Text zurückgeliefert.
+Als Ergebnis der ersten Stufe werden dann eine PDF/A (eine archivtaugliche, unveränderbare PDF) und der extrahierte Text zurückgeliefert.
 
 Auf Basis des extrahierten Textes wird in der nächsten Stufe zu Beginn eine Klassifikation durchgeführt.
 Hierbei unterscheidet der Klassifikator zwischen den bereits vorgestellten Dokumententypen: KG5b, Vertrag und Sonstiges.
 Wurde das Dokument als \texttt{Sonstiges} klassifiziert, endet an dieser Stelle die Bearbeitung.
-Handelt es sich hingegen um ein KG5b oder Vertrag, dann wird je nach Dokumententyp eine Erkennung mit einem \gls{YOLO}-Modell gestartet.
+Handelt es sich hingegen um ein KG5b oder einen Vertrag, wird je nach Dokumententyp eine Erkennung mit einem \gls{YOLO}-Modell gestartet.
 Innerhalb der Bounding-Boxen wird der Text extrahiert und dem jeweiligen Label zugeordnet.
 
-Schlussendlich stehen dann die erkannten Informationen zur weiteren Verarbeitung bereit.
-
+Schlussendlich stehen die erkannten Informationen zur weiteren Verarbeitung bereit.
 
 \subsection{Rahmenbedingungen und Infrastruktur}\label{subsec:infrastructure}
 
@@ -118,7 +112,7 @@ Für die rechenintensiven Aufgaben, insbesondere das Fine-Tuning und die Inferen
 Um die Bereitstellung der \glspl{VLM} zu erleichtern, wird auf dem Cluster Kubeflow verwendet.
 Kubeflow ist eine Open-Source-Plattform, die speziell für das Entwickeln, Trainieren und Deployen von Machine-Learning-Modellen konzipiert wurde.
 
-Der Zugang zum Cluster sowie zur Integrated Development Environment (\gls{IDE}), erfolgt über eine noVNC-Schnittstelle (browserbasierter Remote-Desktop).
+Der Zugang zum Cluster sowie zur Integrated Development Environment (\gls{IDE}) erfolgt über eine noVNC-Schnittstelle (browserbasierter Remote-Desktop).
 
 Um einen Test- oder Trainingslauf durchzuführen, wird der folgende Prozess durchlaufen:
 \begin{enumerate}
@@ -127,7 +121,6 @@ Um einen Test- oder Trainingslauf durchzuführen, wird der folgende Prozess durc
     \item \textbf{Verarbeitung:} Die Inferenz oder das Training findet im Kubernetes-Cluster statt.
     \item \textbf{Persistierung:} Die Ergebnisse werden zurück in den S3-Store geladen.
 \end{enumerate}
-
 
 \section{Vision Language Models (VLMs)}\label{sec:vlms}
 
@@ -141,7 +134,7 @@ In Abbildung~\ref{fig:vlm} wird der Aufbau dargestellt.
     \label{fig:vlm}
 \end{figure}
 
-Der Image-Encoder verarbeitet die Bildeingabe und extrahiert visuelle Features.
+Der Image-Encoder verarbeitet die Bildeingabe und extrahiert visuelle Merkmale (Features).
 Zu diesem Zweck kommen häufig vortrainierte Modelle wie Vision Transformer (\gls{ViT}) oder CLIP zum Einsatz.
 Diese Modelle zerlegen ein Bild in kleinere Patches, die ähnlich wie Token in Sprachmodellen behandelt werden.
 Jeder Patch wird in einen Vektor überführt, der die Eigenschaften dieses Bildausschnitts repräsentiert.
@@ -150,45 +143,35 @@ Das Ergebnis ist eine Sequenz von Bildvektoren, die die visuellen Informationen 
 Der Adapter verbindet den Image-Encoder mit dem Sprachmodell.
 Diese Schicht transformiert die Ausgabe des Image-Encoders in ein Format, das mit den Textvektoren des Sprachmodells kompatibel ist.
 In vielen Modellen besteht der Adapter aus einer linearen Schicht oder einem kleinen neuronalen Netz.
-Die Bildvektoren des Image-Encoders werden in denselben Vektorraum wie die Textvektoren des \glspl{LLM} projiziert.
+Die Bildvektoren des Image-Encoders werden in denselben Vektorraum wie die Textvektoren des \gls{LLM} projiziert.
 
 Die Hauptkomponente bildet das \gls{LLM}, welches für die eigentliche Verarbeitung und Generierung zuständig ist.
 Das \gls{LLM} erhält die Textvektoren zusammen mit den Bildvektoren und fusioniert diese.
 Mithilfe des Attention-Mechanismus werden Beziehungen zwischen visuellen und textuellen Elementen verstanden.
 So ist es möglich, Fragen zu Bildinhalten zu beantworten oder Bildbeschreibungen zu generieren.
 
-
 \section{Vorstellung der Modelle}\label{sec:models}
 
-Für die Klassifikation und der Extraktion der Informationen aus den Dokumenten wurden drei verschiedene \glspl{VLM} evaluiert.
-Neben einem europäischen Mitstreiter von der französischen Firma Mistral AI werden Modelle des chinesischen Unternehmens Alibaba Cloud hinzugezogen.
-
+Für die Klassifikation und die Extraktion der Informationen aus den Dokumenten wurden drei verschiedene \glspl{VLM} evaluiert.
 
 \subsection{Pixtral-12B}\label{subsec:pixtral}
-% TODO: Kontrolle des Abschnitts
+
 Das Pixtral-12B-2409\cite{Pixtral12B} wurde im Jahr 2024 von Mistral AI veröffentlicht.
-Es basiert auf einem 12 Milliarden Parameter großen Text-Decoder mit einem zusätzlich 400 Millionen Parameter Vision-Encoder.
-Es ist speziell auf das Verständnis von Bildern und Dokumenten trainiert wurden, weshalb es einen optimalen Kandidaten für die vorliegende Arbeit darstellt.
-
-Mit einem theoretischen Kontextfenster von 128000 Tokens, ermöglicht das Modell eine Verarbeitung von mehreren Bildern gleichzeitig\cite{PixtralPaper}.
-Das Kontextfenster wird in der Realität aber durch die gegebenen Ressourcen beschränkt.
-
+Es basiert auf einem 12 Milliarden Parameter großen Text-Decoder mit einem zusätzlichen 400 Millionen Parameter umfassenden Vision-Encoder.
+Es wurde speziell auf das Verständnis von Bildern und Dokumenten trainiert, weshalb es einen optimalen Kandidaten für die vorliegende Arbeit darstellt.
+Mit einem theoretischen Kontextfenster von 128.000 Token ermöglicht das Modell die gleichzeitige Verarbeitung mehrerer Bilder\cite{PixtralPaper}.
 
 \subsection{Qwen-2.5-VL}\label{subsec:qwen2.5vl}
-% TODO: Kontrolle des Abschnitts
-Das Qwen2.5-VL-7B-instruct\cite{Qwen7B} sowie das Qwen2.5-VL-32B-instruct\cite{Qwen32B} wurden im Jahr 2025 von Alibaba Cloud veröffentlicht.
-Die beiden Modelle basieren auf dem gleichen Vision-Encoder mit 600 Millionen Parametern.
-Lediglich die Größe des Text-Decoders ist mit 7 Milliarden und 32 Milliarden Parametern unterschiedlich.
 
-Ein Vorteil gegenüber herkömmlichen \glspl{VLM} ist, dass
-Ein entscheidender Vorteil gegenüber generalistischen Modellen liegt in den Trainingsdaten: Qwen-2.5-VL wurde intensiv auf Document Omni-Parsing trainiert.
-Dadurch eignet es sich besonders gut für die hier geforderte Extraktion strukturierter Daten aus Formularen und Tabellen, da es nicht nur den Text erkennt, sondern auch dessen semantische Struktur innerhalb des Layouts interpretiert\cite{QwenPaper}.
-
+Das Qwen2.5-VL-7B-Instruct\cite{Qwen7B} sowie das Qwen2.5-VL-32B-Instruct\cite{Qwen32B} wurden im Jahr 2025 von Alibaba Cloud veröffentlicht.
+Die beiden Modelle basieren auf dem gleichen Image-Encoder mit 600 Millionen Parametern.
+Lediglich die Größe des Text-Decoders ist mit 7 Milliarden beziehungsweise 32 Milliarden Parametern unterschiedlich.
+Eine Besonderheit dieser Modelle ist, dass sie speziell auf das Verarbeiten von Dokumenten trainiert wurden\cite{QwenPaper}.
 
 \subsection{Benchmarks}\label{subsec:benchmarks}
 
 Im Folgenden sind die Benchmarks der einzelnen Modelle gelistet.
-Besonders das Ergebnis des DocVQA-Benchmarks ist interessant, da hier ein Visual Question Answering (\gls{VQA}) auf Bildern von Dokumenten gemacht wird\cite{DocVQA}.
+Besonders das Ergebnis des DocVQA-Benchmarks ist von Interesse, da hier ein Visual Question Answering (\gls{VQA}) auf Dokumentenbildern durchgeführt wird\cite{DocVQA}.
 
 \begin{table}[ht]
     \centering
@@ -196,60 +179,51 @@ Besonders das Ergebnis des DocVQA-Benchmarks ist interessant, da hier ein Visual
         \hline
         \textbf{Modell} & \textbf{Pixtral-12B} & \textbf{Qwen2.5-VL-7B} & \textbf{Qwen2.5-VL-32B} \\
         \hline
-        \textbf{DocVQA} & 90.7 & 95.7 & 94.8 \\
-        \textbf{MMMU} & 52.0 & 58.6 & 70 \\
+        \textbf{DocVQA} & 90,7 & 95,7 & 94,8 \\
+        \textbf{MMMU} & 52,0 & 58,6 & 70,0 \\
         \hline
     \end{tabular}
-    \caption{Benchmark-Ergebnisse der evaluierten Modelle\cite{QwenPaper,Qwen32B, PixtralPaper}}
+    \caption{Benchmark-Ergebnisse der evaluierten Modelle\cite{QwenPaper, Qwen32B, PixtralPaper}}
     \label{tab:benchmark}
 \end{table}
 
-
 \section{Parameter-Efficient Fine-Tuning (PEFT)}\label{sec:peft}
 
-Um eines der vorgestellten Modelle domänenspezifisch anzupassen, wurde ein \gls{PEFT} angestrebt.
-Hierbei werden im Gegensatz zu einem Full-Finetuning nicht alle Modellparameter angepasst, was den Ressourcenverbrauch erheblich senkt.
+Um eines der \glspl{VLM} domänenspezifisch anzupassen, wurde ein \gls{PEFT} angestrebt.
+Hierbei werden im Gegensatz zu einem Full-Finetuning nicht alle Modellparameter angepasst, was den Ressourcenverbrauch senkt.
 Statt sämtliche Gewichte des Modells zu verändern, werden beim \gls{PEFT} kleine, zusätzliche Parameterstrukturen in das Modell eingefügt, während der Großteil des neuronalen Netzes eingefroren bleibt.
 
-Eine der etabliertesten Methoden im Bereich des \gls{PEFT} ist die Low-Rank Adaptation (\gls{LoRA}).
-Anstatt das gesamte Modell neu zu trainieren, friert \gls{LoRA} die Pre-trained Weights ein und integriert stattdessen Low-Rank Matrizen in die Linear-Layers der Transformer-Architektur.
+Eine der bekanntesten Methoden im Bereich des \gls{PEFT} ist die Low-Rank Adaptation (\gls{LoRA}).
+Anstatt das gesamte Modell neu zu trainieren, friert \gls{LoRA} die Gewichte ein und trainiert stattdessen Matrizen eines niedrigeren Rangs.
+Diese werden nach dem Training mit der ursprünglichen Gewichtsmatrix verbunden.
 Dieser Ansatz reduziert die Anzahl der trainierbaren Parameter drastisch, ohne die Performance signifikant zu beeinträchtigen.
-Da für das eingefrorene Basismodell keine Gradienten berechnet werden müssen, sinkt der Speicherbedarf massiv, was das Training auch auf Hardware mit begrenztem vRAM ermöglicht.
 
-Für die technische Umsetzung dieser Methode kommt die Bibliothek Unsloth zum Einsatz.
-Unsloth ist eine optimierte Bibliothek für das Fine-Tuning von \glspl{LLM}, die speziell darauf ausgelegt ist, den Trainingsprozess zu beschleunigen und den Speicherbedarf zu minimieren.
-Dies wird durch spezielle GPU-Kernel erreicht, welche die \gls{LoRA} und die Backpropagation effizienter berechnen.
-
-
-\section{Information Extraction und Metriken}\label{sec:ieandmetrics}
+\section{Weitere Grundlagen}\label{sec:further_basics}
 
 \subsection{Information Extraction}\label{subsec:ie}
 
-Information Extraction (\gls{IE}) umfasst nach Jurafsky und Martin die Aufgabe, wiederkehrende Ereignisse oder Situationen in Dokumenten zu identifizieren und die entsprechenden Felder eines vorgegebenen Templates zu füllen\cite{IE}.
+Information Extraction (\gls{IE}) umfasst nach Jurafsky und Martin die Aufgabe, Ereignisse oder Situationen in Dokumenten zu identifizieren und die entsprechenden Felder eines vorgegebenen Templates zu füllen\cite{IE}.
 Ziel hierbei ist es, vordefinierte Entitäten aus einem Dokumentenbild zu extrahieren und diese in ein maschinenlesbares Schema zu überführen.
 
+\subsection{Levenshtein-Similarity}\label{subsec:levenshtein}
+
+Um zwei Zeichenketten vergleichen zu können, wird die Levenshtein-Similarity benötigt.
+Die Levenshtein-Similarity ist ein aus der Levenshtein-Distanz abgeleiteter, normalisierter Ähnlichkeitswert zwischen zwei Zeichenketten.
+Formal basiert sie auf der Levenshtein-Distanz, also der minimalen Anzahl von Einfügungen, Löschungen oder Ersetzungen, die nötig sind, um eine Zeichenkette in eine andere zu überführen\cite{gld}.
 
 \subsection{Metriken}\label{subsec:metriken}
-Für die Bewertung von der Klassifikation und der Information Extraction werden verschiedene Metriken herangezogen.
+Für die Bewertung der Güte und Effizienz der Modelle werden verschiedene Metriken benötigt:
 
-Die Güte der Multi-Class Klassifikation wird mit den klassischen Metriken Accuracy, Precision, Recall und dem F1-Score bewertet.
-
-Die Bewertung der Information Extraction ist um einiges komplexer als die der Klassifikation.
-Um dennoch die Güte der \gls{IE} bewerten zu können, wurde ein feld-basiertet Ansatz gewählt.
-Dabei wird jedes einzelne Feld der generierten \gls{JSON} mit dem der Ground Truth verglichen.
-Ein Feld gilt hierbei als True Positive (\gls{TP}), wenn das Key des Feldes vorhanden ist, als auch der Value des Feldes mit dem der Ground Truth übereinstimmt\cite{ICDAR}.
-
-Des Weiteren werden zum Beispiel Namen nicht exakt, sondern mithilfe der Levenshtein-Similarity verglichen.
-Die Levenshtein-Similarity ist ein aus der Levenshtein-Distanz normalisierter Ähnlichkeitswert zwischen zwei Zeichenketten.
-Formal basiert sie auf der Levenshtein-Distanz also der minimalen Anzahl von Einfügungen, Löschungen oder Ersetzungen, die nötig sind, um eine Zeichenkette in eine andere Zeichenkette zu überführen\cite{gld}.
-
-
-\subsection{Ressourceneffizienz}\label{subsec:ressources}
-Neben der Qualität der Vorhersagen spielen beim Einsatz von \glspl{VLM} in lokalen Umgebungen Effizienzmetriken eine entscheidende Rolle:
 \begin{itemize}
+    \item \textbf{Accuracy:} Der Anteil der insgesamt richtigen Vorhersagen an allen Vorhersagen.
+    \item \textbf{Precision:} Der Anteil der tatsächlich positiven Fälle an allen als positiv klassifizierten Fällen.
+    \item \textbf{Recall:} Der Anteil der korrekt als positiv erkannten Fälle an allen tatsächlich vorhandenen positiven Fällen.
+    \item \textbf{F1-Score:} Das harmonische Mittel aus Precision und Recall.
     \item \textbf{Latenz:} Die Zeitdauer, die das System für die Inferenz einer einzigen Antwort benötigt.
     \item \textbf{\gls{VRAM}-Auslastung:} Der maximale Bedarf an Grafikspeicher während der Verarbeitung.
     \item \textbf{Leistungsaufnahme:} Der durchschnittliche Energieverbrauch der GPU während der Inferenz.
 \end{itemize}
 
 \section{Verwandte Arbeiten}\label{sec:relatedwork}
+
+Ein Feld gilt hierbei als True Positive (\gls{TP}), wenn sowohl der Key des Feldes vorhanden ist als auch der Value des Feldes mit dem der Ground Truth übereinstimmt\cite{ICDAR}.

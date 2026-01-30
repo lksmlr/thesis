@@ -128,44 +128,11 @@ Um einen Test- oder Trainingslauf durchzuführen, wird der folgende Prozess durc
     \item \textbf{Persistierung:} Die Ergebnisse werden zurück in den S3-Store geladen.
 \end{enumerate}
 
-\section{Vision-Language Models (VLMs)}\label{sec:vlms}
 
-\subsection{Vom Sprachmodell zum multimodalen Modell}\label{subsec:mllm}
+\section{Vision Language Models (VLMs)}\label{sec:vlms}
 
-Moderne Large Language Models bauen auf einer Transformer-Architektur auf.
-Diese Transformer bestehen aus zwei Teilen, dem Encoder und dem Decoder.
-Ein Encoder nimmt eine Eingabe entgegen und wandelt diese in einen Vektor um.
-Ein Decoder nimmt einen solchen Vektor und generiert daraus Schritt für Schritt die Ausgabesequenz.
-Modelle, die ausschließlich Text generieren, implementieren nur den Decoder des Transformers, weshalb man \gls{LLM}s auch Decoder-Only Modelle nennt.
-
-Die Stärke dieser Decoder-Only Modelle liegt in ihrer Fähigkeit, natürliche Sprache zu verstehen und zu generieren.
-Um auch visuelle Informationen verarbeiten zu können, wurden \gls{VLM} entwickelt.
-Diese erweitern die Decoder-Only Architektur um eine Vision-Komponente, die es ermöglicht, Bilder als Eingabe zu verwenden.
-Der grundlegende Ansatz besteht darin, visuelle Informationen in eine Form zu bringen, die das Sprachmodell verarbeiten kann.
-Dafür wird ein separater Vision Encoder verwendet, der Bilder in Vektorrepräsentationen transformiert, die dann zusammen mit textuellen Tokens dem Sprachmodell übergeben werden.
-
-
-\subsection{Architekturkomponenten}\label{subsec:components}
-
-Ein \gls{VLM} besteht aus drei Hauptkomponenten, die in Abbildung\ref{fig:vlm} dargestellt sind.
-
-Der Vision Encoder verarbeitet die Bildeingabe und extrahiert visuelle Features.
-Hierfür kommen häufig vortrainierte Modelle wie Vision Transformer (ViT) oder CLIP zum Einsatz.
-Diese Modelle zerlegen ein Bild in kleinere Patches, die ähnlich wie Tokens in Sprachmodellen behandelt werden.
-Jeder Patch wird in einen hochdimensionalen Vektor verwandelt, der die visuellen Gegebenheiten dieses Bildausschnitts repräsentiert.
-Das Ergebnis ist eine Sequenz von Bildvektoren, die die visuelle Information des gesamten Bildes kodieren.
-
-Der Adapter verbindet den Vision Encoder mit dem Sprachmodell.
-Diese Schicht transformiert die Ausgabe des Vision Encoders in ein Format, das mit den Textembeddings des Sprachmodells kompatibel ist.
-Dabei werden die visuellen Vektoren in denselben Vektorraum projiziert, in dem auch die textuellen Tokens liegen.
-Diese Komponente ist entscheidend, damit das Sprachmodell visuelle und textuelle Informationen gemeinsam verarbeiten kann.
-In vielen Architekturen besteht diese Schicht aus einem einfachen linearen Layer oder einem kleinen neuronalen Netz.
-
-Das Language Model bildet die dritte Komponente und ist für die eigentliche Verarbeitung und Generierung zuständig.
-Hier kommen etablierte \gls{LLM}-Architekturen zum Einsatz, die auf großen Textkorpora vortrainiert wurden.
-Das Sprachmodell erhält als Eingabe eine gemischte Sequenz aus projizierten Bildvektoren und Textembeddings.
-Durch die Attention-Mechanismen des Transformers kann das Modell Beziehungen zwischen visuellen und textuellen Elementen lernen.
-So ist es möglich, Fragen zu Bildinhalten zu beantworten oder Bildbeschreibungen zu generieren.
+Ein \gls{VLM} besteht aus drei Komponenten: einem Image-Encoder, einem Adapter und einem Large Language Model (\gls{LLM}).
+In Abbildung~\ref{fig:vlm} wird der Aufbau dargestellt.
 
 \begin{figure}[!ht]
     \centering
@@ -174,21 +141,21 @@ So ist es möglich, Fragen zu Bildinhalten zu beantworten oder Bildbeschreibunge
     \label{fig:vlm}
 \end{figure}
 
+Der Image-Encoder verarbeitet die Bildeingabe und extrahiert visuelle Features.
+Zu diesem Zweck kommen häufig vortrainierte Modelle wie Vision Transformer (\gls{ViT}) oder CLIP zum Einsatz.
+Diese Modelle zerlegen ein Bild in kleinere Patches, die ähnlich wie Token in Sprachmodellen behandelt werden.
+Jeder Patch wird in einen Vektor überführt, der die Eigenschaften dieses Bildausschnitts repräsentiert.
+Das Ergebnis ist eine Sequenz von Bildvektoren, die die visuellen Informationen des gesamten Bildes beinhaltet.
 
-\subsection{VLMs für Document Understanding}\label{subsec:vlm-documents}
+Der Adapter verbindet den Image-Encoder mit dem Sprachmodell.
+Diese Schicht transformiert die Ausgabe des Image-Encoders in ein Format, das mit den Textvektoren des Sprachmodells kompatibel ist.
+In vielen Modellen besteht der Adapter aus einer linearen Schicht oder einem kleinen neuronalen Netz.
+Die Bildvektoren des Image-Encoders werden in denselben Vektorraum wie die Textvektoren des \glspl{LLM} projiziert.
 
-Für die Extraktion von Informationen aus Dokumenten bieten \glspl{VLM} entscheidende Vorteile gegenüber traditionellen Ansätzen.
-Klassische \gls{OCR}-Systeme extrahieren zwar Text aus Bildern, verlieren dabei aber wichtige strukturelle Informationen wie Layout, Tabellen oder die Anordnung von Textfeldern.
-\glspl{VLM} hingegen verarbeiten das Dokument als Bild und können sowohl textuelle als auch visuelle Hinweise nutzen.
-
-Bei Formularen und Bescheinigungen ist diese Fähigkeit besonders nützlich.
-Solche Dokumente folgen oft standardisierten Layouts, bei denen die Position eines Textfeldes seine Bedeutung bestimmt.
-Ein \gls{VLM} kann beispielsweise erkennen, dass ein Datum rechts oben in einem Formular wahrscheinlich das Ausstellungsdatum ist, während dasselbe Datum an anderer Stelle eine andere Bedeutung haben könnte.
-
-Zudem können \glspl{VLM} mit verschiedenen Dokumentqualitäten umgehen.
-Gescannte Formulare mit schlechter Bildqualität, handschriftlichen Einträgen oder teilweise unleserlichen Bereichen stellen für reine \gls{OCR}-Systeme oft Probleme dar.
-\glspl{VLM} können durch ihr Verständnis der Gesamtstruktur und des Kontextes auch in solchen Fällen noch relevante Informationen extrahieren.
-Die Modelle nutzen ihr trainiertes Wissen über typische Dokumentstrukturen, um fehlende oder unleserliche Informationen zu kompensieren.
+Die Hauptkomponente bildet das \gls{LLM}, welches für die eigentliche Verarbeitung und Generierung zuständig ist.
+Das \gls{LLM} erhält die Textvektoren zusammen mit den Bildvektoren und fusioniert diese.
+Mithilfe des Attention-Mechanismus werden Beziehungen zwischen visuellen und textuellen Elementen verstanden.
+So ist es möglich, Fragen zu Bildinhalten zu beantworten oder Bildbeschreibungen zu generieren.
 
 
 \section{Vorstellung der Modelle}\label{sec:models}
@@ -198,25 +165,22 @@ Neben einem europäischen Mitstreiter von der französischen Firma Mistral AI we
 
 
 \subsection{Pixtral-12B}\label{subsec:pixtral}
-
+% TODO: Kontrolle des Abschnitts
 Das Pixtral-12B-2409\cite{Pixtral12B} wurde im Jahr 2024 von Mistral AI veröffentlicht.
 Es basiert auf einem 12 Milliarden Parameter großen Text-Decoder mit einem zusätzlich 400 Millionen Parameter Vision-Encoder.
-Es ist speziell auf das Verständnis von Bildern und Dokumenten\cite{PixtralPaper} trainiert wurden, weshalb es einen optimalen Kandidaten für die vorliegende Arbeit darstellt.
+Es ist speziell auf das Verständnis von Bildern und Dokumenten trainiert wurden, weshalb es einen optimalen Kandidaten für die vorliegende Arbeit darstellt.
 
-Mit einem theoretischen Kontextfenster von 128000 Tokens, ermöglicht das Modell eine Verarbeitung von mehreren Bildern gleichzeitig.
+Mit einem theoretischen Kontextfenster von 128000 Tokens, ermöglicht das Modell eine Verarbeitung von mehreren Bildern gleichzeitig\cite{PixtralPaper}.
 Das Kontextfenster wird in der Realität aber durch die gegebenen Ressourcen beschränkt.
 
 
 \subsection{Qwen-2.5-VL}\label{subsec:qwen2.5vl}
-
+% TODO: Kontrolle des Abschnitts
 Das Qwen2.5-VL-7B-instruct\cite{Qwen7B} sowie das Qwen2.5-VL-32B-instruct\cite{Qwen32B} wurden im Jahr 2025 von Alibaba Cloud veröffentlicht.
-Das kleinere Modell mit 7 Milliarden Parametern ist speziell für den Einsatz in ressourcenbeschränkten Umgebungen konzipiert und bietet dennoch eine wettbewerbsfähige Leistung im Vergleich zu deutlich größeren Modellen.
+Die beiden Modelle basieren auf dem gleichen Vision-Encoder mit 600 Millionen Parametern.
+Lediglich die Größe des Text-Decoders ist mit 7 Milliarden und 32 Milliarden Parametern unterschiedlich.
 
-Ein zentraler Bestandteil der Architektur ist die Nutzung der Native Dynamic Resolution.
-Ähnlich wie das Pixtral verarbeitet Qwen Bilder in ihrer ursprünglichen Auflösung, optimiert diesen Ansatz jedoch durch die Integration von Multimodal Rotary Positional Embeddings (M-RoPE).
-Diese Technik zerlegt die Positionsinformationen in Zeit-, Höhen- und Breitenkomponenten, wodurch das Modell in der Lage ist, 1D-Textinformationen, 2D-Visuelle-Informationen und 3D-Video-Informationen in einem einheitlichen Kontext zu verknüpfen.
-Dies ist besonders vorteilhaft für das Verständnis komplexer Dokumentenlayouts, da feine Details und räumliche Beziehungen präziser erfasst werden.
-
+Ein Vorteil gegenüber herkömmlichen \glspl{VLM} ist, dass
 Ein entscheidender Vorteil gegenüber generalistischen Modellen liegt in den Trainingsdaten: Qwen-2.5-VL wurde intensiv auf Document Omni-Parsing trainiert.
 Dadurch eignet es sich besonders gut für die hier geforderte Extraktion strukturierter Daten aus Formularen und Tabellen, da es nicht nur den Text erkennt, sondern auch dessen semantische Struktur innerhalb des Layouts interpretiert\cite{QwenPaper}.
 

@@ -3,20 +3,17 @@
 
 \section{Ergebnisse der Basis-Modelle}\label{sec:results_basemodels}
 
-
-\begin{figure}[h]
+\begin{figure}[!ht]
     \centering
     \begin{tikzpicture}
         \begin{axis}[
             ybar,
             bar width=20pt,
             width=10cm, height=7cm,
-        % --- STIL & FARBEN ---
             axis lines*=left,
             y axis line style={opacity=0},
             ymajorgrids=true,
             grid style={gray!20, dashed},
-        % --- ACHSEN ---
             ymin=0, ymax=1.0,
             ylabel={Score},
             ylabel style={font=\sffamily\bfseries, yshift=5pt},
@@ -26,23 +23,19 @@
             xtick style={draw=none},
             xticklabel style={font=\sffamily, yshift=2pt},
             yticklabel style={font=\sffamily},
-        % --- LEGENDE ---
             legend style={at={(0.5,-0.15)}, anchor=north, legend columns=-1, draw=none, fill=none, font=\sffamily},
-        % --- BESCHRIFTUNG ---
             nodes near coords,
             nodes near coords style={font=\sffamily\footnotesize},
             enlarge x limits=0.25
-        ] % <--- WICHTIG: Hier endet die Konfiguration, erst danach darf eine Leerzeile kommen
+        ]
 
-            % Plot 1
             \addplot[draw=none, fill=rred, nodes near coords style={color=rred}] coordinates {
-                (KG5b,0.82)
-                (Vertraege,0.59)
-                (Sonstiges,0.80)
+                (KG5b,0.79)
+                (Vertraege,0.83)
+                (Sonstiges,0.84)
             };
 
-            % Plot 2
-            \addplot[draw=none, fill=oorange, nodes near coords style={color=oorange}] coordinates {
+            \addplot[draw=none, fill=aalmond, nodes near coords style={color=aalmond}] coordinates {
                 (KG5b,0.46)
                 (Vertraege,0.50)
                 (Sonstiges,0.80)
@@ -51,15 +44,150 @@
             \legend{Qwen-2.5-VL-7b, Pixtral-12B}
         \end{axis}
     \end{tikzpicture}
-    \caption{Vergleich der Modellleistungen nach Dokumentenart}
+    \caption{Vergleich der F1-Scores der Basis-Modelle nach Dokumentenart}
     \label{fig:result_basemodels}
 \end{figure}
 
 
 \section{Ergebnisse des Fine-Tunings}\label{sec:results_fine_tuning}
 
+\begin{figure}[!ht]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            ybar,
+            bar width=20pt,
+            width=10cm, height=7cm,
+            axis lines*=left,
+            y axis line style={opacity=0},
+            ymajorgrids=true,
+            grid style={gray!20, dashed},
+            ymin=0, ymax=1.0,
+            ylabel={Score},
+            ylabel style={font=\sffamily\bfseries, yshift=5pt},
+            symbolic x coords={KG5b, Vertraege, Sonstiges},
+            xtick=data,
+            xticklabels={KG5b, Verträge, Sonstiges},
+            xtick style={draw=none},
+            xticklabel style={font=\sffamily, yshift=2pt},
+            yticklabel style={font=\sffamily},
+            legend style={at={(0.5,-0.15)}, anchor=north, legend columns=-1, draw=none, fill=none, font=\sffamily},
+            nodes near coords,
+            nodes near coords style={font=\sffamily\footnotesize},
+            enlarge x limits=0.25
+        ]
+
+            \addplot[draw=none, fill=rred, nodes near coords style={color=rred}] coordinates {
+                (KG5b,0.87)
+                (Vertraege,0.84)
+                (Sonstiges,0.94)
+            };
+
+            \legend{Qwen-2.5-VL-7b-base-finetuned}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{F1-Scores des trainierten Modells nach Dokumentenart }
+    \label{fig:result_finetuning}
+\end{figure}
+
+
 \section{Ergebnisse YOLO/OCR-Pipeline}\label{sec:results_yolo_ocr_pipeline}
 
+\begin{figure}[!ht]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            ybar,
+            bar width=20pt,
+            width=10cm, height=7cm,
+            axis lines*=left,
+            y axis line style={opacity=0},
+            ymajorgrids=true,
+            grid style={gray!20, dashed},
+            ymin=0, ymax=1.0,
+            ylabel={Score},
+            ylabel style={font=\sffamily\bfseries, yshift=5pt},
+            symbolic x coords={KG5b, Vertraege, Sonstiges},
+            xtick=data,
+            xticklabels={KG5b, Verträge, Sonstiges},
+            xtick style={draw=none},
+            xticklabel style={font=\sffamily, yshift=2pt},
+            yticklabel style={font=\sffamily},
+            legend style={at={(0.5,-0.15)}, anchor=north, legend columns=-1, draw=none, fill=none, font=\sffamily},
+            nodes near coords,
+            nodes near coords style={font=\sffamily\footnotesize},
+            enlarge x limits=0.25
+        ]
+
+            \addplot[draw=none, fill=rred, nodes near coords style={color=rred}] coordinates {
+                (KG5b,0.75)
+                (Vertraege,0.51)
+                (Sonstiges,1.0)
+            };
+
+            \legend{YOLO/OCR-Pipeline}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{F1-Scores der YOLO/OCR-Pipeline nach Dokumentenart }
+    \label{fig:result_yolo_ocr}
+\end{figure}
+
 \section{Ergebnisse im Überblick}\label{sec:results_overview}
+
+\begin{figure}[!ht]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            ybar,
+            bar width=20pt,
+            width=15cm, height=7cm,
+            axis lines*=left,
+            y axis line style={opacity=0},
+            ymajorgrids=true,
+            grid style={gray!20, dashed},
+            ymin=0, ymax=1.0,
+            ylabel={Score},
+            ylabel style={font=\sffamily\bfseries, yshift=5pt},
+            symbolic x coords={KG5b, Vertraege, Sonstiges},
+            xtick=data,
+            xticklabels={KG5b, Verträge, Sonstiges},
+            xtick style={draw=none},
+            xticklabel style={font=\sffamily, yshift=2pt},
+            yticklabel style={font=\sffamily},
+            legend style={at={(0.5,-0.15)}, anchor=north, legend columns=-1, draw=none, fill=none, font=\sffamily},
+            nodes near coords,
+            nodes near coords style={font=\sffamily\footnotesize},
+            enlarge x limits=0.25
+        ]
+            \addplot[draw=none, fill=rred, nodes near coords style={color=rred}] coordinates {
+                (KG5b,0.79)
+                (Vertraege,0.83)
+                (Sonstiges,0.84)
+            };
+
+            \addplot[draw=none, fill=aalmond, nodes near coords style={color=aalmond}] coordinates {
+                (KG5b,0.46)
+                (Vertraege,0.50)
+                (Sonstiges,0.80)
+            };
+
+            \addplot[draw=none, fill=bblush, nodes near coords style={color=bblush}] coordinates {
+                (KG5b,0.87)
+                (Vertraege,0.84)
+                (Sonstiges,0.94)
+            };
+
+            \addplot[draw=none, fill=ssand, nodes near coords style={color=ssand}] coordinates {
+                (KG5b,0.75)
+                (Vertraege,0.51)
+                (Sonstiges,1.0)
+            };
+
+            \legend{Qwen-2.5-VL-7b-base, Pixtral-12B, Qwen-2.5-VL-7b-base-finetuned, YOLO/OCR-Pipeline}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{F1-Scores aller Modelle nach Dokumentenart}
+    \label{fig:result_finetuning}
+\end{figure}
 
 

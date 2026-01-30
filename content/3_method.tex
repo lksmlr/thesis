@@ -1,8 +1,59 @@
 \chapter{Methodik und Datenaufbereitung}\label{ch:data}
 
+
 \section{Modellierung der Dokumentenarten als JSON}\label{sec:documents_as_json}
 
+Um eine standardisierte Weiterverarbeitung der Modellausgaben zu gewährleisten, ist eine feste Struktur essenziell.
+Da moderne \glspl{VLM} darauf trainiert sind, Antworten im \gls{JSON}-Format zu liefern, werden die extrahierten Informationen in ein vordefiniertes \gls{JSON}-Schema überführt.
+Diese Schemata unterscheiden sich je nach Dokumentenart, da jeweils unterschiedliche Informationen relevant sind.
+
+
+\subsection{KG5b}\label{subsec:json_kg5b}
+
+Das Schema für das Formular KG5b ist in Abbildung~\ref{fig:json_kg5b} definiert.
+Die Klassifikation spiegelt sich im Feld \texttt{type} wider, während die restlichen Felder Platzhalter für die \gls{IE} darstellen.
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/kg5b_json}
+    \caption{JSON-Schema des Dokumententyps KG5b}
+    \label{fig:json_kg5b}
+\end{figure}
+
+
+\subsection{Ausbildungsvertrag}\label{subsec:json_vertrag}
+
+Das Schema für die Ausbildungsverträge ist in Abbildung~\ref{fig:json_vertrag} definiert.
+Wie im Schema des KG5b dient das Feld \texttt{type} der Klassifikation, während die restlichen Felder die \gls{IE} repräsentieren.
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/vertrag_json}
+    \caption{JSON-Schema des Dokumententyps Ausbildungsvertrag}
+    \label{fig:json_vertrag}
+\end{figure}
+
+
+\subsection{Sonstige Dokumente}\label{subsec:json_sonstiges}
+
+Das Schema für die nicht relevanten Dokumente ist in Abbildung~\ref{fig:json_sonstiges} definiert.
+Da hier keine Informationen benötigt werden, sondern rein die Klassifikation von Nutzen ist, besteht das Schema lediglich aus dem Feld \texttt{type}.
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/sonstiges_json}
+    \caption{JSON-Schema des Dokumententyps Sonstiges}
+    \label{fig:json_sonstiges}
+\end{figure}
+
+
 \section{Evaluation}\label{sec:evaluation}
+
+\subsection{Vergleichslogik der unterschiedlichen JSON-Felder}\label{subsec:comparator}
+
+\subsection{Bewertung der Klassifikation}\label{subsec:evaluation_classification}
+
+\subsection{Bewertung der Information Extraction}\label{subsec:evaluation_ie}
 
 \section{Datenvorbereitung}\label{sec:preprocessing}
 
@@ -11,91 +62,6 @@
 \subsection{Trainingsdatensatz}\label{subsec:train_dataset}
 
 \section{Modellauswahl}\label{sec:modelselection}
-
+- Promptdesign
+- warum kein one shot few shot usw
 \section{Fine-Tuning}\label{sec:fine_tuning}
-
-
-
-\section{Dokumentenarten}\label{sec:documents1}
-
-Ziel der Arbeit ist die \gls{IE} aus den genannten Dokumentenklassen, sowie deren Klassifikation.
-Um die gewonnenen Informationen aus dem Dokument bereitzustellen, wird ein flaches \gls{JSON}-Schema verwendet.
-Die Wahl dieses Formats wird dadurch begünstigt, dass moderne \gls{LLM}s durch ihr Training bereits eine hohe Zuverlässigkeit in der Generierung valider \gls{JSON}-Strukturen aufweisen.
-
-Die Qualität der Dokumente, die im Onlineportal hochgeladen werden, ist sehr unterschiedlich.
-Neben Scans mit guter Belichtung und hoher Auflösung enthält der Datensatz auch Fotos, die aus verschiedenen Winkeln und Entfernungen aufgenommen wurden.
-Eine zusätzliche Herausforderung ist, dass die Dokumente häufig handschriftlich ausgefüllt sind.
-
-In den Test- und Trainingsdatensätzen kommen diese Probleme in unterschiedlichen Konstellationen vor.
-Der Testdatensatz umfasst insgesamt 60 Dokumente, die sich gleichmäßig auf 20 Ausbildungsverträge, 20 KG5b-Formulare und 20 sonstige Dokumente verteilen.
-Der Trainingsdatensatz setzt sich aus 165 KG5b-Formularen, 227 Ausbildungsverträgen und 218 sonstigen Dokumenten zusammen.
-
-Die Erstellung Ground Truth erfolgte in einem zweistufigen Verfahren.
-Zunächst wurden die \gls{JSON}-Strukturen für den Testdatensatz vollständig manuell erstellt.
-Dieser Testdatensatz diente anschließend dazu, den System-Prompt zu optimieren, bis die Ergebnisse des Basis-Modells eine zufriedenstellende Qualität erreichten.
-Um den Annotationsaufwand für den Trainingsdatensatz zu reduzieren, wurde dieser optimierte Prompt für ein sogenanntes Pre-Labeling genutzt.
-Das Modell generierte dabei erste Vorschläge für die \gls{JSON}-Schemas, welche im Anschluss manuell validiert und korrigiert wurden.
-Dieser modellgestützte Annotationsprozess (Model-Assisted Labeling) ermöglichte eine effiziente Erstellung der Trainingsdaten bei gleichbleibend hoher Datenqualität.
-
-
-\subsection{KG5b}\label{subsec:kg5b1}
-
-Da es sich um ein standardisiertes Formular handelt, ist das Layout gleichbleibend.
-Theoretisch vereinfacht dies die Extraktion der Informationen, da relevante Felder an denselben Positionen zu erwarten sind.
-In der Praxis ergibt sich jedoch eine hohe Varianz durch den Ausfüllprozess.
-Obwohl der Vordruck digital ausfüllbar angeboten wird, erfolgt die Bearbeitung in der Regel handschriftlich.
-Zudem erzwingen Unterschriften und Firmenstempeln einen doppelten Medienbruch.
-Das Dokument wird ausgedruckt, bearbeitet und anschließend wieder digitalisiert.
-
-Das Zielformat für die Extraktion wird durch das folgende \gls{JSON}-Schema definiert:
-
-\lstinputlisting[language=Python, caption={JSON-Schema für KG5b}, captionpos=b, label={lst:kg5b_schema}]{listings/kg5b.json}
-
-Das Feld \texttt{type} stellt die Klassifikation dar, wobei die restlichen Felder die Information Extraction abbilden.
-
-Eine besondere Herausforderung bei der Verarbeitung stellen die binären Informationen dar, wie etwa die Checkbox für das Feld \texttt{apprenticeship\_ended}.
-Hier muss das Modell visuell unterscheiden, ob ein Kasten leer, angekreuzt oder durchgestrichen ist.
-Ebenso kritisch ist die Detektion von \texttt{signature\_company} und \texttt{stamp\_company}.
-Im Gegensatz zu Textfeldern ist hier nicht der textliche Inhalt des Stempels relevant, sondern lediglich dessen Vorhandensein.
-Die Stempel sind oft blass oder eingefärbt, was besonders bei Schwarz-Weiß Scans zu einer schlechten Qualität führt.
-Zudem liegen die Felder \texttt{date\_document} und \texttt{signature\_company} nah beieinander.
-Unterschriften sind regelmäßig größer als ihr vorgesehener Platz, wodurch das Feld \texttt{date\_document} überdeckt wird.
-Zusätzlich werden die Stempel häufig zusammen mit der Unterschrift auf der linken Seite platziert.
-
-
-
-\newpage
-\subsection{Ausbildungsvertrag}\label{subsec:vertraege1}
-
-
-
-Eine weitere Herausforderung stellt der Umfang der Dokumente dar.
-Ausbildungsverträge umfassen häufig mehrere Seiten, wobei relevante Informationen und irrelevante Informationen, wie zum Beispiel gesetzliche Rahmenbedingungen, AGBs oder Rechtsbelehrungen, gemischt auftreten.
-Dies erschwert die Fokussierung des Modells auf die relevanten Daten.
-
-Analog zu den KG5b-Formularen liegt auch hier durch die notwendigen Unterschriften und Stempel ein Medienbruch vor.
-Ein wesentlicher Vorteil gegenüber den handschriftlich ausgefüllten Anträgen besteht jedoch darin, dass die inhaltlichen Daten der Verträge fast ausschließlich maschinenschriftlich vorliegen, was die Zeichenerkennung erleichtert.
-
-
-Das Zielformat für die Extraktion wird durch das folgende \gls{JSON}-Schema definiert:
-
-\lstinputlisting[language=Python, caption={JSON-Schema Vertrag}, captionpos=b,label={lst:lstvertrag}]{listings/vertrag.json}
-
-Die Felder stimmen weitestgehend mit denen der KG5b-Formulare überein, jedoch entfallen die Felder \texttt{exam\_month} und \texttt{apprenticeship\_ended}, da diese selten auf Verträgen zu finden sind.
-
-
-\subsection{Sonstige Dokumente}\label{subsec:other_documents1}
-
-Die Kategorie \texttt{Sonstiges} steht als Auffangklasse für alle restlichen Dokumente bereit.
-Hier befinden sich zum Beispiel Schulbescheinigungen, Anträge auf Eintragung bei der Handelskammer oder Studienbescheinigungen.
-Da diese Dokumente keine relevanz für die Weiterbeantragung des Kindergeldes bei volljährigen Auszubildenden hat, werden keine Information benötigt.
-Somit ist rein die Klassifizierung wichtig, weshalb das extrahierte \gls{JSON}-Schema folgendermaßen aussieht:
-
-\lstinputlisting[language=Python, caption={JSON-Schema Sonstiges}, captionpos=b,label={lst:lstsonstiges}]{listings/sonstiges.json}
-
-
-\section{Test- und Trainingsdatensatz}\label{sec:dataset}
-
-
-
-

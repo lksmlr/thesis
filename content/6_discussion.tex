@@ -1,2 +1,10 @@
 \chapter{Diskussion}\label{ch:discussion}
 
+Eine besondere Herausforderung bei der Verarbeitung stellen die binären Informationen dar, wie etwa die Checkbox für das Feld \texttt{apprenticeship\_ended}.
+Hier muss das Modell visuell unterscheiden, ob ein Kasten leer, angekreuzt oder durchgestrichen ist.
+Ebenso kritisch ist die Detektion von \texttt{signature\_company} und \texttt{stamp\_company}.
+Im Gegensatz zu Textfeldern ist hier nicht der textliche Inhalt des Stempels relevant, sondern lediglich dessen Vorhandensein.
+Die Stempel sind oft blass oder eingefärbt, was besonders bei Schwarz-Weiß Scans zu einer schlechten Qualität führt.
+Zudem liegen die Felder \texttt{date\_document} und \texttt{signature\_company} nah beieinander.
+Unterschriften sind regelmäßig größer als ihr vorgesehener Platz, wodurch das Feld \texttt{date\_document} überdeckt wird.
+Zusätzlich werden die Stempel häufig zusammen mit der Unterschrift auf der linken Seite platziert.

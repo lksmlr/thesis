@@ -37,7 +37,7 @@ Wie im Schema des KG5b dient das Feld \texttt{type} der Klassifikation, während
 \subsection{Sonstige Dokumente}\label{subsec:json_sonstiges}
 
 Das Schema für die nicht relevanten Dokumente ist in Abbildung~\ref{fig:json_sonstiges} definiert.
-Da hier keine Informationen benötigt werden, sondern rein die Klassifikation von Nutzen ist, besteht das Schema lediglich aus dem Feld \texttt{type}.
+Da hier keine Informationen benötigt werden, sondern rein die Klassifikation von Nutzen ist, besteht das Schema ausschließlich aus dem Feld \texttt{type}.
 
 \begin{figure}[!ht]
     \centering
@@ -50,6 +50,24 @@ Da hier keine Informationen benötigt werden, sondern rein die Klassifikation vo
 \section{Evaluation}\label{sec:evaluation}
 
 \subsection{Vergleichslogik der unterschiedlichen JSON-Felder}\label{subsec:comparator}
+
+Um ein realistisches Ergebnis zu erhalten, müssen unterschiedliche Feldtypen spezifisch verglichen werden.
+Die Menge an distinkten Typen beinhaltet: Namen, Booleans, Zeichenketten, Daten und Monate.
+
+Namen werden mit der Levenshtein-Similarity verglichen, um kleinere Fehler oder verschiedene Varianten zu tolerieren.
+Beispielsweise wird ein Name, der \texttt{ue} statt \texttt{ü} enthält, nicht als Fehler erkannt.
+Des Weiteren werden minimale \gls{OCR}-Fehler gefiltert.
+Die \gls{YOLO}/\gls{OCR}-Pipeline verwendet ebenso diesen Vergleich mit den gleichen Schwellenwerten, somit wird das Ergebnis vergleichbar.
+
+Zeichenketten und Booleans werden exakt verglichen.
+Hierzu zählen die Felder \texttt{type}, \texttt{stamp\_company}, \texttt{signature\_company}, \texttt{signature\_child}, \texttt{signature\_legal\_guardian} und \texttt{apprenticeship\_finished}.
+Lediglich die booleschen Werte werden zu \texttt{true} normalisiert, da hier eine potenzielle Fehlerquelle liegt.
+
+Daten werden einheitlich in das Format DD.MM.YYYY gebracht, obwohl dies nicht dem internationalen Standard entspricht.
+Das ist darauf zurückzuführen, dass so die Erkennung des \glspl{VLM} am robustesten ist, da die deutschen Dokumente auch mit diesem Format ausgefüllt werden.
+
+Monate werden in das Format MM normalisiert.
+Hierbei werden ausgeschriebene Monatsnamen sowie vollständige Datumsangaben angepasst.
 
 \subsection{Bewertung der Klassifikation}\label{subsec:evaluation_classification}
 

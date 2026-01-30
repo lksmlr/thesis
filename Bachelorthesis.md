@@ -136,3 +136,5 @@ Sonstige: 0.83
 
 - Feedback Vortrag
 - LoRA erklärt, zusätzlich rsLoRA erklären? -> sehr mathematisch
+- Gleichheit statt Similarity, Schwellenwerte statt Thresholds?
+- Präsenz?

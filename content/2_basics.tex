@@ -83,7 +83,7 @@ Der Prozess der Dokumentenverarbeitung lässt sich in zwei Stufen einteilen.
 
 In der ersten Stufe werden die hochgeladenen Dokumente des Kunden entgegengenommen.
 Wenn ein Dokument als PDF vorliegt, wird mithilfe des Textlayers und eines \gls{OCR}-Modells der Text extrahiert, während bei einer Bilddatei lediglich das \gls{OCR}-Modell zum Einsatz kommt.
-Als Ergebnis der ersten Stufe werden dann eine PDF/A (eine archivtaugliche, unveränderbare PDF) und der extrahierte Text zurückgeliefert.
+Als Ergebnis der ersten Stufe werden dann ein PDF/A und der extrahierte Text zurückgeliefert.
 
 Auf Basis des extrahierten Textes wird in der nächsten Stufe zu Beginn eine Klassifikation durchgeführt.
 Hierbei unterscheidet der Klassifikator zwischen den bereits vorgestellten Dokumententypen: KG5b, Vertrag und Sonstiges.
@@ -96,7 +96,7 @@ Schlussendlich stehen die erkannten Informationen zur weiteren Verarbeitung bere
 \subsection{Rahmenbedingungen und Infrastruktur}\label{subsec:infrastructure}
 
 Die Entwicklung und Evaluation der Modelle erfolgt unter datenschutzrechtlichen Auflagen.
-Da im Rahmen dieser Arbeit personenbezogene Echtdaten verarbeitet werden, wird eine isolierte On-Premise-Infrastruktur verwendet.
+Da im Rahmen dieser Arbeit personenbezogene Echtdaten verarbeitet werden, wird eine isolierte On-Premises-Infrastruktur verwendet.
 
 Die technische Architektur ist in Abbildung~\ref{fig:infrastructure} schematisch dargestellt.
 

@@ -10,7 +10,7 @@
     "signature_company": true,
     "signature_child": true,
     "signature_legal_guardian": true,
-    "apprenticeship_ended": true,
+    "apprenticeship_finished": true,
     "exam_month": "MM"
   }
 }

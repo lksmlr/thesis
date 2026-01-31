@@ -1,5 +1,6 @@
 \chapter{Methodik und Datenaufbereitung}\label{ch:data}
 
+%TODO:Forschungsfragen
 
 \section{Modellierung der Dokumentenarten als JSON}\label{sec:documents_as_json}
 
@@ -48,6 +49,9 @@ Da hier keine Informationen benötigt werden, sondern rein die Klassifikation vo
 
 
 \section{Evaluation}\label{sec:evaluation}
+%TODO: Wie sicherstellen JSON output
+
+Um die generierte \gls{JSON} des \glspl{VLM} schlussendlich bewerten zu können, werden verschiedene Vorverarbeitungschritte
 
 \subsection{Vergleichslogik der unterschiedlichen JSON-Felder}\label{subsec:comparator}
 
@@ -71,9 +75,39 @@ Hierbei werden ausgeschriebene Monatsnamen sowie vollständige Datumsangaben ang
 
 \subsection{Bewertung der Klassifikation}\label{subsec:evaluation_classification}
 
+Die Bewertung der Klassifikation ist ein Multiclass-Problem, da hier mehr als zwei Klassen vorliegen (KG5b, Ausbildungsvertrag, Sonstiges).
+Um die Güte der Modelle zu betrachten, wird eine Confusion-Matrix herangezogen sowie die Accuracy gemessen.
+Durch die gleichverteilung der Klassen in den Datensätzen werden hier keine weiteren Metriken gebraucht.
+
 \subsection{Bewertung der Information Extraction}\label{subsec:evaluation_ie}
 
-\section{Datenvorbereitung}\label{sec:preprocessing}
+Um den Entity-Level F1-Score, der die Hauptmetrik für den Vergleich darstellt, zu berechnen werden einige Metadaten für jede generierte \gls{JSON} bestimmt.
+Dazu gehören die Status der Felder, also ob diese vorhanden, nicht vorhanden oder halluziniert sind.
+Sobald ein Feld als vorhanden markiert wird, wird mit den verschiedenen Vergleichslogiken die Richtigkeit der Felder bestimmt und den Metadaten hinzugefügt.
+
+Auf Basis dieser Metadaten werden für den gesamten Dokumentenkorpus die True Positive (\gls{TP}), False Positive (\gls{FP}) und False Negative (\gls{FN}) gezählt.
+Ein Feld zählt als \gls{TP}, wenn es vorhanden sowie korrekt ist.
+Zu den \gls{FN} gehören Felder, die entweder fehlen oder vorhanden aber falsch sind.
+Ein Feld, das vorhanden aber falsch ist, zählt zusätzlich zu den \gls{FP} zusammen mit den Feldern die halluziniert wurden.
+Diese doppelte Bestrafung stellt eine sehr strenge Bewertung für inhaltliche Fehler dar.
+\glspl{TN} sind in dem Falle nicht zählbar, da die Menge an nicht gefundenen Feldern, in denen nichts stande, unendlich groß ist.
+
+
+\section{Daten}\label{sec:data}
+
+\subsection{Datenvorbereitung}\label{subsec:preprocessing}
+
+Durch Datenlieferungen der Familienkasse stehen mehrere Tausend Dokumente als PDF oder Bilddatei bereit.
+Um eine einheitliche Basis zu schaffen und gute Ergebnisse zu erzielen, müssen die Daten vorbereitet werden.
+Speziell die Drehung der Bilddateien sowie die Konvertierung der PDFs in Bilddateien stehen im Vordergrund.
+
+Um die Drehung der Bilddateien zu korrigieren, werden die Exchangeable Image File Format (\gls{EXIF})-Daten ausgelesen.
+Mithilfe dieser wird die originale Ausrichtung wieder hergestellt.
+
+Bei älteren \glspl{VLM} wurden Bilder naiv auf eine bestimmte Größe skaliert.
+Die hier verwendeten Modelle unterstützen eine dynamische Skalierung.
+Um dennoch die maximale Tokenanzahl der Bilder zu begrenzen, werden diese vor der Weitergabe an das \gls{VLM} auf eine maximale Pixelanzahl skaliert.
+Dabei wird jedoch das Seitenverhältnis beibehalten, um möglichst viele Details beizubehalten.
 
 \subsection{Testdatensatz}\label{subsec:test_dataset}
 

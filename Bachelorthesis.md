@@ -137,4 +137,7 @@ Sonstige: 0.83
 - Feedback Vortrag
 - LoRA erklärt, zusätzlich rsLoRA erklären? -> sehr mathematisch
 - Gleichheit statt Similarity, Schwellenwerte statt Thresholds?
-- Präsenz?
+- Präsens?
+- Weitere Grundlagen ja/nein?
+- Wo Kritik äußern?
+- Statt Methodik und Datenaufbereitung nur Methodik und Daten?

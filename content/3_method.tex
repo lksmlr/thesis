@@ -93,7 +93,7 @@ Diese doppelte Bestrafung stellt eine sehr strenge Bewertung für inhaltliche Fe
 \glspl{TN} sind in dem Falle nicht zählbar, da die Menge an nicht gefundenen Feldern, in denen nichts stande, unendlich groß ist.
 
 
-\section{Daten}\label{sec:data}
+\section{Daten und Wahl des Basismodells}\label{sec:data}
 
 \subsection{Datenvorbereitung}\label{subsec:preprocessing}
 
@@ -109,11 +109,41 @@ Die hier verwendeten Modelle unterstützen eine dynamische Skalierung.
 Um dennoch die maximale Tokenanzahl der Bilder zu begrenzen, werden diese vor der Weitergabe an das \gls{VLM} auf eine maximale Pixelanzahl skaliert.
 Dabei wird jedoch das Seitenverhältnis beibehalten, um möglichst viele Details beizubehalten.
 
+
 \subsection{Testdatensatz}\label{subsec:test_dataset}
+
+Nach der Vorbereitung der Dokumente wird ein Testdatensatz erstellt
+Dieser ist ausbalanciert und besteht aus insgesamt 60 Dokumenten.
+Darunter 20 KG5bs, 20 Verträge und 20 sonstige Dokumente.
+Um die Ground-Truth \glspl{JSON} zu erstellen, wurden die Dokumente manuell gelabelt.
+
+
+\subsection{Modellauswahl}\label{subsec:modelselection}
+
+Für das Anpassen eines Modells an die spezifischen Dokumentenarten und das Ausgabeformat muss eines Basismodell gewählt werden.
+Wie in Abbildung~\ref{fig:model_selection} zu sehen, erfolgte diese Modellauswahl iterativ.
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=\textwidth]{figures/model_selection}
+    \caption{Iterativer Prozess der Modellauswahl für das Fine-Tuning}
+    \label{fig:model_selection}
+\end{figure}
+
+Mit jeder Iteration wurden die beiden Modelle, das Pixtral-12B sowie das Qwen-2.5-VL-7B, mit dem Testdatensatz getestet.
+Die generierten Antworten werden im Anschluss bewertet und der Prompt gegebenfalls angepasst.
+
+Dieser iterative Vorgang wird bis zu dem Punkt ausgeführt, an dem mit Promptänderungen keine Verbesserungen mehr erzielt werden.
 
 \subsection{Trainingsdatensatz}\label{subsec:train_dataset}
 
-\section{Modellauswahl}\label{sec:modelselection}
-- Promptdesign
-- warum kein one shot few shot usw
+Der Trainingsdatensatz muss für hochwertige Ergebnisse deutlich umfangreicher als der Testdatensatz ausfallen.
+Er besteht aus 227 Verträge, 165 KG5bs und 218 sonstigen Dokumenten.
+
+Die Klassen sind nicht gleich verteilt, da aufgrund des starren Layouts der KG5b-Formulare hier die besten Ergebnisse erwartet werden.
+Somit wurden die Klassen mit der höchsten Varianz häufiger repräsentiert.
+
+Durch die vorherige Auswahl des Basismodells steht für das label dieses größeren Datensatzes ein Modell, sowie der passende Prompt, bereit.
+Mithilfe des Modells wird der Aufwand um ein Vielfaches reduziert, da nur noch kontrolliert und in einzelnen Fällen korrigiert werden muss.
+
 \section{Fine-Tuning}\label{sec:fine_tuning}

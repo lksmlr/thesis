@@ -143,3 +143,4 @@ Sonstige: 0.83
 - Statt Methodik und Datenaufbereitung nur Methodik und Daten?
 - Ergebnisse basismodelle extra, oder reicht Überblick
 - Testdatenatz -> Modellauswahl -> Trainingdatensatz?
+- In Zusammenfassung Ergebnis nennen?

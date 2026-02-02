@@ -8,11 +8,17 @@ Um eine standardisierte Weiterverarbeitung der Modellausgaben zu gewährleisten,
 Da moderne \glspl{VLM} darauf trainiert sind, Antworten im \gls{JSON}-Format zu liefern, werden die extrahierten Informationen in ein vordefiniertes \gls{JSON}-Schema überführt.
 Diese Schemata unterscheiden sich je nach Dokumentenart, da jeweils unterschiedliche Informationen relevant sind.
 
+Um den \gls{JSON}-Output des \glspl{VLM} zu restriktieren, gibt es verschiedene Möglichkeiten.
+Während komplexere Lösungen nur Tokens zulassen die \gls{JSON} konform sind, wird in dieser Evaluation ein einfacherer Ansatz gewählt.
+Hierbei werden aus der generierten Antwort \glspl{JSON} gefiltert und geparst.
+Sobald das Parsen der \gls{JSON} fehlschlägt, wird diese zurück an das \gls{VLM} geliefert, mit der Anweisung diese zu korrigieren.
+
 
 \subsection{KG5b}\label{subsec:json_kg5b}
 
 Das Schema für das Formular KG5b ist in Abbildung~\ref{fig:json_kg5b} definiert.
 Die Klassifikation spiegelt sich im Feld \texttt{type} wider, während die restlichen Felder Platzhalter für die \gls{IE} darstellen.
+Bei den binären, booleschen Felder markiert ein \texttt{true} das Vorhandensein des Feldes, während ein \texttt{False} das nicht Vorhandensein repräsentiert.
 
 \begin{figure}[!ht]
     \centering
@@ -49,7 +55,6 @@ Da hier keine Informationen benötigt werden, sondern rein die Klassifikation vo
 
 
 \section{Evaluation}\label{sec:evaluation}
-%TODO: Wie sicherstellen JSON output
 
 Um die generierte \gls{JSON} des \glspl{VLM} schlussendlich bewerten zu können, werden verschiedene Vorverarbeitungschritte
 

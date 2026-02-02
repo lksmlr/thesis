@@ -1,6 +1,14 @@
 \chapter{Methodik und Datenaufbereitung}\label{ch:data}
 
 %TODO:Forschungsfragen
+Mit dem Proof of Concept gilt es mehrere Vergleiche zwischen verschiedenen \glspl{VLM} sowie der \gls{YOLO}/\gls{OCR}-Pipeline anzustellen.
+Für die Entscheidung, ob und welches \gls{VLM} die bisherige Pipeline ersetzen wird, sind die Modellleistungen als auch der Ressourcenverbrauch interessant.
+Aus diesem Grund müssen die folgenden Fragen beantwortet werden:
+\begin{enumerate}
+    \item Inwiefern ist ein nicht angepasstes \gls{VLM} in der Leistung der trainierten \gls{YOLO}/\gls{OCR}-Pipeline überlegen und welche Vorteile hat ein einzelnes generalistisches Modell gegenüber der Benutzung verschiedener Spezialisten?
+    \item Wie verhält sich ein kleineres Modell, dass domänenspezifisch trainiert wurde, gegenüber einem leistungsstärkeren Modell in Bezug auf Leistung und Effizienz?
+    \item In welchem Verhältnis steht der Ressourcenverbrauch der \glspl{VLM} zu dem der \gls{YOLO}/\gls{OCR}-Pipeline?
+\end{enumerate}
 
 \section{Modellierung der Dokumentenarten als JSON}\label{sec:documents_as_json}
 
@@ -12,6 +20,7 @@ Um den \gls{JSON}-Output des \glspl{VLM} zu restriktieren, gibt es verschiedene 
 Während komplexere Lösungen nur Tokens zulassen die \gls{JSON} konform sind, wird in dieser Evaluation ein einfacherer Ansatz gewählt.
 Hierbei werden aus der generierten Antwort \glspl{JSON} gefiltert und geparst.
 Sobald das Parsen der \gls{JSON} fehlschlägt, wird diese zurück an das \gls{VLM} geliefert, mit der Anweisung diese zu korrigieren.
+Das Modell bekommt insgesamt drei Versuche eine valide \gls{JSON} zu generieren, bevor das Dokument als ungültig eingestuft wird.
 
 
 \subsection{KG5b}\label{subsec:json_kg5b}
@@ -48,7 +57,7 @@ Da hier keine Informationen benötigt werden, sondern rein die Klassifikation vo
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.5\textwidth]{figures/sonstiges_json}
+    \includegraphics[width=0.3\textwidth]{figures/sonstiges_json}
     \caption{JSON-Schema des Dokumententyps Sonstiges}
     \label{fig:json_sonstiges}
 \end{figure}
@@ -58,13 +67,15 @@ Da hier keine Informationen benötigt werden, sondern rein die Klassifikation vo
 
 Um die generierte \gls{JSON} des \glspl{VLM} schlussendlich bewerten zu können, werden verschiedene Vorverarbeitungschritte
 
+
 \subsection{Vergleichslogik der unterschiedlichen JSON-Felder}\label{subsec:comparator}
 
-Um ein realistisches Ergebnis zu erhalten, müssen unterschiedliche Feldtypen spezifisch verglichen werden.
+Mit dem Ziel ein realistisches Ergebnis zu erhalten, müssen unterschiedliche Feldtypen spezifisch verglichen werden.
 Die Menge an distinkten Typen beinhaltet: Namen, Booleans, Zeichenketten, Daten und Monate.
 
 Namen werden mit der Levenshtein-Similarity verglichen, um kleinere Fehler oder verschiedene Varianten zu tolerieren.
 Beispielsweise wird ein Name, der \texttt{ue} statt \texttt{ü} enthält, nicht als Fehler erkannt.
+Der Schwellenwert, der zwischen korrekt und nicht korrekt entscheidet, liegt bei 0,8.
 Des Weiteren werden minimale \gls{OCR}-Fehler gefiltert.
 Die \gls{YOLO}/\gls{OCR}-Pipeline verwendet ebenso diesen Vergleich mit den gleichen Schwellenwerten, somit wird das Ergebnis vergleichbar.
 
@@ -78,11 +89,13 @@ Das ist darauf zurückzuführen, dass so die Erkennung des \glspl{VLM} am robust
 Monate werden in das Format MM normalisiert.
 Hierbei werden ausgeschriebene Monatsnamen sowie vollständige Datumsangaben angepasst.
 
+
 \subsection{Bewertung der Klassifikation}\label{subsec:evaluation_classification}
 
 Die Bewertung der Klassifikation ist ein Multiclass-Problem, da hier mehr als zwei Klassen vorliegen (KG5b, Ausbildungsvertrag, Sonstiges).
 Um die Güte der Modelle zu betrachten, wird eine Confusion-Matrix herangezogen sowie die Accuracy gemessen.
 Durch die gleichverteilung der Klassen in den Datensätzen werden hier keine weiteren Metriken gebraucht.
+
 
 \subsection{Bewertung der Information Extraction}\label{subsec:evaluation_ie}
 
@@ -96,6 +109,23 @@ Zu den \gls{FN} gehören Felder, die entweder fehlen oder vorhanden aber falsch 
 Ein Feld, das vorhanden aber falsch ist, zählt zusätzlich zu den \gls{FP} zusammen mit den Feldern die halluziniert wurden.
 Diese doppelte Bestrafung stellt eine sehr strenge Bewertung für inhaltliche Fehler dar.
 \glspl{TN} sind in dem Falle nicht zählbar, da die Menge an nicht gefundenen Feldern, in denen nichts stande, unendlich groß ist.
+
+
+\subsection{Messung von Latenz, Energieverbrauch und VRAM-Nutzung}\label{subsec:measure}
+
+Im Hinblick auf die Bewertung der Modelle werden neben der Güte der Klassifikation und \gls{IE} die Latenz, die \gls{VRAM}-Nutzung sowie der Energieverbrauch gemessen
+
+Die Latenz der Modelle stellt lediglich das Delta zwischen Start- und Endzeit der Inferenz dar.
+Hierbei wird der Zeitpunkt gemessen, an dem die eigentliche Inferenz startet und wenn die Antwort bereitsteht.
+Das Laden des Modells wird nicht betrachtet, da diese keinen Einfluss auf die Antwortzeit in der produktiven Umgebung hat und folglich nicht relevant für die Evaluation ist.
+
+Des Weiteren wird der Energieverbrauch während der Inferenz in Joule erfasst.
+Die Messung der Leistung in Watt hat ist in diesem Fall nicht zielführend, da hier die Zeit eine Rolle spielt.
+Modelle mit kürzerer Latenz können bei einem vergleichbaren Energieverbrauch eine höhere Leistung aufweisen.
+
+Wie auch der Energieverbrauch wird die \gls{VRAM}-Nutzung während der Inferenz gemessen.
+Der Messzeitraum für den Energieverbrauch als auch für die \gls{VRAM}-Nutzung ist gleich der Latenz der Modelle.
+Mit der Initialisierung des Modells wird einmalig der statische Verbrauch gemessen.
 
 
 \section{Daten und Wahl des Basismodells}\label{sec:data}
@@ -130,7 +160,7 @@ Wie in Abbildung~\ref{fig:model_selection} zu sehen, erfolgte diese Modellauswah
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=\textwidth]{figures/model_selection}
+    \includegraphics[width=0.8\textwidth]{figures/model_selection}
     \caption{Iterativer Prozess der Modellauswahl für das Fine-Tuning}
     \label{fig:model_selection}
 \end{figure}

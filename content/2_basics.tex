@@ -4,8 +4,10 @@
 
 Im Rahmen der Kindergeldbeantragung für Auszubildende sind verschiedene Nachweise gültig.
 Zu den anerkannten Dokumententypen zählen der offizielle Vordruck der Bundesagentur für Arbeit (KG5b)\cite{KG5b} sowie Ausbildungsverträge.
+Die relevanten Informationen aus diesen Dokumenten sind von der fachlichen Seite vorgegeben.
 Zusätzlich laden Kunden häufig weitere Unterlagen, wie beispielsweise Schulbescheinigungen, im Portal hoch.
 Da diese für den Kindergeldantrag nicht im Fokus stehen, werden sie im Folgenden unter der Kategorie „Sonstiges“ zusammengefasst.
+
 
 \subsection{KG5b}\label{subsec:kg5b}
 
@@ -149,6 +151,10 @@ Die Hauptkomponente bildet das \gls{LLM}, welches für die eigentliche Verarbeit
 Das \gls{LLM} erhält die Textvektoren zusammen mit den Bildvektoren und fusioniert diese.
 Mithilfe des Attention-Mechanismus werden Beziehungen zwischen visuellen und textuellen Elementen verstanden.
 So ist es möglich, Fragen zu Bildinhalten zu beantworten oder Bildbeschreibungen zu generieren.
+
+Die größte Herausforderung dieser modernen Technologie ist der hohe \gls{VRAM}-Verbrauch.
+Neben der statischen \gls{VRAM}-Nutzung kommt mit jeder Anfrage ein dynamischer Verbrauch dazu.
+Dabei setzt sich der statische Verbrauch aus den Gewichten der Modelle zusammen, während sich der dynamische Verbrauch aus den Key-Value-Caches und den Aktivierungen bildet.
 
 \section{Vorstellung der Modelle}\label{sec:models}
 

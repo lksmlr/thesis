@@ -193,16 +193,22 @@ Besonders das Ergebnis des DocVQA-Benchmarks ist von Interesse, da hier ein Visu
     \label{tab:benchmark}
 \end{table}
 
-\section{Parameter-Efficient Fine-Tuning (PEFT)}\label{sec:peft}
 
-Um eines der \glspl{VLM} domänenspezifisch anzupassen, wurde ein \gls{PEFT} angestrebt.
-Hierbei werden im Gegensatz zu einem Full-Finetuning nicht alle Modellparameter angepasst, was den Ressourcenverbrauch senkt.
-Statt sämtliche Gewichte des Modells zu verändern, werden beim \gls{PEFT} kleine, zusätzliche Parameterstrukturen in das Modell eingefügt, während der Großteil des neuronalen Netzes eingefroren bleibt.
 
-Eine der bekanntesten Methoden im Bereich des \gls{PEFT} ist die Low-Rank Adaptation (\gls{LoRA}).
-Anstatt das gesamte Modell neu zu trainieren, friert \gls{LoRA} die Gewichte ein und trainiert stattdessen Matrizen eines niedrigeren Rangs.
-Diese werden nach dem Training mit der ursprünglichen Gewichtsmatrix verbunden.
-Dieser Ansatz reduziert die Anzahl der trainierbaren Parameter drastisch, ohne die Performance signifikant zu beeinträchtigen.
+\section{Parameter-Efficient Fine-Tuning}\label{sec:peft}
+
+Das Anpassen der Gewichte eines bereits trainierten Modells an eine spezifische Domäne setzt eine Infrastruktur mit hoher Rechenleistung voraus.
+Mithilfe von Parameter-Efficient Fine-Tuning (\gls{PEFT}) kann die Anzahl der zu trainierenden oder neuen Parameter signifikant gesenkt werden.
+Infolgedessen verringert sich auch der Rechenaufwand für das Fine-Tuning der Modelle erheblich\cite{peft}.
+
+Eine der bekanntesten Methoden im Bereich \gls{PEFT} ist die Low-Rank Adaptation (\gls{LoRA}).
+Anstatt das gesamte Modell neu zu trainieren, friert \gls{LoRA} die ursprünglichen Gewichte ein und fügt stattdessen trainierbare Matrizen mit einem niedrigen Rang $r$ in jede Schicht der Transformer-Architektur ein.
+Um Rechenaufwand und Speicherplatz zu sparen, werden ausschließlich diese kleineren Matrizen trainiert\cite{LoRA}.
+
+Ergänzend zu \gls{LoRA} wird die Variante Rank-Stabilized \gls{LoRA} (\gls{rsLoRA}) betrachtet.
+Bei der Standard-\gls{LoRA} führt ein steigender Rang $r$ oft nicht zu einer besseren Performance, da der verwendete Faktor ($\alpha/r$) das Lernen bei höheren Rängen verlangsamen oder hemmen kann.
+\gls{rsLoRA} stabilisiert diesen Prozess, indem die Adapter durch die Quadratwurzel des Rangs ($\alpha/\sqrt{r}$) geteilt werden\cite{rsLoRA}.
+
 
 \section{Weitere Grundlagen}\label{sec:further_basics}
 

@@ -166,9 +166,10 @@ Wie in Abbildung~\ref{fig:model_selection} zu sehen, erfolgte diese Modellauswah
 \end{figure}
 
 Mit jeder Iteration wurden die beiden Modelle, das Pixtral-12B sowie das Qwen-2.5-VL-7B, mit dem Testdatensatz getestet.
-Die generierten Antworten werden im Anschluss bewertet und der Prompt gegebenfalls angepasst.
+Die generierten Antworten werden im Anschluss bewertet und der Prompt gegebenenfalls angepasst.
 
 Dieser iterative Vorgang wird bis zu dem Punkt ausgeführt, an dem mit Promptänderungen keine Verbesserungen mehr erzielt werden.
+
 
 \subsection{Trainingsdatensatz}\label{subsec:train_dataset}
 
@@ -181,4 +182,6 @@ Somit wurden die Klassen mit der höchsten Varianz häufiger repräsentiert.
 Durch die vorherige Auswahl des Basismodells steht für das label dieses größeren Datensatzes ein Modell, sowie der passende Prompt, bereit.
 Mithilfe des Modells wird der Aufwand um ein Vielfaches reduziert, da nur noch kontrolliert und in einzelnen Fällen korrigiert werden muss.
 
+
 \section{Fine-Tuning}\label{sec:fine_tuning}
+

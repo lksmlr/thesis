@@ -144,3 +144,4 @@ Sonstige: 0.83
 - Ergebnisse basismodelle extra, oder reicht Überblick
 - Testdatenatz -> Modellauswahl -> Trainingdatensatz?
 - In Zusammenfassung Ergebnis nennen?
+- Niemals referenzieren?

@@ -68,6 +68,7 @@ Die Kategorie \texttt{Sonstiges} steht als Auffangklasse für alle restlichen Do
 Darin befinden sich zum Beispiel Schulbescheinigungen, Anträge auf Eintragung bei der Handelskammer oder Studienbescheinigungen.
 Da diese Dokumente keine Relevanz für die Weiterbeantragung des Kindergeldes bei volljährigen Auszubildenden haben, werden keine Informationen aus ihnen benötigt.
 
+
 \section{Fachliche Grundlagen}\label{sec:domain}
 
 \subsection{Der Ist-Zustand}\label{subsec:current}
@@ -124,6 +125,7 @@ Um einen Test- oder Trainingslauf durchzuführen, wird der folgende Prozess durc
     \item \textbf{Persistierung:} Die Ergebnisse werden zurück in den S3-Store geladen.
 \end{enumerate}
 
+
 \section{Vision Language Models (VLMs)}\label{sec:vlms}
 
 Ein \gls{VLM} besteht aus drei Komponenten: einem Image-Encoder, einem Adapter und einem Large Language Model (\gls{LLM}).
@@ -155,6 +157,7 @@ So ist es möglich, Fragen zu Bildinhalten zu beantworten oder Bildbeschreibunge
 Die größte Herausforderung dieser modernen Technologie ist der hohe \gls{VRAM}-Verbrauch.
 Neben der statischen \gls{VRAM}-Nutzung kommt mit jeder Anfrage ein dynamischer Verbrauch dazu.
 Dabei setzt sich der statische Verbrauch aus den Gewichten der Modelle zusammen, während sich der dynamische Verbrauch aus den Key-Value-Caches und den Aktivierungen bildet.
+
 
 \section{Vorstellung der Modelle}\label{sec:models}
 
@@ -194,7 +197,6 @@ Besonders das Ergebnis des DocVQA-Benchmarks ist von Interesse, da hier ein Visu
 \end{table}
 
 
-
 \section{Parameter-Efficient Fine-Tuning}\label{sec:peft}
 
 Das Anpassen der Gewichte eines bereits trainierten Modells an eine spezifische Domäne setzt eine Infrastruktur mit hoher Rechenleistung voraus.
@@ -224,6 +226,7 @@ Die Levenshtein-Similarity ist ein aus der Levenshtein-Distanz abgeleiteter, nor
 Formal basiert sie auf der Levenshtein-Distanz, also der minimalen Anzahl von Einfügungen, Löschungen oder Ersetzungen, die nötig sind, um eine Zeichenkette in eine andere zu überführen\cite{gld}.
 
 \subsection{Metriken}\label{subsec:metriken}
+% TODO: Metriken anpassen
 Für die Bewertung der Güte und Effizienz der Modelle werden verschiedene Metriken benötigt:
 
 \begin{itemize}
@@ -241,6 +244,7 @@ Für die Bewertung der Güte und Effizienz der Modelle werden verschiedene Metri
 Prompt Engineering ist ein Prozess, um die effektivste Anweisung für eine spezifische Aufgabe zu finden\cite{prompt_engineering}.
 Dabei unterscheidet man zwischen Zero-Shot, One-Shot und Few-Shot Prompting.
 Während bei Zero-Shot Prompting das \gls{LLM} keine Beispiele erhält, werden bei One-Shot ein einzelnes und bei Few-Shot mehrere Frage-Antwort-Beispiele zur Verfügung gestellt\cite{few_shot_learners}.
+
 
 \section{Verwandte Arbeiten}\label{sec:relatedwork}
 

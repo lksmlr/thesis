@@ -135,13 +135,12 @@ Sonstige: 0.83
 # Fragen:
 
 - Feedback Vortrag
-- LoRA erklärt, zusätzlich rsLoRA erklären? -> sehr mathematisch
 - Gleichheit statt Similarity, Schwellenwerte statt Thresholds?
 - Präsens?
 - Weitere Grundlagen ja/nein?
 - Wo Kritik äußern?
 - Statt Methodik und Datenaufbereitung nur Methodik und Daten?
 - Ergebnisse basismodelle extra, oder reicht Überblick
-- Testdatenatz -> Modellauswahl -> Trainingdatensatz?
+- Testdatensatz -> Modellauswahl -> Trainingsdatensatz?
 - In Zusammenfassung Ergebnis nennen?
-- Niemals referenzieren?
+- Niemals referenzieren? Beispiel Trainingsdatensatz

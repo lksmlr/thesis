@@ -13,7 +13,7 @@ Aus diesem Grund sollen die folgenden Forschungsfragen beantwortet werden:
 \section{Modellierung der Dokumentenarten als JSON}\label{sec:documents_as_json}
 
 Um eine standardisierte Weiterverarbeitung der Modellausgaben zu gewährleisten, ist eine feste Struktur essenziell.
-Da moderne \glspl{VLM} darauf trainiert sind, Antworten im \gls{JSON}-Format zu liefern, werden die extrahierten Informationen in ein vordefiniertes \gls{JSON}-Schema überführt.
+Da moderne \glspl{VLM} darauf trainiert sind, Antworten im JavaScript Object Notation ()\gls{JSON})-Format zu liefern, werden die extrahierten Informationen in ein vordefiniertes \gls{JSON}-Schema überführt.
 Ein wesentlicher Vorteil gegenüber der herkömmlichen Pipeline ist die gleichzeitige Durchführung der Klassifikation sowie der \gls{IE} in einem einzigen Inferenzschritt.
 Das Modell klassifiziert die Dokumentenart, die im Feld \texttt{type} abgebildet wird.
 Während das Feld \texttt{type} in allen \gls{JSON}-Schemata konsistent vorhanden ist, variieren die Felder der \gls{IE} je nach Dokumentenart.
@@ -25,7 +25,7 @@ Da die Dokumente in den meisten Fällen aus mehreren Seiten bestehen, repräsent
 Sollten Dokumente verschiedener Arten vermischt vorliegen, generiert das Modell für jede erkannte Dokumentenart ein separates \gls{JSON}-Objekt.
 
 Um den \gls{JSON}-Output der \glspl{VLM} zu limitieren, existieren verschiedene Ansätze.
-Während komplexere Lösungen nur Tokens zulassen die in \glspl{JSON} enthalten sein könnten, wird in dieser Evaluation ein einfacherer Ansatz gewählt.
+Während komplexere Lösungen nur Tokens zulassen die in \gls{JSON}-Objekten enthalten sein könnten, wird in dieser Evaluation ein einfacherer Ansatz gewählt.
 Hierbei werden aus der generierten Antwort \glspl{JSON} gefiltert und geparst.
 Sobald das Parsen der \gls{JSON} fehlschlägt, wird diese zurück an das \gls{VLM} geliefert, mit der Anweisung diese zu korrigieren.
 Das Modell bekommt insgesamt drei Versuche eine valide \gls{JSON} zu generieren, bevor das Dokument als ungültig eingestuft wird.
@@ -139,49 +139,78 @@ Durch Datenlieferungen der Familienkasse stehen mehrere Tausend Dokumente als PD
 Um eine einheitliche Basis zu schaffen und die Klassifikations- und Extraktionsgüte zu verbessern, müssen die Daten vorverarbeitet werden.
 Im Fokus stehen dabei die Korrektur der Bildausrichtung sowie die Konvertierung der PDF-Dokumente in Bilder.
 Zur Korrektur der Rotation werden die Exchangeable Image File Format (\gls{EXIF})-Metadaten ausgelesen, um die ursprüngliche Ausrichtung wiederherzustellen.
-Während ältere \glspl{VLM} Bilder oft auf fixe Größe skalierten, unterstützen die in dieser Arbeit evaluierten Modelle eine dynamische Skalierung.
+Während ältere \glspl{VLM} Bilder oft auf fixe Größe skalieren, unterstützen die in dieser Arbeit evaluierten Modelle eine dynamische Skalierung.
 Um jedoch die maximale Token-Anzahl, werden die Bilder auf eine maximale Pixelanzahl skaliert, wobei das ursprüngliche Seitenverhältnis beibehalten wird, um Details zu erhalten.
 
 
 \subsection{Testdatensatz}\label{subsec:test_dataset}
 
-Nach der Vorbereitung der Dokumente wurde ein Testdatensatz erstellt, der als Vergleichsbasis dient.
-Dieser umfasst insgesamt 60 Dokumente, aufgeteilt in 20 Beispiele der jeweiligen Dokumentenarten.
-Für eine möglichst genaue Darstellung der Realität, werden die Dokumente manuell ausgewählt.
-% TODO: Wie setzt sich dieser Datensatz zusammen?
-Zur Erstellung der Wahrheitswerte (Ground Truth) wurden alle Dokumente manuell annotiert und in das entsprechende \gls{JSON}-Format überführt.
+Nach der Vorbereitung der Dokumente wird ein Testdatensatz erstellt, der als Vergleichsbasis dient.
+Dieser umfasst insgesamt 90 Dokumente, aufgeteilt in 30 Beispiele der jeweiligen Dokumentenarten.
+Um die reale Datenverteilung bestmöglich abzubilden, werden die Testdokumente manuell ausgewählt.
+
+Der Datensatz deckt dabei verschiedene Herausforderungen ab.
+Neben Dokumenten mit geringer Qualität, vorrangig schlechte Scans und Fotos, befinden sich fehlerhaft ausgefüllte Dokumente sowie Dokumente mit fehlenden Unterschriften und Stempeln in dem Datensatz.
+Um die hohe Varianz der Verträge und sonstigen Dokumente abzubilden, werden in dem Datensatz viele unterschiedliche Layouts gewählt.
+Die Exemplare für die Verträge beinhalten sowohl starre Layouts als auch Fließtexte unterschiedlicher Firmen und Kammern.
+Die sonstigen Dokumente beinhalten keine kontextfremden Dokumente, sondern Schulbescheinigungen, Studienbescheinigungen und Eintragungen bei der Handwerkskammer, um eine zusätzliche Herausforderung zu stellen.
+
+Zur Erstellung der Wahrheitswerte (Ground Truth) werden alle Dokumente manuell annotiert und in das entsprechende \gls{JSON}-Format überführt.
 
 
 \subsection{Prompt-Design}\label{subsec:prompting}
-% TODO: Section erweitern
-Für die Generierung der Schemata wurde ein Zero-Shot Prompt gewählt.
-Dabei enthält der Prompt neben der Aufgabenstellung die drei definierten \gls{JSON}-Schemata.
 
-Die Entscheidung gegen einen One-Shot oder Few-Shot Prompt fiel wegen des erhöhten Token-Verbrauchs.
-Des Weiteren würde durch das Mitgeben von Beispielen die Latenz steigen.
+Die Gestaltung der Prompts für die Modellauswahl folgt der R-K-F-Formel.
+Zur Strukturierung werden die Abschnitte durch Markdown-Überschriften getrennt, um dem Modell die Zuordnung zu erleichtern.
+Während der Kontext die vorliegenden Dokumentenarten detailliert beschreibt, definiert das Format die \gls{JSON}-Schemata.
+Zum Einsparen von Tokens wird das Modell strikt angewiesen lediglich das \gls{JSON}-Objekt zu generieren.
+
+Um den Ressourcenverbrauch zu minimieren wird ein Zero-Shot Ansatz gewählt.
+Während sowohl bei One-Shot als auch Few-Shot Prompts das Kontextfenster durch mitgegebene Bilder und Antworten belegt wird, ist bei Zero-Shot Prompts die Leistung des Modells rein auf die Instruktion zurückzuführen.
+Dies minimiert die Kosten pro Inferenz als auch die Latenz.
+
+\glspl{VLM} werden primär auf englischen Texten trainiert, jedoch werden auch deutschsprachige Prompts untersucht, um zu evaluieren, ob die Sprache der Prompts einen Einfluss auf die Klassifikation und \gls{IE} bei deutschen Dokumenten hat.
 
 
-\subsection{Modellauswahl}\label{subsec:modelselection}
+\subsection{Modellauswahl}\label{subsec:model_selection}
 
-Für die domänenspezifische Anpassung an die Dokumententypen muss ein geeignetes Basismodell gefunden werden.
-Wie in Abbildung~\ref{fig:model_selection} dargestellt, erfolgte die Auswahl in einem iterativen Prozess.
+Für das Fine-Tuning muss ein geeignetes Basismodell gefunden werden.
+Um ein Overfitting zu vermeiden, wird der Testdatensatz nur für diese Modellauswahl zufällig in Test- und Validierungsdatensatz geteilt.
+Dabei umfasst der Validierungsdatensatz insgesamt 30 Dokumente, 10 Dokumente von jeder Art, wodurch der Testdatensatz auf insgesamt 60 Dokumente schrumpft.
+Wie in Abbildung~\ref{fig:model_selection} dargestellt, erfolgt die Auswahl in einem iterativen Prozess.
 
-In jeder Iteration wurden das Pixtral-12B sowie das Qwen-2.5-VL-7B gegen den Testdatensatz evaluiert.
-Die Ergebnisse wurden analysiert, um das Prompt-Design stetig zu verfeinern.
-Dieser Prozess wurde so lange fortgesetzt, bis durch die Anpassungen keine Steigerung der Metriken mehr erzielt werden konnte.
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.7\textwidth]{figures/model_selection}
+    \caption{Prozess der Modellauswahl}
+    \label{fig:model_selection}
+\end{figure}
+
+
+In jeder Iteration wird das Pixtral-12B sowie das Qwen-2.5-VL-7B mit dem Test- und Validierungsdatensatz evaluiert.
+Daraufhin werden die Fehler der Klassifikation und
+Infolge der Evaluation der \gls{IE}, werden die unterschiedlichen Fehler analysiert und auf dessen Grundlage der Prompt angepasst.
+Nach der Anpassung wird erneut mit dem Testdatensatz jedes Modell erprobt.
+
+Dieser Prozess wird so lange fortgesetzt, bis durch die Anpassung des Prompts keine Steigerung der Metriken mehr erzielt werden und die Ergebnisse auf dem Evaluationsset
 
 
 \subsection{Trainingsdatensatz}\label{subsec:train_dataset}
-% TODO: Wie setzt sich dieser Datensatz zusammen?
-Um ein qualitativ hochwertiges Fine-Tuning zu ermöglichen, ist ein deutlich umfangreicherer Datensatz als für die Evaluation erforderlich.
-Der finale Trainingsdatensatz besteht aus 227 Verträgen, 165 KG5b-Formularen und 218 sonstigen Dokumenten.
 
-Die Klassen sind ungleich verteilt, da KG5b-Formulare ein starres Layout aufweisen und somit ein gutes Ergebnis bei niedrigerer Anzahl erwartet wird.
-Klassen mit hoher Varianz, wie die Ausbildungsverträge, wurden hingegen stärker gewichtet.
-Zur effizienten Erstellung dieses Datensatzes wurde ein Model-Assisted Labeling eingesetzt.
-Das in dem Prozess der Modellauswahl ermittelte beste Basismodell generierte mithilfe des dort evaluierten Prompts die \glspl{JSON}-Schemata für die Dokumente, die anschließend manuell geprüft und korrigiert wurden.
-Dies reduzierte den Aufwand erheblich.
+Um ein qualitativ hochwertiges Fine-Tuning zu ermöglichen, ist ein deutlich umfangreicherer Datensatz als für die Modellauswahl erforderlich.
+Der finale Trainingsdatensatz umfasst 610 Dokumente, die sich aus 227 Verträgen, 165 KG5b-Formularen und 218 sonstigen Dokumenten zusammensetzen.
 
+Die Klassen sind bewusst ungleich verteilt.
+KG5b-Formulare haben ein starres Layout, wodurch schon mit einer geringeren Anzahl an Trainingsdaten ein gutes Ergebnis erwartet wird.
+Infolge der hohen Varianz der Verträge und der sonstigen Dokumente erhalten diese im Training eine höhere Gewichtung.
+Anders als beim Testdatensatz werden hier die Exemplare nicht manuell, sondern mithilfe einer Stichprobe ausgewählt.
+Dabei werden die Daten aus einem einwöchigen Zeitraum betrachtet, wodurch ohne manuelle Auswahl eine genaue Repräsentation der realen Daten entsteht.
+Des Weiteren wird so der Selektionsbias verhindert.
+
+Zur effizienten Erstellung der Ground Truth wird ein Model-Assisted Labeling eingesetzt.
+Hierbei generiert das im Prozess der Modellauswahl~\ref{subsec:model_selection} gewonnene Modell, zusammen mit dem angepassten Prompt, für jedes Dokument das jeweilige \gls{JSON}-Objekt.
+Im Anschluss werden diese \gls{JSON}-Objekte manuell kontrolliert und korrigiert.
+Durch den Einsatz des Modells zur Ermittelung der Ground Truth konnte der Aufwand erheblich gesenkt werden.
 
 \section{Fine-Tuning}\label{sec:fine_tuning}
 

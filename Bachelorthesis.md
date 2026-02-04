@@ -135,6 +135,8 @@ Sonstige: 0.83
 # Fragen:
 
 - Feedback Vortrag
+- Forschungsfragen nennen oder ausschreiben?
+- Implementierung was genau?
 - Gleichheit statt Similarity, Schwellenwerte statt Thresholds?
 - Präsens?
 - Weitere Grundlagen ja/nein?

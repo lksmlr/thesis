@@ -1,4 +1,4 @@
-\chapter{Methodik und Datenaufbereitung}\label{ch:data}
+\chapter{Methodik und Implementierung}\label{ch:data}
 
 Im Rahmen dieses Proof of Concepts werden verschiedene \glspl{VLM} vergleichend gegenüber der bestehenden \gls{YOLO}/\gls{OCR}-Pipeline evaluiert.
 Für die Entscheidung, ob und welches \gls{VLM} die bisherige Pipeline ersetzen wird, sind sowohl die Modellleistungen als auch der Ressourcenverbrauch von zentraler Bedeutung.
@@ -10,7 +10,8 @@ Aus diesem Grund sollen die folgenden Forschungsfragen beantwortet werden:
     \item In welchem Verhältnis steht der Ressourcenverbrauch der \glspl{VLM} zu dem der \gls{YOLO}/\gls{OCR}-Pipeline?
 \end{enumerate}
 
-\section{Modellierung der Dokumentenarten als JSON}\label{sec:documents_as_json}
+
+\section{Modellierung der Dokumentenarten als JSON-Objekte}\label{sec:documents_as_json}
 
 Um eine standardisierte Weiterverarbeitung der Modellausgaben zu gewährleisten, ist eine feste Struktur essenziell.
 Da moderne \glspl{VLM} darauf trainiert sind, Antworten im JavaScript Object Notation ()\gls{JSON})-Format zu liefern, werden die extrahierten Informationen in ein vordefiniertes \gls{JSON}-Schema überführt.
@@ -24,12 +25,14 @@ Um eine strukturelle Konsistenz zu erzwingen, werden Felder, bei denen die dazug
 Da die Dokumente in den meisten Fällen aus mehreren Seiten bestehen, repräsentiert ein \gls{JSON}-Objekt das mehrseitige Dokument.
 Sollten Dokumente verschiedener Arten vermischt vorliegen, generiert das Modell für jede erkannte Dokumentenart ein separates \gls{JSON}-Objekt.
 
+Die \gls{JSON}-Schemata sind in den Abbildungen
+
 Um den \gls{JSON}-Output der \glspl{VLM} zu limitieren, existieren verschiedene Ansätze.
 Während komplexere Lösungen nur Tokens zulassen die in \gls{JSON}-Objekten enthalten sein könnten, wird in dieser Evaluation ein einfacherer Ansatz gewählt.
 Hierbei werden aus der generierten Antwort \glspl{JSON} gefiltert und geparst.
 Sobald das Parsen der \gls{JSON} fehlschlägt, wird diese zurück an das \gls{VLM} geliefert, mit der Anweisung diese zu korrigieren.
 Das Modell bekommt insgesamt drei Versuche eine valide \gls{JSON} zu generieren, bevor das Dokument als ungültig eingestuft wird.
-
+% TODO: Code der retry-logik und pydantic validierung + jsonparser langchain
 
 \subsection{KG5b}\label{subsec:json_kg5b}
 
@@ -66,151 +69,8 @@ Da hier keine Informationen benötigt werden, sondern rein die Klassifikation vo
     \caption{JSON-Schema des Dokumententyps Sonstiges}
     \label{fig:json_sonstiges}
 \end{figure}
+\section{Metriken und Validierung der VLM-Ausgabe}\label{sec:validation}
 
+\section{Evaluation und Auswahl des Basismodells}\label{sec:model_selection}
 
-\section{Evaluation}\label{sec:evaluation}
-
-Um die generierte \gls{JSON} des \glspl{VLM} schlussendlich bewerten zu können, werden die Klassifikation und \gls{IE} unabhängig voneinander bewertet.
-
-
-\subsection{Vergleichslogik der unterschiedlichen JSON-Felder}\label{subsec:comparator}
-
-Mit dem Ziel, ein realistisches Ergebnis zu erhalten, müssen unterschiedliche Feldtypen spezifisch verglichen werden.
-Die Menge an distinkten Typen beinhaltet: Namen, Booleans, Zeichenketten, Daten und Monate.
-
-Namen werden mit der Levenshtein-Similarity verglichen, um kleinere Fehler oder verschiedene Varianten zu tolerieren.
-Beispielsweise wird ein Name, der \texttt{ue} statt \texttt{ü} enthält, nicht als Fehler erkannt.
-Der Schwellenwert, der zwischen korrekt und nicht korrekt entscheidet, liegt bei 0,8.
-Des Weiteren werden minimale \gls{OCR}-Fehler gefiltert.
-Die \gls{YOLO}/\gls{OCR}-Pipeline verwendet ebenso diesen Vergleich mit den gleichen Schwellenwerten, somit wird das Ergebnis vergleichbar.
-
-Zeichenketten und Booleans werden exakt verglichen.
-Hierzu zählen die Felder \texttt{type}, \texttt{stamp\_company}, \texttt{signature\_company}, \texttt{signature\_child}, \texttt{signature\_legal\_guardian} und \texttt{apprenticeship\_finished}.
-Lediglich die booleschen Werte werden zu \texttt{true} normalisiert, da hier eine potenzielle Fehlerquelle liegt.
-
-Daten werden einheitlich in das Format DD.MM.YYYY gebracht, obwohl dies nicht dem internationalen Standard entspricht.
-Das ist darauf zurückzuführen, dass so die Erkennung des \glspl{VLM} am robustesten ist, da die deutschen Dokumente auch mit diesem Format ausgefüllt werden.
-
-Monate werden in das Format MM normalisiert.
-Hierbei werden ausgeschriebene Monatsnamen sowie vollständige Datumsangaben angepasst.
-
-
-\subsection{Bewertung der Klassifikation}\label{subsec:evaluation_classification}
-
-Die Bewertung der Klassifikation ist ein Multiclass-Problem, da hier mehr als zwei Klassen vorliegen (KG5b, Ausbildungsvertrag, Sonstiges).
-Um die Güte der Modelle zu betrachten, wird eine Confusion-Matrix herangezogen, wobei der Fokus auf dem F1-Score liegt.
-
-
-\subsection{Bewertung der Information Extraction}\label{subsec:evaluation_ie}
-
-Um den Entity-Level F1-Score, der die Hauptmetrik für den Vergleich darstellt, zu berechnen werden einige Metadaten für jede generierte \gls{JSON} bestimmt.
-Dazu gehören die Status der Felder, also ob diese vorhanden, nicht vorhanden oder halluziniert sind.
-Sobald ein Feld als vorhanden markiert wird, wird mit den verschiedenen Vergleichslogiken die Richtigkeit der Felder bestimmt und den Metadaten hinzugefügt.
-
-Auf Basis dieser Metadaten werden für den gesamten Dokumentenkorpus die True Positive (\gls{TP}), False Positive (\gls{FP}) und False Negative (\gls{FN}) gezählt.
-Ein Feld zählt als \gls{TP}, wenn es vorhanden sowie korrekt ist.
-Zu den \gls{FN} gehören Felder, die entweder fehlen oder vorhanden, aber falsch sind.
-Ein Feld, das vorhanden aber falsch ist, zählt zusätzlich zu den \gls{FP} zusammen mit den Feldern die halluziniert wurden.
-Diese doppelte Bestrafung stellt eine sehr strenge Bewertung für inhaltliche Fehler dar.
-True Negatives (\gls{TN}) sind nicht zählbar, da die Menge an nicht gefundenen, leeren Feldern, theoretisch unendlich groß ist.
-
-
-\subsection{Messung von Latenz, Energieverbrauch und VRAM-Nutzung}\label{subsec:measure}
-
-Im Hinblick auf die Bewertung der Modelle werden neben der Güte der Klassifikation und \gls{IE} die Latenz, die \gls{VRAM}-Nutzung sowie der Energieverbrauch gemessen.
-
-Die Latenz der Modelle stellt lediglich das Delta zwischen Start- und Endzeit der Inferenz dar.
-Hierbei wird der Zeitpunkt gemessen, an dem die eigentliche Inferenz startet und wenn die Antwort bereitsteht.
-Das Laden des Modells wird nicht betrachtet, da diese keinen Einfluss auf die Antwortzeit in der produktiven Umgebung hat und folglich nicht relevant für die Evaluation ist.
-
-Des Weiteren wird der Energieverbrauch während der Inferenz in Joule erfasst.
-Die Messung der Leistung in Watt ist nicht zielführend, da sie die Zeit nicht berücksichtigt und Modelle mit geringerer Latenz bei vergleichbarem Energieverbrauch benachteiligt werden.
-
-Wie auch der Energieverbrauch wird die \gls{VRAM}-Nutzung während der Inferenz gemessen.
-Der Messzeitraum für den Energieverbrauch als auch für die \gls{VRAM}-Nutzung ist gleich der Latenz der Modelle.
-Mit der Initialisierung des Modells wird einmalig der statische Verbrauch gemessen.
-
-
-\section{Daten und Wahl des Basismodells}\label{sec:data}
-
-\subsection{Datenvorbereitung}\label{subsec:preprocessing}
-
-Durch Datenlieferungen der Familienkasse stehen mehrere Tausend Dokumente als PDF oder Bilddatei zur Verfügung.
-Um eine einheitliche Basis zu schaffen und die Klassifikations- und Extraktionsgüte zu verbessern, müssen die Daten vorverarbeitet werden.
-Im Fokus stehen dabei die Korrektur der Bildausrichtung sowie die Konvertierung der PDF-Dokumente in Bilder.
-Zur Korrektur der Rotation werden die Exchangeable Image File Format (\gls{EXIF})-Metadaten ausgelesen, um die ursprüngliche Ausrichtung wiederherzustellen.
-Während ältere \glspl{VLM} Bilder oft auf fixe Größe skalieren, unterstützen die in dieser Arbeit evaluierten Modelle eine dynamische Skalierung.
-Um jedoch die maximale Token-Anzahl, werden die Bilder auf eine maximale Pixelanzahl skaliert, wobei das ursprüngliche Seitenverhältnis beibehalten wird, um Details zu erhalten.
-
-
-\subsection{Testdatensatz}\label{subsec:test_dataset}
-
-Nach der Vorbereitung der Dokumente wird ein Testdatensatz erstellt, der als Vergleichsbasis dient.
-Dieser umfasst insgesamt 90 Dokumente, aufgeteilt in 30 Beispiele der jeweiligen Dokumentenarten.
-Um die reale Datenverteilung bestmöglich abzubilden, werden die Testdokumente manuell ausgewählt.
-
-Der Datensatz deckt dabei verschiedene Herausforderungen ab.
-Neben Dokumenten mit geringer Qualität, vorrangig schlechte Scans und Fotos, befinden sich fehlerhaft ausgefüllte Dokumente sowie Dokumente mit fehlenden Unterschriften und Stempeln in dem Datensatz.
-Um die hohe Varianz der Verträge und sonstigen Dokumente abzubilden, werden in dem Datensatz viele unterschiedliche Layouts gewählt.
-Die Exemplare für die Verträge beinhalten sowohl starre Layouts als auch Fließtexte unterschiedlicher Firmen und Kammern.
-Die sonstigen Dokumente beinhalten keine kontextfremden Dokumente, sondern Schulbescheinigungen, Studienbescheinigungen und Eintragungen bei der Handwerkskammer, um eine zusätzliche Herausforderung zu stellen.
-
-Zur Erstellung der Wahrheitswerte (Ground Truth) werden alle Dokumente manuell annotiert und in das entsprechende \gls{JSON}-Format überführt.
-
-
-\subsection{Prompt-Design}\label{subsec:prompting}
-
-Die Gestaltung der Prompts für die Modellauswahl folgt der R-K-F-Formel.
-Zur Strukturierung werden die Abschnitte durch Markdown-Überschriften getrennt, um dem Modell die Zuordnung zu erleichtern.
-Während der Kontext die vorliegenden Dokumentenarten detailliert beschreibt, definiert das Format die \gls{JSON}-Schemata.
-Zum Einsparen von Tokens wird das Modell strikt angewiesen lediglich das \gls{JSON}-Objekt zu generieren.
-
-Um den Ressourcenverbrauch zu minimieren wird ein Zero-Shot Ansatz gewählt.
-Während sowohl bei One-Shot als auch Few-Shot Prompts das Kontextfenster durch mitgegebene Bilder und Antworten belegt wird, ist bei Zero-Shot Prompts die Leistung des Modells rein auf die Instruktion zurückzuführen.
-Dies minimiert die Kosten pro Inferenz als auch die Latenz.
-
-\glspl{VLM} werden primär auf englischen Texten trainiert, jedoch werden auch deutschsprachige Prompts untersucht, um zu evaluieren, ob die Sprache der Prompts einen Einfluss auf die Klassifikation und \gls{IE} bei deutschen Dokumenten hat.
-
-
-\subsection{Modellauswahl}\label{subsec:model_selection}
-
-Für das Fine-Tuning muss ein geeignetes Basismodell gefunden werden.
-Um ein Overfitting zu vermeiden, wird der Testdatensatz nur für diese Modellauswahl zufällig in Test- und Validierungsdatensatz geteilt.
-Dabei umfasst der Validierungsdatensatz insgesamt 30 Dokumente, 10 Dokumente von jeder Art, wodurch der Testdatensatz auf insgesamt 60 Dokumente schrumpft.
-Wie in Abbildung~\ref{fig:model_selection} dargestellt, erfolgt die Auswahl in einem iterativen Prozess.
-
-\begin{figure}[!ht]
-    \centering
-    \includegraphics[width=0.7\textwidth]{figures/model_selection}
-    \caption{Prozess der Modellauswahl}
-    \label{fig:model_selection}
-\end{figure}
-
-
-In jeder Iteration wird das Pixtral-12B sowie das Qwen-2.5-VL-7B mit dem Test- und Validierungsdatensatz evaluiert.
-Daraufhin werden die Fehler der Klassifikation und
-Infolge der Evaluation der \gls{IE}, werden die unterschiedlichen Fehler analysiert und auf dessen Grundlage der Prompt angepasst.
-Nach der Anpassung wird erneut mit dem Testdatensatz jedes Modell erprobt.
-
-Dieser Prozess wird so lange fortgesetzt, bis durch die Anpassung des Prompts keine Steigerung der Metriken mehr erzielt werden und die Ergebnisse auf dem Evaluationsset
-
-
-\subsection{Trainingsdatensatz}\label{subsec:train_dataset}
-
-Um ein qualitativ hochwertiges Fine-Tuning zu ermöglichen, ist ein deutlich umfangreicherer Datensatz als für die Modellauswahl erforderlich.
-Der finale Trainingsdatensatz umfasst 610 Dokumente, die sich aus 227 Verträgen, 165 KG5b-Formularen und 218 sonstigen Dokumenten zusammensetzen.
-
-Die Klassen sind bewusst ungleich verteilt.
-KG5b-Formulare haben ein starres Layout, wodurch schon mit einer geringeren Anzahl an Trainingsdaten ein gutes Ergebnis erwartet wird.
-Infolge der hohen Varianz der Verträge und der sonstigen Dokumente erhalten diese im Training eine höhere Gewichtung.
-Anders als beim Testdatensatz werden hier die Exemplare nicht manuell, sondern mithilfe einer Stichprobe ausgewählt.
-Dabei werden die Daten aus einem einwöchigen Zeitraum betrachtet, wodurch ohne manuelle Auswahl eine genaue Repräsentation der realen Daten entsteht.
-Des Weiteren wird so der Selektionsbias verhindert.
-
-Zur effizienten Erstellung der Ground Truth wird ein Model-Assisted Labeling eingesetzt.
-Hierbei generiert das im Prozess der Modellauswahl~\ref{subsec:model_selection} gewonnene Modell, zusammen mit dem angepassten Prompt, für jedes Dokument das jeweilige \gls{JSON}-Objekt.
-Im Anschluss werden diese \gls{JSON}-Objekte manuell kontrolliert und korrigiert.
-Durch den Einsatz des Modells zur Ermittelung der Ground Truth konnte der Aufwand erheblich gesenkt werden.
-
-\section{Fine-Tuning}\label{sec:fine_tuning}
-
+\section{Modell-Optimierung durch Supervised Fine-Tuning (SFT)}\label{sec:fine_tuning}

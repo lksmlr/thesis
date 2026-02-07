@@ -95,14 +95,12 @@ Monate werden in das Format MM normalisiert.
 Hierbei werden ausgeschriebene Monatsnamen sowie vollständige Datumsangaben angepasst.
 
 
-\subsection{Bewertung der Klassifikation}\label{subsec:evaluation_classification}
+\subsection{Bewertung der Klassifikation und der Information Extraction}\label{subsec:evaluation_classification_ie}
 
 Die Bewertung der Klassifikation ist ein Multiclass-Problem, da hier mehr als zwei Klassen vorliegen (KG5b, Ausbildungsvertrag, Sonstiges).
 Um die Güte der Modelle zu betrachten, wird eine Confusion-Matrix herangezogen, wobei der Fokus auf dem F1-Score liegt.
 
-
-\subsection{Bewertung der Information Extraction}\label{subsec:evaluation_ie}
-
+Die Bewertung der Information Extraction ist komplexer als die der Klassifikation.
 Um den Entity-Level F1-Score, der die Hauptmetrik für den Vergleich darstellt, zu berechnen werden einige Metadaten für jede generierte \gls{JSON} bestimmt.
 Dazu gehören die Status der Felder, also ob diese vorhanden, nicht vorhanden oder halluziniert sind.
 Sobald ein Feld als vorhanden markiert wird, wird mit den verschiedenen Vergleichslogiken die Richtigkeit der Felder bestimmt und den Metadaten hinzugefügt.
@@ -179,7 +177,7 @@ Wie in Abbildung~\ref{fig:model_selection} dargestellt, erfolgt die Auswahl in e
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.7\textwidth]{figures/model_selection}
+    \includegraphics[width=0.7\textwidth]{figures/overview}
     \caption{Prozess der Modellauswahl}
     \label{fig:model_selection}
 \end{figure}

@@ -1,36 +1,89 @@
 \chapter{Ergebnisse}\label{ch:results}
 
-\section{Ergebnisse der Information Extraction}\label{sec:results_ie}
+\section{Ergebnisse der YOLO/OCR-Pipeline gegenüber der Basismodelle}\label{sec:results_ie}
 
 \begin{figure}[!ht]
     \centering
     \includegraphics[width=0.6\textwidth]{figures/results_ie}
     \caption{Ergebnisse der Information Extraction}
-    \label{fig:results_ie}
+    \label{fig:results_ie_overview}
 \end{figure}
-
-
-\section{Ergebnisse der Klassifikation}\label{sec:results_classification}
 
 \begin{figure}[!ht]
     \centering
     \includegraphics[width=0.6\textwidth]{figures/results_classification}
     \caption{Ergebnisse der Klassifikation}
-    \label{fig:results_classification}
+    \label{fig:results_classification_overview}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}{0.49\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/results_confusion_matrix_qwen_7b}
+        \caption{Confusion Matrix für das Qwen-2.5-VL-7B}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.49\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/results_confusion_matrix_qwen_32b}
+        \caption{Confusion Matrix für das Qwen-2.5-VL-32B}
+    \end{subfigure}
+
+    \vspace{0.5em}
+
+    \begin{subfigure}{0.49\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/results_confusion_matrix_pixtral}
+        \caption{Confusion Matrix für das Pixtral-12B}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.49\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/results_confusion_matrix_yolo_ocr}
+        \caption{Confusion Matrix für die YOLO/OCR-Pipeline}
+    \end{subfigure}
+
+    \caption{Confusion Matrices aller Modelle}
+    \label{fig:confusion_matrices_overview}
 \end{figure}
 
 
-\section{Ergebnisse der Latenz}\label{sec:results_latency}
+\section{Ergebnisse des weitertrainierten Modells gegenüber dem größeren Basismodell}\label{sec:results_latency}
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.6\textwidth]{figures/results_latency}
-    \caption{Ergebnisse der Latenz}
-    \label{fig:results_latency}
+    \includegraphics[width=0.6\textwidth]{figures/results_ie_peft_32b}
+    \caption{Ergebnisse der Information Extraction}
+    \label{fig:results_ie_peft_32b}
+\end{figure}
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.6\textwidth]{figures/results_classification_peft_32b}
+    \caption{Ergebnisse der Klassifikation}
+    \label{fig:results_classification_peft_32b}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}{0.49\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/results_confusion_matrix_peft}
+        \caption{Confusion Matrix für das Qwen-2.5-VL-7B-finetuned}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.49\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/results_confusion_matrix_qwen_32b}
+        \caption{Confusion Matrix für das Qwen-2.5-VL-32B}
+    \end{subfigure}
+    \caption{Confusion Matrices aller Modelle}
+    \label{fig:confusion_matrices_32b_peft}
 \end{figure}
 
 
-\section{Ergebnisse der VRAM-Nutzung}\label{sec:results_vram_usage}
+\section{Ressourcenverbrauch der VLMs gegenüber der YOLO/OCR-Pipeline}\label{sec:results_vram_usage}
 
 \begin{figure}[!ht]
     \centering

@@ -5,7 +5,7 @@ Für die Entscheidung, ob und welches \gls{VLM} die bisherige Pipeline ersetzen 
 Aus diesem Grund sollen die folgenden Forschungsfragen beantwortet werden:
 
 \begin{enumerate}
-    \item Inwiefern ist ein nicht angepasstes \gls{VLM} hinsichtlich der Klassifikations- und Extraktionsgenauigkeit der trainierten \gls{YOLO}/\gls{OCR}-Pipeline überlegen, und welche Vorteile bietet ein einzelnes generalistisches Modell gegenüber der Verwendung spezialisierter Einzelsysteme?
+    \item Inwiefern ist ein nicht domänenspezifisch angepasstes \gls{VLM} hinsichtlich der Klassifikations- und Extraktionsgenauigkeit der trainierten \gls{YOLO}/\gls{OCR}-Pipeline überlegen, und welche Vorteile bietet ein einzelnes generalistisches Modell gegenüber der Verwendung spezialisierter Einzelsysteme?
     \item Wie verhält sich ein kleineres, domänenspezifisch trainiertes Modell gegenüber einem leistungsstärkeren Basismodell in Bezug auf Performanz und Effizienz?
     \item In welchem Verhältnis steht der Ressourcenverbrauch der \glspl{VLM} zu dem der \gls{YOLO}/\gls{OCR}-Pipeline?
 \end{enumerate}
@@ -180,7 +180,8 @@ Dieser Prozess wird so lange fortgesetzt, bis durch die Anpassung des Prompts ke
 Schlussendlich wird das finale Modell mit dem verfeinerten Prompt mit dem Testdatensatz getestet.
 Somit wird in ein Data Leakage ausgeschlossen und die Metriken werden Vergleichbar.
 
-\section{Modell-Optimierung durch Supervised Fine-Tuning (SFT)}\label{sec:fine_tuning}
+
+\section{Fine-Tuning des Basismodells}\label{sec:fine_tuning}
 
 \subsection{Trainingsdatensatz}\label{subsec:train_dataset}
 
@@ -198,4 +199,20 @@ Zur effizienten Erstellung der Ground Truth wird ein Model-Assisted Labeling ein
 Hierbei generiert das im Prozess der Modellauswahl~\ref{subsec:model_selection} gewonnene Modell, zusammen mit dem angepassten Prompt, für jedes Dokument das jeweilige \gls{JSON}-Objekt.
 Im Anschluss werden diese \gls{JSON}-Objekte manuell kontrolliert und korrigiert.
 Durch den Einsatz des Modells zur Ermittelung der Ground Truth konnte der Aufwand erheblich gesenkt werden.
+
+
+\subsection{Optimierung des Fine-Tuning}\label{subsec:optimise_fine_tuning}
+
+Das Basismodell aus~\ref{subsec:model_selection} wurde mit mehreren Methoden des \gls{PEFT} und dem Framework Unsloth trainiert.
+Im Laufe des Trainings wurde verschiedene Strategien angewandt, die sowohl die Veränderung der Parameter als auch des Trainingsdatensatzes~\ref{subsec:train_dataset} beinhalten.
+
+Ein wesentlicher Aspekt der Optimierung lag in der Augmentation des Datensatzes.
+Vor jedem erneuten Trainingslauf wurde der Datensatz vollständig randomisiert, um eine zufällige Reihenfolge der Trainingsdaten zu erhalten.
+Des Weiteren wurden in einigen der Trainingsläufe die Seiten der einzelnen Dokumente getauscht, um dem Modell zu lernen die Informationen, ohne Position zu extrahieren.
+
+Die Optimierung der Parameter erfolgte iterativ wie im blau markierten Bereich in Abbildung~\ref{fig:overview} zu erkennen.
+Darunter zählten die Parameter der Ranggröße, des Optimizers
+
+
+
 

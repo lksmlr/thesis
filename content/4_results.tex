@@ -1,21 +1,41 @@
 \chapter{Ergebnisse}\label{ch:results}
 
+Alle der aufgelisteten Ergebnisse wurden mit dem Testdatensatz~\ref{subsec:test_val_dataset} evaluiert.
+
 \section{Ergebnisse der YOLO/OCR-Pipeline gegenüber der Basismodelle}\label{sec:results_ie}
 
+Die Evaluation der \gls{IE} in Abbildung~\ref{fig:results_ie} zeigt deutliche Unterschiede zwischen den modernen \glspl{VLM} und der YOLO/OCR-Pipeline.
 
+Schwächen der YOLO/OCR-Pipeline zeigten sich bei der Verarbeitung von Ausbildungsverträgen.
+Hier erreichte die Pipeline einen F1-Score von 0,51.
+Im Vergleich schnitten insbesondere die beiden Qwen-Modelle deutlich besser ab.
+Das Qwen-2.5-VL-7B erkannte mit einem F1-Score von 0,83 und das Qwen-2.5-VL-32B mit einem F1-Score von 0,94 einen Großteil der Informationen.
+Das Pixtral-12B befindet sich mit einem F1-Score von 0,50 am unteren Ende der \gls{IE}.
+
+Bei den KG5b-Formularen liegt die Pipeline mit 0,75 nur knapp unter den Qwen-Modellen.
+Während das Qwen-2.5-VL-7B mit 0,8 und das Qwen-2.5-VL-32B mit 0.87 die stärksten Kontrahenten darstellen, erreichte auch hier das Pixtral-12B gerade einmal einen F1-Score von 0,46.
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.6\textwidth]{figures/results_ie}
+    \includegraphics[width=0.7\textwidth]{figures/results_ie}
     \caption{Ergebnisse der Information Extraction}
-    \label{fig:results_ie_overview}
+    \label{fig:results_ie}
 \end{figure}
 
+
+Die Klassifikation in Abbildung~\ref{fig:results_classification} zeigt ein einheitlicheres Ergebnis.
+Während das Qwen-2.5-VL-32B alle Dokumentenarten am besten klassifiziert, befinden sich die restlichen Modelle mit einer maximalen Differenz von 0,03 in allen Dokumentenarten auf einem Level.
+Bei Betrachtung der in der Abbildung~\ref{fig:confusion_matrices_overview} beinhalteten Confusion Matrices fallen jedoch qualitative Unterschiede auf.
+Das Qwen-2.5-VL-32B klassifiziert die Verträge als auch KG5b-Formulare fehlerfrei.
+Im Gegensatz dazu erkennt die YOLO/OCR-Pipeline die sonstigen Dokumente perfekt, klassifiziert aber einige der Verträge und KG5b-Formulare als sonstige Dokumente.
+Das Pixtral-12B weist die größten Unsicherheiten auf und klassifizierte insgesamt 25 Dokumente als Vertrag.
+% TODO. eventuell noch auf 7b eingehen
+
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.6\textwidth]{figures/results_classification}
+    \includegraphics[width=0.8\textwidth]{figures/results_classification}
     \caption{Ergebnisse der Klassifikation}
-    \label{fig:results_classification_overview}
+    \label{fig:results_classification}
 \end{figure}
 
 \begin{figure}[htbp]
@@ -48,6 +68,19 @@
 
     \caption{Confusion Matrices aller Modelle}
     \label{fig:confusion_matrices_overview}
+\end{figure}
+
+Hinsichtlich der \gls{Latenz} kehrt sich das Bild um.
+Die YOLO/OCR-Pipeline antwortet mit einer durchschnittlichen \gls{Latenz} von 0,58 Sekunden nahezu sofort.
+Das kleinste \gls{VLM}, das Qwen-2.5-VL-7B, benötigt mit durchschnittlich 7,43 Sekunden fast 13-mal länger als die Pipeline.
+Während das Pixtral mit durchschnittlich 10,28 Sekunden nur knapp über dem Qwen-2.5-VL-7B liegt, braucht das größte Modell im Durchschnitt 64,16 Sekunden
+
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.6\textwidth]{figures/results_latency}
+    \caption{Ergebnisse der Latenzmessung}
+    \label{fig:results_latency}
 \end{figure}
 
 
@@ -84,18 +117,30 @@
     \label{fig:confusion_matrices_32b_peft}
 \end{figure}
 
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.6\textwidth]{figures/results_latency_peft_32b}
+    \caption{Ergebnisse der Latenzmessung}
+    \label{fig:results_latency_peft_32b}
+\end{figure}
+
 
 \section{Ressourcenverbrauch der VLMs gegenüber der YOLO/OCR-Pipeline}\label{sec:results_vram_usage}
 
 \begin{figure}[!ht]
     \centering
     \includegraphics[width=0.6\textwidth]{figures/results_vram_inference}
-    \caption{Ergebnisse der VRAM-Nutzung}
-    \label{fig:results_vram_usage}
+    \caption{Ergebnisse der VRAM-Nutzung während der Inferenz}
+    \label{fig:results_vram_inference}
 \end{figure}
 
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.6\textwidth]{figures/results_vram_model}
+    \caption{Ergebnisse der VRAM-Nutzung des geladenen Modells}
+    \label{fig:results_vram_model}
+\end{figure}
 
-\section{Ergebnisse des Energieverbrauchs}\label{sec:results_energy_usage}
 
 \begin{figure}[!ht]
     \centering

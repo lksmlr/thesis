@@ -1,8 +1,7 @@
 \chapter{Methodik und Implementierung}\label{ch:data}
 
 Im Rahmen dieses Proof of Concepts werden verschiedene \glspl{VLM} vergleichend gegenüber der bestehenden \gls{YOLO}/\gls{OCR}-Pipeline evaluiert.
-Für die Entscheidung, ob und welches \gls{VLM} die bisherige Pipeline ersetzen wird, sind sowohl die Modellleistungen als auch der Ressourcenverbrauch von zentraler Bedeutung.
-Aus diesem Grund sollen die folgenden Forschungsfragen beantwortet werden:
+Für die Entscheidung, ob eines der \glspl{VLM} die YOLO/OCR-Pipeline ersetzt, sollen die folgenden Forschungsfragen beantwortet werden:
 
 \begin{enumerate}
     \item Inwiefern ist ein nicht domänenspezifisch angepasstes \gls{VLM} hinsichtlich der Klassifikations- und Extraktionsgenauigkeit der trainierten \gls{YOLO}/\gls{OCR}-Pipeline überlegen, und welche Vorteile bietet ein einzelnes generalistisches Modell gegenüber der Verwendung spezialisierter Einzelsysteme?
@@ -14,7 +13,7 @@ In Abbildung~\ref{fig:overview} ist ein Überblick der gesamten Methodik abgebil
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.7\textwidth]{figures/overview}
+    \includegraphics[width=0.8\textwidth]{figures/overview}
     \caption{Überblick der Methodik.}
     \label{fig:overview}
 \end{figure}
@@ -134,6 +133,8 @@ Zu den \gls{FN} gehören Felder, die entweder fehlen oder vorhanden, aber falsch
 Ein Feld, das vorhanden aber falsch ist, zählt zusätzlich zu den \gls{FP} zusammen mit den Feldern die halluziniert wurden.
 Diese doppelte Bestrafung stellt eine sehr strenge Bewertung für inhaltliche Fehler dar.
 True Negatives (\gls{TN}) sind nicht zählbar, da die Menge an nicht gefundenen, leeren Feldern, theoretisch unendlich groß ist.
+
+% TODO: Halluziantionen können weggelassen werden, Schema zeigen
 
 \subsection{Messung von Latenz, Energieverbrauch und VRAM-Nutzung}\label{subsec:measure}
 

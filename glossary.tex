@@ -59,7 +59,8 @@
 
 \newglossaryentry{IE}{
     name={IE},
-    description={Information Extraction}
+    description={Information Extraction (\gls{IE}) umfasst nach Jurafsky und Martin die Aufgabe, Ereignisse oder Situationen in Dokumenten zu identifizieren und die entsprechenden Felder eines vorgegebenen Templates zu füllen\cite{IE}.
+    Ziel hierbei ist es, vordefinierte Entitäten aus einem Dokumentenbild zu extrahieren und diese in ein maschinenlesbares Schema zu überführen.}
 }
 
 \newglossaryentry{TP}{
@@ -110,6 +111,68 @@
 \newglossaryentry{Unsloth}{
     name={Unsloth},
     description={Open-Source-Framework zum beschleunigten und speichereffizienten Fine-Tuning von Large Models, das speziell für Methoden des PEFT optimiert ist.}
+}
+
+\newglossaryentry{Levenshtein-Similarity}{
+    name={Levensthein-Similarity},
+    description={Die Levenshtein-Similarity ist ein aus der Levenshtein-Distanz abgeleiteter, normalisierter Ähnlichkeitswert zwischen zwei Zeichenketten.
+Formal basiert sie auf der Levenshtein-Distanz, also der minimalen Anzahl von Einfügungen, Löschungen oder Ersetzungen, die nötig sind, um eine Zeichenkette in eine andere zu überführen\cite{gld}.}
+}
+
+\newglossaryentry{Accuracy}{
+    name={Accuracy},
+    description={Metrik, die den Anteil der insgesamt korrekten Vorhersagen an der Gesamtzahl der getroffenen Vorhersagen beschreibt.}
+}
+
+\newglossaryentry{Precision}{
+    name={Precision},
+    description={Gibt den Anteil der tatsächlich positiven Fälle an allen vom Modell als positiv klassifizierten Fällen an.}
+}
+
+\newglossaryentry{Recall}{
+    name={Recall},
+    description={Gibt den Anteil der korrekt als positiv erkannten Fälle an allen tatsächlich vorhandenen positiven Fällen an.}
+}
+
+\newglossaryentry{F1-Score}{
+    name={F1-Score},
+    description={Das harmonische Mittel aus Precision und Recall.}
+}
+
+\newglossaryentry{Latenz}{
+    name={Latenz},
+    description={Die Zeitdauer, die das System für die Inferenz einer einzigen Antwort benötigt.}
+}
+
+\newglossaryentry{VRAM-Inferenz}{
+    name={VRAM-Auslastung},
+    description={Der maximale Bedarf an Grafikspeicher der GPU, der während der Ausführung eines Modells gemessen wird.}
+}
+
+\newglossaryentry{R-K-F}{
+    name={R-K-F-Formel},
+    description={Strategie im Prompt Engineering zur strukturierten Anweisung eines LLMs. Dabei steht R für Rolle (Rolle, die das Modell einnehmen soll), K für Kontext (relevante Hintergrundinformationen) und F für Format (Vorgabe der gewünschten Ausgabestruktur).}
+}
+
+
+\newglossaryentry{Prompt Engineering}{
+    name={Prompt Engineering},
+    description={Ist ein Prozess, um die effektivste Anweisung für eine spezifische Aufgabe zu finden\cite{prompt_engineering}.}
+}
+
+\newglossaryentry{Zero-Shot Prompting}{
+    name={Zero-Shot Prompting},
+    description={Eine Methode, bei der dem Modell eine Aufgabe gestellt wird, ohne dass zusätzliche Beispiele im Prompt enthalten sind.}
+}
+
+\newglossaryentry{One-Shot Prompting}{
+    name={One-Shot Prompting},
+    description={Eine Technik, bei der dem Modell genau ein Beispiel für die Lösung im Prompt bereitgestellt wird.}
+}
+
+\newglossaryentry{Few-Shot Prompting}{
+    name={Few-Shot Prompting},
+    description={Ein Ansatz, bei dem dem Modell mehrere Beispiele im Prompt übergeben werden.}
 }
 
 

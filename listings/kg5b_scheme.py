@@ -11,6 +11,6 @@ SCHEME = {
     "signature_company": {"type": "boolean", "comparator": BooleanComparator()},
     "signature_child": {"type": "boolean", "comparator": BooleanComparator()},
     "signature_legal_guardian": {"type": "boolean", "comparator": BooleanComparator()},
-    "apprenticeship_ended": {"type": "boolean", "comparator": BooleanComparator()},
+    "apprenticeship_finished": {"type": "boolean", "comparator": BooleanComparator()},
     "exam_month": {"type": "date", "comparator": MonthComparator()}
 }

@@ -30,6 +30,39 @@ Zur Korrektur der Rotation werden die Exchangeable Image File Format (\gls{EXIF}
 Während ältere \glspl{VLM} Bilder oft auf fixe Größe skalieren, unterstützen die in dieser Arbeit evaluierten Modelle eine dynamische Skalierung.
 Um jedoch die maximale Token-Anzahl, werden die Bilder auf eine maximale Pixelanzahl skaliert, wobei das ursprüngliche Seitenverhältnis beibehalten wird.
 
+
+\begin{minted}[mathescape,
+               linenos,
+               numbersep=5pt,
+               gobble=2,
+               frame=lines,
+               framesep=2mm]{python}
+    from pathlib import Path
+    from PIL import Image, ImageOps
+    from pdf2image import convert_from_path
+
+
+    def preproccesing(path_to_document: str,
+                      max_pixels: int
+                      ) -> [Image]:
+        ...
+        for _, page in enumerate(pages):
+            # corrects the image orientation
+            page = ImageOps.exif_transpose(page)
+
+            if page.width * page.height > max_pixels:
+                scale_factor = (max_pixels / (page.width * page.height)) ** 0.5
+
+                new_width = int(page.width * scale_factor)
+                new_height = int(page.height * scale_factor)
+
+                page = page.resize((new_width, new_height),
+                                   Image.Resampling.LANCZOS)
+
+        ...
+\end{minted}
+
+
 Für die standardisierte Weiterverarbeitung der Modellausgaben ist eine feste Struktur essenziell.
 Da moderne \glspl{VLM} darauf trainiert sind, Antworten im JavaScript Object Notation ()\gls{JSON})-Format zu liefern, werden die extrahierten Informationen in ein vordefiniertes \gls{JSON}-Schema überführt.
 Ein wesentlicher Vorteil gegenüber der herkömmlichen Pipeline ist die gleichzeitige Durchführung der Klassifikation sowie der \gls{IE} in einem einzigen Inferenzschritt.
@@ -84,7 +117,7 @@ Zur Erstellung der Wahrheitswerte (Ground Truth) werden alle Dokumente manuell a
 
 \section{Evaluation der generierten JSON-Objekte}\label{sec:evaluation}
 
-\subsection{Validierung des VLM-Ouputs}\label{subsec:validate}
+\subsection{Validierung des VLM-Outputs}\label{subsec:validate}
 
 Um den \gls{JSON}-Output der \glspl{VLM} zu limitieren, existieren verschiedene Ansätze.
 Während komplexere Lösungen nur Tokens zulassen die in \gls{JSON}-Objekten enthalten sein könnten, wird in dieser Evaluation ein einfacherer Ansatz gewählt.

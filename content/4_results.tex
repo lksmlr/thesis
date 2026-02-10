@@ -23,13 +23,13 @@ Während das Qwen-2.5-VL-7B mit 0,8 und das Qwen-2.5-VL-32B mit 0.87 die stärks
 \end{figure}
 
 
-Die Klassifikation in Abbildung~\ref{fig:results_classification} zeigt ein einheitlicheres Ergebnis.
-Während das Qwen-2.5-VL-32B alle Dokumentenarten am besten klassifiziert, befinden sich die restlichen Modelle mit einer maximalen Differenz von 0,03 in allen Dokumentenarten auf einem Level.
+Die Ergebnisse der Klassifikation in Abbildung~\ref{fig:results_classification} verdeutlichen ein einheitlicheres Ergebnis.
+Besonders hervorzuheben ist das Qwen-2.5-VL-32B, das alle Dokumentenarten am besten klassifiziert, während sich die restlichen Modelle mit einer maximalen Differenz von 0,03 in allen Dokumentenarten auf einem Level befinden.
 Bei Betrachtung der in der Abbildung~\ref{fig:confusion_matrices_overview} beinhalteten Confusion Matrices fallen jedoch qualitative Unterschiede auf.
 Das Qwen-2.5-VL-32B klassifiziert die Verträge als auch KG5b-Formulare fehlerfrei.
 Im Gegensatz dazu erkennt die YOLO/OCR-Pipeline die sonstigen Dokumente perfekt, klassifiziert aber einige der Verträge und KG5b-Formulare als sonstige Dokumente.
 Das Pixtral-12B weist die größten Unsicherheiten auf und klassifizierte insgesamt 25 Dokumente als Vertrag.
-% TODO. eventuell noch auf 7b eingehen
+Im Vergleich dazu liefert das Qwen-2.5-VL-7B ein ähnliches Ergebnis, klassifizierte jedoch ein KG5b-Formular mehr richtig.
 
 \begin{figure}[!ht]
     \centering
@@ -38,7 +38,7 @@ Das Pixtral-12B weist die größten Unsicherheiten auf und klassifizierte insges
     \label{fig:results_classification}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[!ht]
     \centering
     \begin{subfigure}{0.49\textwidth}
         \centering
@@ -70,7 +70,7 @@ Das Pixtral-12B weist die größten Unsicherheiten auf und klassifizierte insges
     \label{fig:confusion_matrices_overview}
 \end{figure}
 
-Hinsichtlich der \gls{Latenz} kehrt sich das Bild um.
+Hinsichtlich der \gls{Latenz} kehrt sich das Bild, wie in Abbildung~\ref{fig:results_latency} um.
 Die YOLO/OCR-Pipeline antwortet mit einer durchschnittlichen \gls{Latenz} von 0,58 Sekunden nahezu sofort.
 Das kleinste \gls{VLM}, das Qwen-2.5-VL-7B, benötigt mit durchschnittlich 7,43 Sekunden fast 13-mal länger als die Pipeline.
 Während das Pixtral mit durchschnittlich 10,28 Sekunden nur knapp über dem Qwen-2.5-VL-7B liegt, braucht das größte Modell im Durchschnitt 64,16 Sekunden
@@ -78,7 +78,7 @@ Während das Pixtral mit durchschnittlich 10,28 Sekunden nur knapp über dem Qwe
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.6\textwidth]{figures/results_latency}
+    \includegraphics[width=0.8\textwidth]{figures/results_latency}
     \caption{Ergebnisse der Latenzmessung}
     \label{fig:results_latency}
 \end{figure}
@@ -86,16 +86,31 @@ Während das Pixtral mit durchschnittlich 10,28 Sekunden nur knapp über dem Qwe
 
 \section{Ergebnisse des weitertrainierten Modells gegenüber dem größeren Basismodell}\label{sec:results_latency}
 
+Der Prozess der Auswahl des Basismodells~\ref{subsec:model_selection} lieferte ein eindeutiges Ergebnis.
+Wie in Abbildung~\ref{fig:results_ie} und Abbildung~\ref{fig:results_classification} schlägt das Qwen-2.5-VL-7B das Pixtral-12B deutlich.
+Besonders in der \gls{IE} stellt sich das Qwen-2.5-VL-7B als der bessere Kandidat für das Training heraus.
+Demnach wird im folgenden Abschnitt das trainierte Qwen-2.5-VL-7B (Qwen-2.5-VL-7B-finetuned) gegen das Qwen-2.5-VL-32B verglichen.
+
+Trotz ähnlicher Ergebnisse zeigt das Qwen-2.5-VL-32B auch gegenüber dem angepassten Modell seine Stärken.
+Wie in Abbildung~\ref{fig:results_ie_peft_32b} zu erkennen, erreichten die beiden Modelle bei den KG5b-Formularen einen F1-Score von 0,87.
+Bei den Verträgen lag das Qwen-2.5-VL-32B mit einem F1-Score von 0,94 mit 0,10 über dem Qwen-2.5-VL-7B-finetuned.
+
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.6\textwidth]{figures/results_ie_peft_32b}
+    \includegraphics[width=0.8\textwidth]{figures/results_ie_peft_32b}
     \caption{Ergebnisse der Information Extraction}
     \label{fig:results_ie_peft_32b}
 \end{figure}
 
+Abbildung~\ref{fig:results_classification_peft_32b} zeigt eine geringe Differenz in der Klassifikationsleistung auf.
+Während beide Modelle die KG5b-Formulare perfekt zuordnen, liegt das Qwen-2.5-VL-7B-finetuned in den anderen Dokumentenarten vorne.
+Hier erzielt das Modell einen F1-Score von 0,94 bei den Verträgen und 0,95 bei den sonstigen Dokumenten.
+Die Confusion Matrices in Abbildung~\ref{fig:confusion_matrices_32b_peft} verdeutlichen dieses Ergebnis.
+Im direkten Vergleich klassifiziert das Qwen-2.5-VL-7B-finetuned einen Vertrag als sonstiges Dokument, während das Qwen-2.5-VL-32B drei sonstige Dokumente als Vertrag erkannte.
+
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.6\textwidth]{figures/results_classification_peft_32b}
+    \includegraphics[width=0.8\textwidth]{figures/results_classification_peft_32b}
     \caption{Ergebnisse der Klassifikation}
     \label{fig:results_classification_peft_32b}
 \end{figure}
@@ -117,9 +132,13 @@ Während das Pixtral mit durchschnittlich 10,28 Sekunden nur knapp über dem Qwe
     \label{fig:confusion_matrices_32b_peft}
 \end{figure}
 
+Die \gls{Latenz} des großen Modells ist erkennbar größer als die des Qwen-2.5-VL-7B-finetuned.
+Wie in der Abbildung~\ref{fig:results_latency_peft_32b} zu erkennen, ist die Dauer der Inferenz des Qwen-2.5-VL-32B merklich höher.
+Mit einer maximalen \gls{Latenz} von 252,06 Sekunden liegt das Qwen-2.5-VL-32B deutlich über dem Qwen-2.5-VL-7B-finetuned mit 21,6 Sekunden.
+
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.6\textwidth]{figures/results_latency_peft_32b}
+    \includegraphics[width=0.8\textwidth]{figures/results_latency_peft_32b}
     \caption{Ergebnisse der Latenzmessung}
     \label{fig:results_latency_peft_32b}
 \end{figure}
@@ -127,24 +146,38 @@ Während das Pixtral mit durchschnittlich 10,28 Sekunden nur knapp über dem Qwe
 
 \section{Ressourcenverbrauch der VLMs gegenüber der YOLO/OCR-Pipeline}\label{sec:results_vram_usage}
 
-\begin{figure}[!ht]
-    \centering
-    \includegraphics[width=0.6\textwidth]{figures/results_vram_inference}
-    \caption{Ergebnisse der VRAM-Nutzung während der Inferenz}
-    \label{fig:results_vram_inference}
-\end{figure}
+Für den Vergleich des Ressourcenverbrauchs wird sowohl die \gls{VRAM}-Auslastung als auch der Energieverbrauch betrachtet.
+
+In Abbildung~\ref{fig:results_vram_model} ist die statische \gls{VRAM}-Auslastung abgebildet.
+Die niedrigste Auslastung hat die YOLO/OCR-Pipeline mit 4,21 GB\@.
+Das Qwen-2.5-VL-7B und Qwen-2.5-VL-7B-finetuned befinden sich 16,4 GB und 16,88 GB auf einer Ebene.
+Während das Pixtral-12B mit 23,89 GB knapp über den 7B Modellen liegt, ist das Qwen-2.5-VL-32B mit 64,18 GB mit Abstand das größte Modell.
+
+Die dynamische \gls{VRAM}-Auslastung in Abbildung~\ref{fig:results_vram_inference} zeigt ein anderes Ergebnis, jedoch liegt auch hier die YOLO/OCR-Pipeline mit einer durchschnittlichen Auslastung von 0,49 GB und einer maximalen von 1,02 GB unter den Mitstreitern.
+Interessant sind die Werte des Qwen-2.5-VL-7B-finetuned und des Qwen-2.5-VL-32B, denn hier liegt das kleinere Modell mit durchschnittlich 3,03 GB über dem großen Modell mit durchschnittlich 3,01 GB
+
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.6\textwidth]{figures/results_vram_model}
+    \includegraphics[width=0.8\textwidth]{figures/results_vram_model}
     \caption{Ergebnisse der VRAM-Nutzung des geladenen Modells}
     \label{fig:results_vram_model}
 \end{figure}
 
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/results_vram_inference}
+    \caption{Ergebnisse der VRAM-Nutzung während der Inferenz}
+    \label{fig:results_vram_inference}
+\end{figure}
+
+Der Energieverbrauch in Abbildung~\ref{fig:results_energy_usage} zeigt den markantesten Unterschied zwischen der YOLO/OCR-Pipeline und den \glspl{VLM}.
+Während die Pipeline nur 117 J im Durchschnitt verbraucht, benötigt selbst das effizienteste Modell, das Qwen-2.5-VL-7B, etwas das 22-fache an Energie.
+Im Vergleich zum Qwen-2.5-VL-32B, ist die Pipeline bei dem maximalen Verbrauch rund 250-fach sparsamer.
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.6\textwidth]{figures/results_energy}
+    \includegraphics[width=0.8\textwidth]{figures/results_energy}
     \caption{Ergebnisse des Energieverbrauchs}
     \label{fig:results_energy_usage}
 \end{figure}

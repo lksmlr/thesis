@@ -7,10 +7,10 @@ THESIS=thesis
 run: $(THESIS).pdf
 
 deploy:
-	pdflatex $(THESIS).tex
+	pdflatex -shell-escape $(THESIS).tex
 	bibtex $(THESIS)
-	pdflatex $(THESIS).tex
-	pdflatex $(THESIS).tex
+	pdflatex -shell-escape $(THESIS).tex
+	pdflatex -shell-escape $(THESIS).tex
 	$(MAKE) clean
 
 

@@ -2,10 +2,7 @@ from pathlib import Path
 from PIL import Image, ImageOps
 from pdf2image import convert_from_path
 
-
-def preproccesing(path_to_document: str,
-                  max_pixels: int
-                  ) -> [Image]:
+def preproccesing(path_to_document: str, max_pixels: int) -> [Image]:
     ...
     for _, page in enumerate(pages):
         # corrects the image orientation
@@ -17,7 +14,5 @@ def preproccesing(path_to_document: str,
             new_width = int(page.width * scale_factor)
             new_height = int(page.height * scale_factor)
 
-            page = page.resize((new_width, new_height),
-                               Image.Resampling.LANCZOS)
-
+            page_resized = page.resize((new_width, new_height), Image.Resampling.LANCZOS)
     ...

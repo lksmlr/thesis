@@ -1,6 +1,6 @@
 import ExactComparator, NameComparator, DateComparator, BooleanComparator, MonthComparator
 
-SCHEME = {
+CONFIG_KG5B = {
     "type": {"type": "string", "comparator": ExactComparator()},
     "name_child": {"type": "string", "comparator": NameComparator()},
     "birthday_child": {"type": "date", "comparator": DateComparator()},

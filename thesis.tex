@@ -73,10 +73,6 @@
 \usepackage{lscape}
 
 
-
-
-
-
 % PDF/A compliance
 \begin{filecontents*}{\jobname .xmpdata}
 \Title{\titel}
@@ -114,6 +110,15 @@
 
 % configure your listings style
 \usepackage{minted}
+\usemintedstyle{pastie}
+\setminted{
+    frame=lines,      % Rahmen oben und unten
+    framesep=2mm,
+    baselinestretch=1.2,
+    fontsize=\footnotesize,
+    linenos=false % Zeilennummern einschalten
+}
+
 
 % page setup
 % \setlength{\topskip}{\ht\strutbox}
@@ -170,8 +175,9 @@
 \listoftables
 \cleardoublepage
 
-\renewcommand{\lstlistlistingname}{List of Listings}  % change for German thesis
-\lstlistoflistings
+\renewcommand{\listoflistingscaption}{Listingverzeichnis}
+\listoflistings
+
 \cleardoublepage
 
 \bibliographystyle{wmaainf}

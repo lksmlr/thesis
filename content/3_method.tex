@@ -1,36 +1,37 @@
-\chapter{Methodik und Implementierung}\label{ch:data}
+\chapter{Methodik und Implementierung}\label{ch:methodology}
 
-Im Rahmen dieses Proof of Concepts werden verschiedene \glspl{VLM} vergleichend gegenüber der bestehenden \gls{YOLO}/\gls{OCR}-Pipeline evaluiert.
-Für die Entscheidung, ob eines der \glspl{VLM} die \gls{YOLO}/\gls{OCR}-Pipeline ersetzt, sollen die folgenden Forschungsfragen beantwortet werden:
+Im Rahmen dieses Proof of Concept werden verschiedene \glspl{VLM} evaluiert und der bestehenden \gls{YOLO}/\gls{OCR}-Pipeline gegenübergestellt.
+Um die Eignung der \glspl{VLM} als potenziellen Ersatz für die \gls{YOLO}/\gls{OCR}-Pipeline zu beurteilen, werden die folgenden Forschungsfragen beantwortet:
 
 \begin{enumerate}
-    \item Inwiefern ist ein nicht domänenspezifisch angepasstes \gls{VLM} hinsichtlich der Extraktionsgüte und Klassifikationsgenauigkeit der trainierten \gls{YOLO}/\gls{OCR}-Pipeline überlegen, und welche Vorteile bietet ein einzelnes generalistisches Modell gegenüber der Verwendung spezialisierter Einzelsysteme?
-    \item Wie verhält sich ein kleineres, domänenspezifisch trainiertes Modell gegenüber einem leistungsstärkeren Basismodell in Bezug auf Performanz und Effizienz?
-    \item In welchem Verhältnis steht der Ressourcenverbrauch der \glspl{VLM} zu dem der \gls{YOLO}/\gls{OCR}-Pipeline?
+    \item Wie verhält sich ein nicht domänenspezifisch angepasstes \gls{VLM} hinsichtlich \gls{Latenz}, Klassifikations- und Extraktionsleistung im Vergleich zur \gls{YOLO}/\gls{OCR}-Pipeline, und welche Vorteile bietet ein einzelnes generalistisches Modell gegenüber spezialisierten Einzelsystemen?
+    \item Welche Auswirkungen hat ein domänenspezifisches Training eines kleineren Modells auf dessen \gls{Latenz}, Klassifikations- und Extraktionsleistung im Vergleich zu einem leistungsstärkeren Basismodell?
+    \item Wie unterscheidet sich der Ressourcenverbrauch (Energieverbrauch und \gls{VRAM}-Nutzung) der \glspl{VLM} von dem der \gls{YOLO}/\gls{OCR}-Pipeline?
 \end{enumerate}
 
-In Abbildung~\ref{fig:overview} ist ein Überblick der gesamten Methodik abgebildet.
+Abbildung~\ref{fig:overview} zeigt einen Überblick der gesamten Methodik.
 
 \begin{figure}[!ht]
     \centering
     \includegraphics[width=0.8\textwidth]{figures/overview}
-    \caption{Überblick der Methodik.}
+    \caption{Überblick der Methodik}
     \label{fig:overview}
 \end{figure}
 
+
 \section{Modellierung des Dokumentenbestands als Grundlage der Evaluation}\label{sec:data_preprocessing}
 
+\subsection{Preprocessing des Dokumentenbestands}\label{sec:preprocessing}
 
-\subsection{Preprocessing und Darstellung der Dokumentenarten als JSON-Objekte}\label{sec:documents_as_json}
-
-Durch Datenlieferungen der Familienkasse stehen mehrere Tausend Dokumente als PDF oder Bilddatei zur Verfügung.
-Um eine einheitliche Basis zu schaffen und die Klassifikations- und Extraktionsgüte zu verbessern, müssen die Daten vorverarbeitet werden.
+Durch Datenlieferungen der Familienkasse stehen für die Evaluation mehrere Tausend Dokumente als PDF oder Bilddatei zur Verfügung.
+Um einen einheitlichen Dokumentenkorpus zu schaffen und die Klassifikations- und Extraktionsleistung zu verbessern, erfolgt eine Vorverarbeitung der Dokumente.
 Dieser Prozess ist in Abbildung~\ref{fig:overview} in Rot dargestellt.
-Im Fokus stehen dabei die Korrektur der Bildausrichtung sowie die Konvertierung der PDF-Dokumente in Bilder.
+
+Im Fokus des Preprocessings stehen die Korrektur der Bildausrichtung sowie die Konvertierung der PDF-Dokumente in Bilddateien.
 Zur Korrektur der Rotation werden die Exchangeable Image File Format (\gls{EXIF})-Metadaten ausgelesen, um die ursprüngliche Ausrichtung wiederherzustellen.
-Während ältere \glspl{VLM} Bilder oft auf fixe Größe skalieren, unterstützen die in dieser Arbeit evaluierten Modelle eine dynamische Skalierung.
-Um jedoch die maximale Token-Anzahl, werden die Bilder auf eine maximale Pixelanzahl skaliert, wobei das ursprüngliche Seitenverhältnis beibehalten wird.
-Das Listing~\ref{lst:preprocessing} zeigt einen Ausschnitt des Preprocessings.
+Während ältere Modelle Bilder auf eine feste Dimension skalierten, unterstützen die in dieser Arbeit evaluierten Modelle eine dynamische Skalierung.
+Zur Begrenzung der maximalen Token-Anzahl werden die Bilder dennoch auf eine maximale Pixelanzahl skaliert, wobei das ursprüngliche Seitenverhältnis beibehalten wird.
+Listing~\ref{lst:preprocessing} zeigt die Korrektur der Bildausrichtung und Skalierung innerhalb des Preprocessings.
 
 \begin{listing}[H]
     \caption{Preprocessing der Dokumente}
@@ -39,20 +40,15 @@ Das Listing~\ref{lst:preprocessing} zeigt einen Ausschnitt des Preprocessings.
 \end{listing}
 
 
-Für die standardisierte Weiterverarbeitung der Modellausgaben ist eine feste Struktur essenziell.
+\subsection{Modellierung der Dokumentenarten als JSON-Objekte}\label{sec:documents_as_json}
+
+Für die standardisierte Weiterverarbeitung der Modellausgaben ist eine konsistente Struktur essenziell.
 Da moderne \glspl{VLM} darauf trainiert sind, Antworten im JavaScript Object Notation (\gls{JSON})-Format zu liefern, werden die extrahierten Informationen in ein vordefiniertes \gls{JSON}-Schema überführt.
-Ein wesentlicher Vorteil gegenüber der herkömmlichen Pipeline ist die gleichzeitige Durchführung der Klassifikation sowie der \gls{IE} in einem einzigen Inferenzschritt.
-Das Modell klassifiziert die Dokumentenart, die im Feld \texttt{type} abgebildet wird.
-Während das Feld \texttt{type} in allen \gls{JSON}-Schemata konsistent vorhanden ist, variieren die Felder der \gls{IE} je nach Dokumentenart.
 
-Bei den binären, booleschen Feldern markiert ein \texttt{true} das Vorhandensein eines Merkmals, während ein \texttt{false} dessen Fehlen oder das Nicht-Erkennen repräsentiert.
-Um eine strukturelle Konsistenz zu erzwingen, werden Felder, bei denen die dazugehörige Information im Dokument fehlt, bei booleschen Typen mit \texttt{false} und bei Textfeldern mit einer leeren Zeichenkette belegt.
-
-Da die Dokumente in den meisten Fällen aus mehreren Seiten bestehen, repräsentiert ein \gls{JSON}-Objekt das mehrseitige Dokument.
-Sollten Dokumente verschiedener Arten vermischt vorliegen, generiert das Modell für jede erkannte Dokumentenart ein separates \gls{JSON}-Objekt.
-
-Die \gls{JSON}-Schemata für die relevanten Dokumentenarten sind in den Schemata~\ref{lst:json_kg5b} und~\ref{lst:json_vertrag} dargestellt.
-Bei dem \gls{JSON}-Schema der sonstigen Dokumente~\ref{lst:json_sonstiges}, findet nur die Klassifikation statt, da hier keine Informationen relevant sind.
+Ein wesentlicher Vorteil gegenüber der herkömmlichen Pipeline besteht in der simultanen Klassifikation sowie der \gls{IE} in einem einzigen Inferenzschritt.
+Die \gls{JSON}-Schemata für die relevanten Dokumentenarten sind in den Listings~\ref{lst:json_kg5b} und~\ref{lst:json_vertrag} dargestellt.
+Bei dem \gls{JSON}-Schema der sonstigen Dokumente in Listing~\ref{lst:json_sonstiges} findet nur die Klassifikation statt, da hier keine Informationen relevant sind.
+Die Felder der \gls{JSON}-Schemata bilden die relevanten Informationen aus Abschnitt~\ref{sec:documenttypes} ab.
 
 \begin{listing}[H]
     \caption{JSON-Schema des Dokumententyps KG5b}
@@ -60,13 +56,11 @@ Bei dem \gls{JSON}-Schema der sonstigen Dokumente~\ref{lst:json_sonstiges}, find
     \inputminted[]{JSON}{listings/kg5b.json}
 \end{listing}
 
-
 \begin{listing}[H]
     \caption{JSON-Schema des Dokumententyps Ausbildungsvertrag}
     \label{lst:json_vertrag}
     \inputminted[]{JSON}{listings/vertrag.json}
 \end{listing}
-
 
 \begin{listing}[H]
     \caption{JSON-Schema des Dokumententyps Sonstiges}
@@ -74,29 +68,39 @@ Bei dem \gls{JSON}-Schema der sonstigen Dokumente~\ref{lst:json_sonstiges}, find
     \inputminted[]{JSON}{listings/sonstiges.json}
 \end{listing}
 
+Die Klassifikation wird im \gls{JSON}-Objekt über das Feld \texttt{type} abgebildet und ist in allen \gls{JSON}-Schemata vorhanden.
+Felder der \gls{IE} sind über die Dokumentenarten nicht konsistent, jedoch bildet das Schema eines Vertrags eine Teilmenge des Schemas eines KG5b-Formulars.
+Das Schema des KG5b-Formulars beinhaltet zusätzlich die Felder \texttt{apprenticeship\_finished} und \texttt{exam\_month}.
+
+Bei den binären, booleschen Feldern markiert ein \texttt{true} das Vorhandensein eines Merkmals, während ein \texttt{false} dessen Fehlen oder das Nicht-Erkennen repräsentiert.
+Um eine strukturelle Konsistenz zu erzwingen, werden Felder, bei denen die dazugehörige Information im Dokument fehlt, bei booleschen Typen mit \texttt{false} und bei Textfeldern mit einer leeren Zeichenkette belegt.
+
+Da die Dokumente in den meisten Fällen aus mehreren Seiten bestehen, repräsentiert ein \gls{JSON}-Objekt das mehrseitige Dokument.
+Sollten Dokumente verschiedener Arten vermischt vorliegen, generiert das Modell für jede erkannte Dokumentenart ein separates \gls{JSON}-Objekt.
+
 
 \subsection{Test- und Validierungsdatensatz}\label{subsec:test_val_dataset}
 
-Die Erstellung des Test- und Validierungsdatensatz, befindet sich im Überblick~\ref{fig:overview} in Orange dargestellt nach der Vorbereitung der Dokumente.
-Der Testdatensatz als auch der Validierungsdatensatz umfasst insgesamt 60 Dokumente, aufgeteilt in jeweils 30 Beispiele Dokumentenarten.
+Die Erstellung des Test- sowie des Validierungsdatensatzes ist im methodischen Überblick (Abbildung~\ref{fig:overview}) orange hervorgehoben und schließt unmittelbar an die Vorverarbeitung der Dokumente an.
+Beide Datensätze umfassen jeweils 60 Dokumente, aufgeteilt in 20 Beispiele pro Dokumentenart.
 Um die reale Datenverteilung bestmöglich abzubilden, werden die Dokumente manuell ausgewählt.
 
-Die Datensätze deckt dabei verschiedene Herausforderungen ab.
-Neben Dokumenten mit geringer Qualität, vorrangig schlechte Scans und Fotos, befinden sich fehlerhaft ausgefüllte Dokumente sowie Dokumente mit fehlenden Unterschriften und Stempeln in den Datensätzen.
-Um die hohe Varianz der Verträge und sonstigen Dokumente abzubilden, werden in den Datensätzen viele unterschiedliche Layouts gewählt.
+Die Datensätze decken dabei verschiedene Herausforderungen ab.
+Neben Dokumenten mit geringer Qualität, vorrangig **mangelhaften Scans und Fotos**, befinden sich fehlerhaft ausgefüllte Dokumente sowie Dokumente mit fehlenden Unterschriften und Stempeln in den Datensätzen.
+Um die hohe Varianz der Verträge und sonstigen Dokumente abzubilden, enthalten die Datensätze viele unterschiedliche Layouts.
 Die Exemplare für die Verträge beinhalten sowohl starre Layouts als auch Fließtexte unterschiedlicher Firmen und Kammern.
-Die sonstigen Dokumente beinhalten keine kontextfremden Dokumente, sondern Schulbescheinigungen, Studienbescheinigungen und Eintragungen bei der Handwerkskammer, um eine zusätzliche Herausforderung zu stellen.
+Die sonstigen Dokumente beinhalten keine kontextfremden Dokumente, sondern Schulbescheinigungen, Studienbescheinigungen und Eintragungen bei der Handwerkskammer, um die Komplexität der Unterscheidung zu erhöhen.
 
-Zur Erstellung der Wahrheitswerte (Ground Truth) werden alle Dokumente manuell annotiert und in das entsprechende \gls{JSON}-Format überführt.
+Zur Erstellung der Wahrheitswerte (Ground Truth) werden alle Dokumente manuell annotiert und in das entsprechende \gls{JSON}-Schema überführt.
 
 
 \section{Evaluation der generierten JSON-Objekte}\label{sec:evaluation}
 
 \subsection{Validierung des VLM-Outputs}\label{subsec:validate}
 
-Um den \gls{JSON}-Output der \glspl{VLM} zu limitieren, existieren verschiedene Ansätze.
-Während komplexere Lösungen nur Tokens zulassen die in \gls{JSON}-Objekten enthalten sein könnten, wird in dieser Evaluation ein einfacherer Ansatz gewählt.
-Hierbei werden aus der generierten Antwort \glspl{JSON} gefiltert und geparst.
+Um eine korrekte Formatierung des \gls{JSON}-Outputs der \glspl{VLM} sicherzustellen, existieren verschiedene Ansätze.
+Während komplexere Lösungen nur Tokens zulassen die syntaktisch in \gls{JSON}-Objekten enthalten sein könnten, wird in dieser Evaluation ein direkterer Ansatz gewählt.
+Hierbei werden aus der generierten Antwort potenzielle \gls{JSON}-Objekte extrahiertrt und geparst.
 Sobald das Parsen der \gls{JSON} fehlschlägt, wird diese zurück an das \gls{VLM} geliefert, mit der Anweisung diese zu korrigieren.
 Das Modell bekommt insgesamt drei Versuche eine valide \gls{JSON} zu generieren, bevor das Dokument als ungültig eingestuft wird.
 
@@ -264,10 +268,12 @@ Des Weiteren müssen die \gls{JSON}-Objekte in Markdown-Blöcke eingebettet werd
     \inputminted[]{python}{listings/messages.py}
 \end{listing}
 
-\subsection{Optimierung des Basismodells durch Fine-Tuning}\label{subsec:optimise_fine_tuning}
+\subsection{Optimierung des Fine-Tunings}\label{subsec:optimise_fine_tuning}
 
-Das Basismodell aus~\ref{sec:model_selection} wurde mit mehreren Methoden des \gls{PEFT} (LoRA und rsLoRA) und dem Framework \gls{Unsloth} trainiert.
-Die Optimierung der Parameter erfolgt iterativ wie im blau markierten Bereich in Abbildung~\ref{fig:overview} zu erkennen.
+Das in Abschnitt~\ref{sec:model_selection} gewählte Basismodell wird mittels \gls{PEFT} an die Dokumentenarten angepasst.
+Dabei kommen \gls{LoRA} und die stabilisierte Variante \gls{rsLoRA} zum Einsatz.
+Für das Training wird auf das Framework \gls{Unsloth} gesetzt, um den Ressourcenverbrauch gering zu halten.
+Des Weiteren wird das Modell in 4-Bit geladen, um die \gls{VRAM}-Auslastung weiter zu senken.
 
 Der Systemprompt in Listing~\ref{lst:prompt_finetuning} ist einfach gehalten, damit das Modell durch Beispiele statt durch Instruktion lernt.
 
@@ -277,15 +283,16 @@ Der Systemprompt in Listing~\ref{lst:prompt_finetuning} ist einfach gehalten, da
     \inputminted[]{python}{listings/prompt_finetuning.py}
 \end{listing}
 
-Ein weiterer wesentlicher Aspekt der Optimierung lag in der Augmentation des Datensatzes.
-Vor jedem erneuten Trainingslauf wurde der Datensatz vollständig randomisiert, um eine zufällige Reihenfolge der Trainingsdaten zu erhalten.
-Des Weiteren wurden in einigen der Trainingsläufe die Seiten der einzelnen Dokumente getauscht, um dem Modell zu lernen, die Informationen ohne Position zu extrahieren.
+Der Trainingsdatensatz~\ref{subsec:train_dataset} wird mithilfe von Datenaugmentation an das Training angepasst.
+Vor jedem Trainingslauf wird der Datensatz vollständig randomisiert, um eine zufällige Reihenfolge der Trainingsdaten zu erhalten.
+Darüber hinaus wurden in einigen der Trainingsläufe die Seiten der Dokumente wahllos getauscht, um dem Modell anzutrainieren, Informationen unabhängig von der Position zu extrahieren.
+
+Die Parameteroptimierung erfolgte iterativ, wie im blau markierten Bereich in Abbildung~\ref{fig:overview} zu erkennen ist und es werden alle Komponenten des \gls{VLM} trainiert.
+Die wichtigsten Parameter der finalen Konfiguration sind in Listing~\ref{lst:parameter} abgebildet.
 
 Um ein Overfitting zu vermeiden, wird neben dem Trainingsdatensatz auch hier der Validierungsdatensatz~\ref{subsec:test_val_dataset} verwendet.
 Nach 80 Dokumenten wird mit dem Validierungsdatensatz der Trainingsfortschritt gemessen.
-Am Ende des Trainings wird das Modell geladen, dass am besten auf dem Validierungsdatensatz funktioniert hat.
-
-Die wichtigsten Parameter der finalen Konfiguration sind in Listing~\ref{lst:parameter} abgebildet.
+Am Ende des Trainingslaufs wird das Modell geladen, dass den geringsten Loss gegenüber dem Validierungsdatensatz hatte.
 
 \begin{listing}[H]
     \centering

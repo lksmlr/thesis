@@ -1,6 +1,5 @@
 \chapter{Methodik und Implementierung}\label{ch:methodology}
 
-Im Rahmen dieses Proof of Concept werden verschiedene \glspl{VLM} evaluiert und der bestehenden \gls{YOLO}/\gls{OCR}-Pipeline gegenübergestellt.
 Um die Eignung der \glspl{VLM} als potenziellen Ersatz für die \gls{YOLO}/\gls{OCR}-Pipeline zu beurteilen, werden die folgenden Forschungsfragen beantwortet:
 
 \begin{enumerate}
@@ -40,7 +39,7 @@ Listing~\ref{lst:preprocessing} zeigt die Korrektur der Bildausrichtung und Skal
 \end{listing}
 
 
-\subsection{Modellierung der Dokumentenarten als JSON-Objekte}\label{sec:documents_as_json}
+\subsection{Modellierung der Dokumentenarten als JSON-Objekte}\label{subsec:documents_as_json}
 
 Für die standardisierte Weiterverarbeitung der Modellausgaben ist eine konsistente Struktur essenziell.
 Da moderne \glspl{VLM} darauf trainiert sind, Antworten im JavaScript Object Notation (\gls{JSON})-Format zu liefern, werden die extrahierten Informationen in ein vordefiniertes \gls{JSON}-Schema überführt.
@@ -99,17 +98,17 @@ Zur Erstellung der Wahrheitswerte (Ground Truth) werden alle Dokumente manuell a
 \subsection{Validierung des VLM-Outputs}\label{subsec:validate}
 
 Um eine korrekte Formatierung des \gls{JSON}-Outputs der \glspl{VLM} sicherzustellen, existieren verschiedene Ansätze.
-Während komplexere Lösungen nur Tokens zulassen die syntaktisch in \gls{JSON}-Objekten enthalten sein könnten, wird in dieser Evaluation ein direkterer Ansatz gewählt.
-Hierbei werden aus der generierten Antwort potenzielle \gls{JSON}-Objekte extrahiertrt und geparst.
-Sobald das Parsen der \gls{JSON} fehlschlägt, wird diese zurück an das \gls{VLM} geliefert, mit der Anweisung diese zu korrigieren.
-Das Modell bekommt insgesamt drei Versuche eine valide \gls{JSON} zu generieren, bevor das Dokument als ungültig eingestuft wird.
+Während komplexere Lösungen nur Tokens zulassen, die syntaktisch in \gls{JSON}-Objekten enthalten sein könnten (Constrained Decoding), wird in dieser Evaluation ein direkterer Ansatz gewählt.
+Hierbei werden aus der generierten Antwort potenzielle \gls{JSON}-Objekte extrahiert und geparst.
+Schlägt das Parsen der \gls{JSON}-Objekte fehl, werden diese zurück an das \gls{VLM} geliefert, mit der Anweisung, diese zu korrigieren.
+Das Modell bekommt insgesamt drei Versuche, ein valides \gls{JSON}-Objekt zu generieren, bevor das Dokument als ungültig eingestuft wird.
 
 
 \subsection{Vergleichslogik der unterschiedlichen JSON-Felder}\label{subsec:comparator}
 
-Im Gegensatz zur Verarbeitung von Antworten herkömmlicher Modelle haben \glspl{VLM} eine hohe Varianz an Ausgabeformaten.
-Verschiedene Feldtypen der generierten \gls{JSON} müssen deshalb spezifisch normalisiert werden, um eine Grundlage für den Vergleich zu bilden.
-Des Weiteren müssen die Feldtypen wie Namen, Booleans, Zeichenketten, Daten und Monate unterschiedlich verglichen werden.
+Im Gegensatz zur Verarbeitung von Antworten herkömmlicher Modelle weisen \glspl{VLM} eine hohe Varianz an Ausgabeformaten auf.
+Verschiedene Feldtypen der generierten \gls{JSON}-Objekte müssen deshalb spezifisch normalisiert werden, um eine Grundlage für den Vergleich zu bilden.
+Des Weiteren müssen Feldtypen wie Namen, Booleans, Zeichenketten, Datumsangaben und Monate nach unterschiedlichen Logiken verglichen werden.
 Für den Vergleich werden auf Basis der Klasse in Listing~\ref{lst:comparator} verschiedene Komparatoren (Comparator) definiert.
 
 \begin{listing}[H]
@@ -118,10 +117,10 @@ Für den Vergleich werden auf Basis der Klasse in Listing~\ref{lst:comparator} v
     \inputminted[]{python}{listings/comparator.py}
 \end{listing}
 
-Der NameComparator in Listing~\ref{lst:name_comparator} vergleicht die Namensfelder mithilfe der Levenshtein-Similarity, um kleinere Fehler und verschiedene Varianten zu tolerieren.
-Beispielsweise wird ein Name, der \texttt{ue} statt \texttt{ü} enthält, nicht als Fehler erkannt.
+Der \texttt{NameComparator} in Listing~\ref{lst:name_comparator} vergleicht die Namensfelder mithilfe der Levenshtein-Similarity, um kleinere Fehler und verschiedene Schreibweisen zu tolerieren.
+Beispielsweise wird ein Name, der \texttt{ue} statt \texttt{ü} enthält, nicht als Fehler gewertet.
 Der Threshold, der zwischen korrekt und nicht korrekt entscheidet, liegt bei 0,8.
-Die \gls{YOLO}/\gls{OCR}-Pipeline verwendet ebenso diesen Vergleich mit dem gleichen Threshold, wodurch das Ergebnis entsprechend wird.
+Da die \gls{YOLO}/\gls{OCR}-Pipeline denselben Vergleich mit identischem Threshold verwendet, wird eine Vergleichbarkeit der Ergebnisse gewährleistet.
 
 \begin{listing}[H]
     \caption{Comparator für Namen}
@@ -129,19 +128,19 @@ Die \gls{YOLO}/\gls{OCR}-Pipeline verwendet ebenso diesen Vergleich mit dem glei
     \inputminted[]{python}{listings/name_comparator.py}
 \end{listing}
 
-Der BooleanComparator normalisiert boolesche Felder nach Python-Syntax zu \texttt{True} und \texttt{False}.
+Der \texttt{BooleanComparator} normalisiert boolesche Felder entsprechend der Python-Syntax zu \texttt{True} und \texttt{False}.
 Zu den akzeptierten Varianten gehören sowohl \texttt{true} und \texttt{false}, \texttt{0} und \texttt{1}, \texttt{wahr} und \texttt{falsch} als auch \texttt{vorhanden} und \texttt{nicht vorhanden}.
 
-Zeichenketten, die keine Namen sind, werden durch den ExactComparator verglichen.
-Hierbei findet keine Normalisierung statt und die Zeichenketten müssen exakt übereinstimmen.
+Zeichenketten, die keine Namen darstellen, werden durch den \texttt{ExactComparator} verglichen.
+Hierbei findet keine Normalisierung statt, sodass die Zeichenketten exakt übereinstimmen müssen.
 
-Daten werden einheitlich im DateComparator in das Format DD.MM.YYYY gebracht, obwohl dies nicht dem internationalen Standard entspricht.
-Das ist darauf zurückzuführen, dass so die Erkennung des \glspl{VLM} am robustesten ist, da die deutschen Dokumente auch mit diesem Format ausgefüllt werden.
+Datumsangaben werden durch den \texttt{DateComparator} einheitlich in das Format \texttt{DD.MM.YYYY} überführt.
+Obwohl dies nicht dem internationalen Standard entspricht, erweist sich dieses Vorgehen als am robustesten, da die vorliegenden deutschen Dokumente primär in diesem Format ausgefüllt sind.
 
-Der MonthComparator normalisiert alphanumerische Monate in die numerische Darstellung.
-In dem Fall, dass komplette Datumsangaben geliefert werden, wird der DateComparator benutzt und der Monat extrahiert.
+Der \texttt{MonthComparator} normalisiert alphanumerische Monate in eine numerische Darstellung.
+Falls vollständige Datumsangaben geliefert werden, wird der \texttt{DateComparator} genutzt, um den Monat zu extrahieren.
 
-Um die verschiedenen Comparator den Feldern zuzuordnen, gibt es für jede Dokumentenart eine Konfiguration das der jeweiligen \gls{JSON} ähnelt.
+Um die verschiedenen Comparator den Feldern zuzuordnen, existiert für jede Dokumentenart eine Konfiguration, die dem jeweiligen \gls{JSON}-Schema aus Abschnitt~\ref{subsec:documents_as_json} entspricht.
 Das Schema~\ref{lst:scheme_kg5b} definiert beispielhaft die Konfiguration für das KG5b-Formular.
 
 \begin{listing}[H]
@@ -150,13 +149,14 @@ Das Schema~\ref{lst:scheme_kg5b} definiert beispielhaft die Konfiguration für d
     \inputminted[]{python}{listings/kg5b_scheme.py}
 \end{listing}
 
+
 \subsection{Bewertung der Klassifikation und der Information Extraction}\label{subsec:evaluation_classification_ie}
 
-Um die generierten \gls{JSON}-Objekte des \glspl{VLM} schlussendlich bewerten zu können, werden die Klassifikation und \gls{IE} unabhängig voneinander bewertet.
-Für die Bewertung werden die einzelnen \gls{JSON}-Felder jedes Dokuments mithilfe der in der Konfiguration definierten Comparator mit der Ground Truth verglichen und verschiedene Metadaten gesammelt.
-Die Metadaten beinhalten den Status (vorhanden, nicht vorhanden oder halluziniert), die Korrektheit und die Fehlerart des Feldes.
-Halluzinierte Felder sind Felder, die nicht in der jeweiligen Konfiguration vorkommen.
-Das Ergebnis ist ein Python-Dictionary (Listing~\ref{lst:dict}) das für jedes Dokument die Metadaten für jedes Feld beinhaltet.
+Um die generierten \gls{JSON}-Objekte der \glspl{VLM} schlussendlich bewerten zu können, werden die Klassifikation und \gls{IE} unabhängig voneinander bewertet.
+Für die Evaluation werden die einzelnen \gls{JSON}-Felder jedes Dokuments mithilfe der in der Konfiguration definierten Comparator mit der Ground Truth verglichen und verschiedene Metadaten erfasst.
+Die Metadaten beinhalten den Status (vorhanden, nicht vorhanden oder halluziniert), die Korrektheit sowie die Fehlerart des Feldes.
+Halluzinierte Felder sind definiert als Felder, die nicht in der jeweiligen Konfiguration vorkommen.
+Das Ergebnis ist ein Python-Dictionary (Listing~\ref{lst:dict}), das für jedes \gls{JSON}-Objekt eines Dokuments die Metadaten für jedes Feld beinhaltet.
 
 \begin{listing}[H]
     \caption{Ergebnis-Dictionary mit den Metadaten des gesamten Dokumentenkorpus}
@@ -165,50 +165,50 @@ Das Ergebnis ist ein Python-Dictionary (Listing~\ref{lst:dict}) das für jedes D
 \end{listing}
 
 Auf Basis dieses Dictionaries wird für die Bewertung der Klassifikation aus jedem Dokument das Feld \texttt{type} extrahiert.
-Da das Feld \texttt{type} in jeder \gls{JSON} der Dokumentenarten (siehe Abbildungen~\ref{lst:json_kg5b, lst:json_vertrag, lst:json_sonstiges}) vorkommt, kann es nicht halluziniert werden.
-Jedoch kann das Feld fehlen, weshalb neben den Klassen KG5b, Vertrag und Sonstiges, eine weitere Klasse \texttt{missing} eingeführt wird.
-Diese wird in der Auswertung aber nur betrachtet, wenn es ein Dokument in der Klasse gibt.
-Für die Bestimmung der Güte der Modelle, wird eine Confusion-Matrix erstellt, wobei der Fokus auf dem F1-Score liegt.
+Da das Feld \texttt{type} in jeder \gls{JSON} der Dokumentenarten (siehe Listings~\ref{lst:json_kg5b, lst:json_vertrag, lst:json_sonstiges}) vorkommt, kann es nicht halluziniert werden.
+Jedoch kann das Feld fehlen, weshalb neben den Klassen KG5b, Vertrag und Sonstiges eine weitere Klasse \texttt{missing} eingeführt wird.
+\texttt{Missing} wird in der Auswertung nur betrachtet, wenn mindestens ein Dokument in der Klasse vorkommt.
+Für die Bestimmung der Güte der Modelle wird eine Confusion-Matrix erstellt, wobei der Fokus auf dem F1-Score liegt.
 
 Die Bewertung der Information Extraction ist komplexer als die der Klassifikation.
-Um den Entity-Level F1-Score, der die Hauptmetrik für den Vergleich darstellt, zu berechnen werden die Metadaten aller Felder, außer des Feld \texttt{type}, benötigt.
+Um den Entity-Level F1-Score, der die Hauptmetrik für den Vergleich darstellt, zu berechnen, werden die Metadaten aller Felder außer dem Feld \texttt{type} benötigt.
 
-Auf Basis dieser Metadaten werden für den gesamten Dokumentenkorpus die True Positive (\gls{TP}), False Positive (\gls{FP}) und False Negative (\gls{FN}) gezählt.
+Auf Basis dieser Metadaten werden für den gesamten Dokumentenkorpus die True Positives (\gls{TP}), False Positives (\gls{FP}) und False Negatives (\gls{FN}) gezählt.
 Ein Feld zählt als \gls{TP}, wenn es vorhanden sowie korrekt ist.
 Zu den \gls{FN} gehören Felder, die entweder fehlen oder vorhanden, aber falsch sind.
-Ein Feld, das vorhanden aber falsch ist, zählt zusätzlich zu den \gls{FP} zusammen mit den Feldern die halluziniert wurden.
+Ein Feld, das vorhanden, aber falsch ist, zählt zusätzlich zu den \gls{FP}, zusammen mit den Feldern, die halluziniert wurden.
 Diese doppelte Bestrafung stellt eine sehr strenge Bewertung für inhaltliche Fehler dar.
-True Negatives (\gls{TN}) sind nicht zählbar, da die Menge an nicht gefundenen, leeren Feldern, theoretisch unendlich groß ist.
-Durch die Konfiguration und die Ground Truths ist eindeutig feststellbar welche Felder halluziniert sind.
-Da mithilfe der Konfiguration auch ohne Ground Truth die benötigten Felder gefiltert werden können, kann wie in Listing~\ref{lst:penalize_halluzinations}entschieden werden, ob die Halluzinationen bestraft werden.
+True Negatives (\gls{TN}) sind nicht zählbar, da die Menge an nicht gefundenen, leeren Feldern theoretisch unendlich groß ist.
+Durch die Konfiguration und die Ground Truths ist eindeutig feststellbar, welche Felder halluziniert sind.
+Da mithilfe der Konfiguration auch ohne Ground Truth die benötigten Felder gefiltert werden können, kann wie in Listing~\ref{lst:penalize_halluzinations} entschieden werden, ob die Halluzinationen bestraft werden.
 
 \begin{listing}[H]
-    \caption{Parameter der bestimmt ob Halluzinationen bestraft werden}
+    \caption{Parameter, der bestimmt, ob Halluzinationen bestraft werden}
     \label{lst:penalize_halluzinations}
     \inputminted[]{python}{listings/penalize_halluzinations.py}
 \end{listing}
+
 
 \section{Messung von Latenz, Energieverbrauch und VRAM-Nutzung}\label{sec:measure}
 
 Im Hinblick auf die Bewertung der Modelle werden neben der Güte der Klassifikation und \gls{IE} die \gls{Latenz}, die \gls{VRAM}-Nutzung sowie der Energieverbrauch gemessen.
 
 Die \gls{Latenz} der Modelle stellt lediglich das Delta zwischen Start- und Endzeit der Inferenz dar.
-Hierbei wird der Zeitpunkt gemessen, an dem die eigentliche Inferenz startet und wenn die Antwort bereitsteht.
-Das Laden des Modells wird nicht betrachtet, da diese keinen Einfluss auf die Antwortzeit in der produktiven Umgebung hat und folglich nicht relevant für die Evaluation ist.
+Hierbei werden die Zeitpunkte gemessen, an denen die eigentliche Inferenz startet und die Antwort bereitsteht.
+Das Laden des Modells wird nicht betrachtet, da dieses keinen Einfluss auf die Antwortzeit in der produktiven Umgebung hat und folglich nicht relevant für die Evaluation ist.
 
 Des Weiteren wird der Energieverbrauch während der Inferenz in Joule erfasst.
-Die Messung der Leistung in Watt ist nicht zielführend, da sie die Zeit nicht berücksichtigt und Modelle mit geringerer \gls{Latenz} bei vergleichbarem Energieverbrauch benachteiligt werden.
+Die Messung der Leistung in Watt ist nicht zielführend, da sie die Zeit nicht berücksichtigt und Modelle mit geringerer \gls{Latenz} bei vergleichbarem Energieverbrauch benachteiligt werden würden.
 
-Wie auch der Energieverbrauch wird die \gls{VRAM}-Nutzung während der Inferenz gemessen.
-Der Messzeitraum für den Energieverbrauch als auch für die \gls{VRAM}-Nutzung ist gleich der \gls{Latenz} der Modelle.
-Mit der Initialisierung des Modells wird einmalig der statische Verbrauch gemessen.
+Ebenso wie der Energieverbrauch wird der dynamische \gls{VRAM}-Verbrauch während der Inferenz gemessen.
+Mit der Initialisierung des Modells wird zudem einmalig der statische Verbrauch gemessen.
 
-
+\newpage
 \section{Auswahl des Basismodells}\label{sec:model_selection}
 
 Die Auswahl eines geeigneten Basismodells ist ein wichtiger Schritt für das spätere Fine-Tuning.
 Wie in Abbildung~\ref{fig:overview} (grün markierte Felder) dargestellt, erfolgt diese Auswahl in einem iterativen Prozess.
-Ziel ist es, das Modell zu identifizieren, das bereits ohne Training die beste Leistung bei der Klassifikation als auch \gls{IE} erreichen kann.
+Ziel ist es, das Modell zu identifizieren, das bereits ohne Training die beste Leistung sowohl bei der Klassifikation als auch bei der \gls{IE} erreichen kann.
 
 In jeder Iteration werden die Modelle Pixtral-12B und Qwen-2.5-VL-7B mit dem Validierungsdatensatz~\ref{subsec:test_val_dataset} evaluiert.
 Die Iteration gliedert sich in folgende Schritte:
@@ -216,22 +216,22 @@ Die Iteration gliedert sich in folgende Schritte:
 \begin{enumerate}
     \item Evaluation: Durchführung der Inferenz beider Modelle mit dem Validierungsdatensatz.
     \item Fehleranalyse: Untersuchung der Fehler in der Klassifikation und in der \gls{IE}.
-    \item Prompt-Refinement: Anpassung des Prompt auf Basis der Fehleranalyse.
+    \item Prompt-Refinement: Anpassung des Prompts auf Basis der Fehleranalyse.
 \end{enumerate}
 
-Der Prozess wird so lange durchlaufen, bis durch Änderungen des Prompts keine Steigerungen der Metriken mehr erzielt wird.
-Im Anschluss wird mit dem finalen Prompt und dem Testdatensatz~\ref{subsec:test_val_dataset} die finalen Metriken bestimmt und auf Basis dieser das Modell gewählt.
-Die Trennung von Validierung- und Trainingsdatensatz schließt ein Data Leakage aus und verhindert ein Overfitting auf den Testdaten.
+Der Prozess wird so lange durchlaufen, bis durch Änderungen des Prompts keine Steigerungen der Metriken mehr erzielt werden.
+Im Anschluss werden mit dem finalen Prompt und dem Testdatensatz~\ref{subsec:test_val_dataset} die finalen Metriken bestimmt und auf Basis dieser das Modell gewählt.
+Die Trennung von Validierungs- und Trainingsdatensatz schließt ein Data Leakage aus und verhindert ein Overfitting auf den Testdaten.
 
 Bezogen auf das Prompt-Engineering wurde bewusst ein Zero-Shot-Ansatz gewählt.
 Im Gegensatz zu One-Shot- und Few-Shot-Prompting werden hier weniger Tokens verbraucht, was die Kosten pro Inferenz senkt.
-Des Weiteren kann das Modell so schneller antworten, da er weniger Input-Tokens verarbeiten muss.
+Des Weiteren kann das Modell so schneller antworten, da es weniger Input-Tokens verarbeiten muss.
 
 Die Gestaltung des finalen Prompts (siehe Listing~\ref{lst:prompt}) folgt der R-K-F-Formel.
-Während der Kontext die vorliegenden Dokumentenarten beschreibt und die Schemen definiert, gibt das Format die Ausgabeformatierung vor.
-Zum Einsparen von Tokens wird das Modell strikt angewiesen lediglich das \gls{JSON}-Objekt zu generieren.
+Während der Kontext die vorliegenden Dokumentenarten beschreibt und die Schemata definiert, gibt das Format die Ausgabeformatierung vor.
+Zum Einsparen von Tokens wird das Modell strikt angewiesen, lediglich das \gls{JSON}-Objekt zu generieren.
 
-Der hier evaluierte Prompt wird im Laufe der Arbeit auch für das größere Qwen-2.5-VL-32B genutzt, jedoch war dieses Modell keine Option für das spätere Fine-Tuning, da das nicht Teil der Forschung ist.
+Der hier evaluierte Prompt wird im Laufe der Arbeit auch für die Bewertung des Qwen-2.5-VL-32B genutzt.
 
 \begin{listing}[H]
     \caption{Finaler Prompt der Modellauswahl}
@@ -252,14 +252,14 @@ KG5b-Formulare haben ein starres Layout, wodurch schon mit einer geringeren Anza
 Infolge der hohen Varianz der Verträge und der sonstigen Dokumente erhalten diese im Training eine höhere Gewichtung.
 Anders als beim Testdatensatz werden hier die Exemplare nicht manuell, sondern mithilfe einer Stichprobe ausgewählt.
 Dabei werden die Daten aus einem einwöchigen Zeitraum betrachtet, wodurch ohne manuelle Auswahl eine genaue Repräsentation der realen Daten entsteht.
-Des Weiteren wird so der Selektionsbias verhindert.
+Des Weiteren wird so ein Selection Bias verhindert.
 
 Zur effizienten Erstellung der Ground Truth wird ein Model-Assisted Labeling eingesetzt.
 Hierbei generiert das im Prozess der Modellauswahl~\ref{sec:model_selection} gewonnene Modell, zusammen mit dem angepassten Prompt, für jedes Dokument das jeweilige \gls{JSON}-Objekt.
 Im Anschluss werden diese \gls{JSON}-Objekte manuell kontrolliert und korrigiert.
-Durch den Einsatz des Modells zur Ermittelung der Ground Truth konnte der Aufwand erheblich gesenkt werden.
+Durch den Einsatz des Modells zur Ermittlung der Ground Truth konnte der Aufwand erheblich gesenkt werden.
 
-Für das Fine-Tuning muss der Datensatz in das \gls{OpenAI Message Format} (Listing~\ref{lst:messages}) gebracht werden
+Für das Fine-Tuning muss der Datensatz in das \gls{OpenAI Message Format} (Listing~\ref{lst:messages}) gebracht werden.
 Des Weiteren müssen die \gls{JSON}-Objekte in Markdown-Blöcke eingebettet werden, um dem bereits gelernten Format des \gls{VLM} zu entsprechen.
 
 \begin{listing}[H]
@@ -273,9 +273,9 @@ Des Weiteren müssen die \gls{JSON}-Objekte in Markdown-Blöcke eingebettet werd
 Das in Abschnitt~\ref{sec:model_selection} gewählte Basismodell wird mittels \gls{PEFT} an die Dokumentenarten angepasst.
 Dabei kommen \gls{LoRA} und die stabilisierte Variante \gls{rsLoRA} zum Einsatz.
 Für das Training wird auf das Framework \gls{Unsloth} gesetzt, um den Ressourcenverbrauch gering zu halten.
-Des Weiteren wird das Modell in 4-Bit geladen, um die \gls{VRAM}-Auslastung weiter zu senken.
+Des Weiteren wird das Modell in 4-Bit-Quantisierung geladen, um die \gls{VRAM}-Auslastung weiter zu senken.
 
-Der Systemprompt in Listing~\ref{lst:prompt_finetuning} ist einfach gehalten, damit das Modell durch Beispiele statt durch Instruktion lernt.
+Der Systemprompt in Listing~\ref{lst:prompt_finetuning} ist pragmatisch gehalten, damit das Modell anhand von Beispielen statt durch Instruktion lernt.
 
 \begin{listing}[H]
     \caption{Prompt für das Fine-Tuning des Qwen-2.5-VL-7B}
@@ -285,14 +285,14 @@ Der Systemprompt in Listing~\ref{lst:prompt_finetuning} ist einfach gehalten, da
 
 Der Trainingsdatensatz~\ref{subsec:train_dataset} wird mithilfe von Datenaugmentation an das Training angepasst.
 Vor jedem Trainingslauf wird der Datensatz vollständig randomisiert, um eine zufällige Reihenfolge der Trainingsdaten zu erhalten.
-Darüber hinaus wurden in einigen der Trainingsläufe die Seiten der Dokumente wahllos getauscht, um dem Modell anzutrainieren, Informationen unabhängig von der Position zu extrahieren.
+Darüber hinaus wurden in einigen der Trainingsläufe die Seiten der Dokumente zufällig getauscht, um dem Modell anzutrainieren, Informationen unabhängig von der Position zu extrahieren.
 
-Die Parameteroptimierung erfolgte iterativ, wie im blau markierten Bereich in Abbildung~\ref{fig:overview} zu erkennen ist und es werden alle Komponenten des \gls{VLM} trainiert.
+Die Parameteroptimierung erfolgte iterativ, wie im blau markierten Bereich in Abbildung~\ref{fig:overview} zu erkennen ist, und es werden alle Komponenten des \gls{VLM} trainiert.
 Die wichtigsten Parameter der finalen Konfiguration sind in Listing~\ref{lst:parameter} abgebildet.
 
 Um ein Overfitting zu vermeiden, wird neben dem Trainingsdatensatz auch hier der Validierungsdatensatz~\ref{subsec:test_val_dataset} verwendet.
 Nach 80 Dokumenten wird mit dem Validierungsdatensatz der Trainingsfortschritt gemessen.
-Am Ende des Trainingslaufs wird das Modell geladen, dass den geringsten Loss gegenüber dem Validierungsdatensatz hatte.
+Am Ende des Trainingslaufs wird das Modell geladen, das den geringsten Loss gegenüber dem Validierungsdatensatz hatte.
 
 \begin{listing}[H]
     \centering
@@ -308,4 +308,4 @@ Am Ende des Trainingslaufs wird das Modell geladen, dass den geringsten Loss geg
     \label{lst:parameter}
 \end{listing}
 
-Abschließend wurde wie bei der Auswahl des Basismodells mit dem Testdatensatz~\ref{subsec:test_val_dataset} die finalen Metriken bestimmt.
+Abschließend wird wie bei der Auswahl des Basismodells mit dem Testdatensatz~\ref{subsec:test_val_dataset} die finalen Metriken bestimmt.

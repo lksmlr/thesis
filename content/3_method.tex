@@ -255,15 +255,50 @@ Hierbei generiert das im Prozess der Modellauswahl~\ref{sec:model_selection} gew
 Im Anschluss werden diese \gls{JSON}-Objekte manuell kontrolliert und korrigiert.
 Durch den Einsatz des Modells zur Ermittelung der Ground Truth konnte der Aufwand erheblich gesenkt werden.
 
+Für das Fine-Tuning muss der Datensatz in das \gls{OpenAI Message Format} (Listing~\ref{lst:messages}) gebracht werden
+Des Weiteren müssen die \gls{JSON}-Objekte in Markdown-Blöcke eingebettet werden, um dem bereits gelernten Format des \gls{VLM} zu entsprechen.
+
+\begin{listing}[H]
+    \caption{OpenAI Message Format}
+    \label{lst:messages}
+    \inputminted[]{python}{listings/messages.py}
+\end{listing}
 
 \subsection{Optimierung des Basismodells durch Fine-Tuning}\label{subsec:optimise_fine_tuning}
 
-Das Basismodell aus~\ref{sec:model_selection} wurde mit mehreren Methoden des \gls{PEFT} und dem Framework \gls{Unsloth} trainiert.
-Im Laufe des Trainings wurde verschiedene Strategien angewandt, die sowohl die Veränderung der Parameter als auch des Trainingsdatensatzes~\ref{subsec:train_dataset} beinhalten.
+Das Basismodell aus~\ref{sec:model_selection} wurde mit mehreren Methoden des \gls{PEFT} (LoRA und rsLoRA) und dem Framework \gls{Unsloth} trainiert.
+Die Optimierung der Parameter erfolgt iterativ wie im blau markierten Bereich in Abbildung~\ref{fig:overview} zu erkennen.
 
-Ein wesentlicher Aspekt der Optimierung lag in der Augmentation des Datensatzes.
+Der Systemprompt in Listing~\ref{lst:prompt_finetuning} ist einfach gehalten, damit das Modell durch Beispiele statt durch Instruktion lernt.
+
+\begin{listing}[H]
+    \caption{Prompt für das Fine-Tuning des Qwen-2.5-VL-7B}
+    \label{lst:prompt_finetuning}
+    \inputminted[]{python}{listings/prompt_finetuning.py}
+\end{listing}
+
+Ein weiterer wesentlicher Aspekt der Optimierung lag in der Augmentation des Datensatzes.
 Vor jedem erneuten Trainingslauf wurde der Datensatz vollständig randomisiert, um eine zufällige Reihenfolge der Trainingsdaten zu erhalten.
 Des Weiteren wurden in einigen der Trainingsläufe die Seiten der einzelnen Dokumente getauscht, um dem Modell zu lernen, die Informationen ohne Position zu extrahieren.
 
-Die Optimierung der Parameter erfolgte iterativ wie im blau markierten Bereich in Abbildung~\ref{fig:overview} zu erkennen.
-Darunter zählten die Parameter der Ranggröße, des Optimizers
+Um ein Overfitting zu vermeiden, wird neben dem Trainingsdatensatz auch hier der Validierungsdatensatz~\ref{subsec:test_val_dataset} verwendet.
+Nach 80 Dokumenten wird mit dem Validierungsdatensatz der Trainingsfortschritt gemessen.
+Am Ende des Trainings wird das Modell geladen, dass am besten auf dem Validierungsdatensatz funktioniert hat.
+
+Die wichtigsten Parameter der finalen Konfiguration sind in Listing~\ref{lst:parameter} abgebildet.
+
+\begin{listing}[H]
+    \centering
+    \begin{minipage}{0.48\textwidth}
+        \caption{LoRA-Konfiguration}
+        \inputminted[]{python}{listings/model.py}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.48\textwidth}
+        \caption{Trainingsparameter des Fine-Tunings}
+        \inputminted[]{python}{listings/config_trainer.py}
+    \end{minipage}
+    \label{lst:parameter}
+\end{listing}
+
+Abschließend wurde wie bei der Auswahl des Basismodells mit dem Testdatensatz~\ref{subsec:test_val_dataset} die finalen Metriken bestimmt.

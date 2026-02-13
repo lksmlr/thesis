@@ -13,11 +13,3 @@ args = SFTConfig(
     lr_scheduler_type="cosine",
     max_seq_length=20000,
 )
-
-trainer = SFTTrainer(
-    model = model,
-    train_dataset = train_dataset,
-    eval_dataset = eval_dataset,
-    args = args,
-    ...
-)

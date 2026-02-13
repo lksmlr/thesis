@@ -10,14 +10,6 @@ model = FastVisionModel.get_peft_model(
     lora_alpha=16,
     lora_dropout=0,
     bias="none",
-    random_state=3407,
     use_rslora=True,
     loftq_config=None,
 )
-
-
-
-
-
-
-

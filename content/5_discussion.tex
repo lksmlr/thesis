@@ -1,13 +1,108 @@
 \chapter{Diskussion}\label{ch:discussion}
 
-Eine besondere Herausforderung bei der Verarbeitung stellen die binären Informationen dar, wie etwa die Checkbox für das Feld \texttt{apprenticeship\_ended}.
-Hier muss das Modell visuell unterscheiden, ob ein Kasten leer, angekreuzt oder durchgestrichen ist.
-Ebenso kritisch ist die Detektion von \texttt{signature\_company} und \texttt{stamp\_company}.
-Im Gegensatz zu Textfeldern ist hier nicht der textliche Inhalt des Stempels relevant, sondern lediglich dessen Vorhandensein.
+Die Ergebnisse aus Kapitel~\ref{ch:results} verdeutlichen das Potenzial, aber auch die Limitationen von \glspl{VLM}.
+Während die Klassifikations- und Extraktionsleistung der \gls{VLM} eine klare Überlegenheit zeigen, bedarf es einer tiefergehenden Analyse um die Praxistauglich dieser Modelle zu bewerten.
+Ziel dieser Diskussion ist, die Ursachen für die beobachteten Leistungsunterschiede zu erkennen und die technologischen Hürden zu beschreiben.
+
+
+\section{Interpretation der Fehler}\label{sec:perfomancy_error_patterns}
+
+Die YOLO/OCR-Pipeline als auch die \glspl{VLM} zeigen Fehlermuster die sich in Klassifikations-, Format-, Detektions- und Wertfehler unterteilen lassen.
+
+Klassifikationsfehler wiegen in der aus mehreren Spezialisten bestehenden YOLO/OCR-Pipeline schwer, da die Klassifikation einen Single Point of Failure darstellen.
+Wie die Confusion Matrix aus Abbildung~\ref{fig:confusion_matrices_overview} zeigt, wurden fünf Dokumente fälschlicherweise als \texttt{Sonstiges} eingestuft, was nach der Architektur (Abbildung~\ref{fig:aube}) zu einem direkten Abbruch führt.
+Auffällig war, dass es sich bei diesen fünf Dokumenten um fotografierte Dokumente handelte.
+Fotos haben oft eine Verzerrung, Schatten oder ungleichmäßige Beleuchtung, wodurch \gls{OCR}-Ergebnisse schlechter ausfallen.
+
+Diese Klassifikationsfehler führten zu einer geringeren Leistung der Information Extraction, da mit einem einzigen Fehler schon 10 Felder (Vertrag) oder 12 Felder (KG5b) fehlen.
+Auch die fehlerhafte Klassifikation von Verträgen als KG5b-Formular oder andersherum, wirkt sich stark auf die Information Extraction aus, da unterschiedliche \gls{YOLO}-Modelle für Verträge und KG5b-Formulare trainiert wurden.
+Ein entscheidender Vorteil des generalistischen \glspl{VLM} ist die Robustheit durch das einheitliche Modell.
+Da die Felder eines Vertrags eine Teilmenge des KG5b-Schemas darstellen, bleibt die Information Extraction teilweise erfolgreich, obwohl das Dokument falsch klssifiziert wurde.
+In einem optimalen Fall fehlen bei der Erkennung eines Vertrag, statt eines KG5b-Formulars, kein Feld
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Die \glspl{VLM} sowie die YOLO/OCR-Pipeline machen individuelle Fehler.
+Zu denen in Abschnitt~\ref{subsec:evaluation_classification_ie} vorgestellten Status und Fehlerarten werden zusätzlich Klassifikations- und Detektionsfehler betrachtet.
+Der Status jedes Feldes der \gls{JSON}-Objekte wird im folgenden auch als Fehler (Halluzinationen und fehlendes Feld) behandelt.
+
+Klassifikationsfehler, die in den Abbildungen~\ref{fig:results_classification} und~\ref{fig:results_classification} verdeutlicht sind, haben unterschiedliche Schweregrade.
+Aufgrund der unterschiedlichen Modelle pro Dokumentenart der YOLO/OCR-Pipeline, pflanzen sich Fehler der Klassifikation fort.
+Besonders kritisch sind Dokumente die fehlerhaft als sonstiges Dokument eingestuft werden, da hier die Pipeline direkt abbricht.
+Die in Abbildung~\ref{fig:confusion_matrices_overview} dargestellte Confusion Matrix der YOLO/OCR-Pipeline zeigt, dass fünf Dokumente fehlerhaft als sonstiges Dokument eingestuft wurden, was eine enorme Fehlerquelle darstellt.
+Jedes der fünf Dokumente war ein Foto eines Dokuments und kein Scan.
+Die Leistung der Information Extraction sinkt bei den KG5b-Formularen und Verträgen deshalb deutlich, da bei jedem falsch klassifizierten KG5b-Formularen effektiv schon 12 Felder fehlen und bei jedem falsch klassifizierten Vertrag 10 Felder.
+Diese Fehler sind jedoch auch den \glspl{VLM} die problematischsten, da diese nicht angewiesen werden Informationen zu extrahieren.
+Ein Vorteil des generalistischen Systems ist aber, das, wenn ein Vertrag als KG5b-Formular erkannt wird, im besten Fall nur das Feld \texttt{type} falsch ist, da die Felder der Verträge eine Teilmenge der KG5b-Felder darstellen.
+Bei den \glspl{VLM} ließ sich kein deutliches Muster erkennen welche Dokumente falsch klassifiziert wurden.
+
+Die Detektionsfehler begrenzen sich auf die Erkennung der Stempel, Unterschriften und speziell auf die Checkboxen des KG5b-Formulars.
+Diese binären Informationen stellen eine besondere Herausforderung dar, da Stempel und Unterschriften sich oftmals überlagern.
+Zusätzlich müssen die Modelle entscheiden, ob eine Checkbox leer, angekreuzt oder durchgestrichen ist.
+Durch die hohe Varianz der Verträge ist eine Eingrenzung der Fehlerquellen schwierig, jedoch stimmen die Fehler des KG5b-Formulars mit denen von layout-basierten Verträgen überein.
 Die Stempel sind oft blass oder eingefärbt, was besonders bei Schwarz-Weiß Scans zu einer schlechten Qualität führt.
-Zudem liegen die Felder \texttt{date\_document} und \texttt{signature\_company} nah beieinander.
+Zudem liegen die Felder \texttt{date\_document} und \texttt{signature\_company} meistens nah beieinander.
 Unterschriften sind regelmäßig größer als ihr vorgesehener Platz, wodurch das Feld \texttt{date\_document} überdeckt wird.
-Zusätzlich werden die Stempel häufig zusammen mit der Unterschrift auf der linken Seite platziert.
+Zusätzlich werden die Stempel häufig zusammen mit der Unterschrift auf einem Feld platziert.
+In diesem Bereich sind das Qwen-2.5-VL-32B und Qwen-2.5-VL-7B-finetuned auffallend gut, da hier die wenigsten Fehler gemacht wurden.
+
+Formatfehler beziehen sich auf Fehler innerhalb der \gls{JSON}-Felder als auch auf das gesamte \gls{JSON}-Objekt.
+Die YOLO/OCR-Pipeline macht aufgrund dessen Architektur keine Fehler im gesamten Objekt, weshalb eine retry-Logik wie aus Abschnitt~\ref{subsec:validate} bei \glspl{VLM} hier nicht benötigt wird.
+Das Pixtral-12B war das einzige Modell, was auch nach drei Versuchen bei zwei Verträgen kein valides \gls{JSON}-Objekt erstellen konnte.
+Dadurch liegt das Pixtral-12B schon alleine deswegen bei insgesamt 20 Feldern falsch.
+Es fehlten in beiden Fällen immer die umschließenden Klammern ({}), was durch einen Parser nicht erkannt wird.
+Das Qwen-2.5-VL-7B \glspl{VLM} benötigte maximal einen neuen Versuch, um eine valide \gls{JSON} zu generieren.
+Das Qwen-2.5-VL-32B und Qwen-2.5-VL-37B-finetuned benötigten keinen neuen Versuch, während das Pixtral-12B die meisten mit sechs neuen Versuchen benötigte.
+
+Die häufigste Art der Fehler sind die Wertfehler.
+Hier unterscheiden sich die Modelle aber grundlegend in deren Fehlerquelle.
+Sowohl das Pixtral-12B als auch die YOLO/OCR-Pipeline haben Probleme den richtigen Wert den Felder zuzuordnen.
+Hier liegt der Hauptgrund in den schlechten Ergebnissen des Pixtral, da Datumsangaben falsch zugeordnet werden.
+Hierbei wird zum Beispiel der Name des Ausbildenden zu dem Namen des Auszubildenden zugeordnet.
+Die Wertfehler des Qwen-2.5-VL-32B, Qwen-2.5-VL-7B und Qwen-2.5-VL-7B-finetuned beziehen sich zu einem großen Teil auf \gls{OCR}-Fehler bei Datumsangaben, jedoch ist bei dem Qwen-2.5-VL-32B und Qwen-2.5-VL-7B-finetuned besser als bei dem Qwen-2.5-VL-7B.
+Hier hat das Fine-Tuning eine deutliche Verbesserung gebracht.
+Datumsangaben, die handschriftlich geschrieben sind, werden deshalb oft schwierig erkannt und zum Beispiel \texttt{21.09.2025} statt {21.08.2025}.
+Das Pixtral-12B und Qwen-2.5-VL-7B hatten bei dem KG5b-Formular Schwierigkeiten mit dem Name des Kindes, da wie in Abbildung~\ref{fig:kg5bpage1} zu sehen ist, der Name des Antragsteller oben steht, wodurch dieser oft als der Name des Kindes gelifert wurden.
+Das Qwen-2.5-VL-32B und Qwen-2.5-VL-7B-finetuned machten bei den Namen keinen Fehler.
+
+Halluzinationen bilden eine besondere Fehlerklasse, da aufgrund der Konfigurationen der Dokumentenarten (Listing~\ref{lst:scheme_kg5b}) diese gefiltert werden können.
+Aufgrund dessen werden die Halluzinationen nicht bestraft.
+Die meisten Halluzination traten aber bei den Basismodellen auf in den sonstigen dokumenten, da hier dann auch der Name usw mit ausgeben wurden.
+
+\section{Abwägung Effektivität und Ressourceneffizienz}\label{sec:effectiveness_resource_efficiency}
+
+\section{Komplexität und Wartbarkeit der Systemarchitekturen}\label{sec:maintainability}
+
+\section{Limitation der Untersuchung}\label{sec:limitations}
+
+- name usw auch aus sonstigen extrahieren lassen wegen klassifikationsfehlern
+- bounding boxen für Kontrolle ob wirklich unterschriften zugeordnet werden können (labeln hätte um einiges länger gedauert)
+
+\section{Handlungsempfehlung für die Bundesagentur für Arbeit}\label{sec:recommendation_for_action}
+
+
+
 
 - yolo ocr schneidet am besten ab wegen pipline design bei sonstigen dokumenten
 - fehlerhafte klassifikation zieht sich durch

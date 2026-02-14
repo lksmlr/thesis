@@ -70,6 +70,7 @@ Die Felder der \gls{JSON}-Schemata geben die relevanten Informationen aus Abschn
 Die Klassifikation wird im \gls{JSON}-Objekt über das Feld \texttt{type} abgebildet und ist in allen \gls{JSON}-Schemata vorhanden.
 Felder der Information Extraction sind über die Dokumentenarten nicht konsistent, jedoch bildet das Schema eines Vertrags eine Teilmenge des Schemas eines KG5b-Formulars.
 Das Schema des KG5b-Formulars beinhaltet zusätzlich die Felder \texttt{apprenticeship\_finished} und \texttt{exam\_month}.
+\texttt{apprenticeship\_finished} ist ein binäres Feld und bildet die Checkboxen auf der ersten Seite des Formulars ab (siehe Abbildung~\ref{fig:kg5bpage1}).
 
 Bei den binären, booleschen Feldern markiert ein \texttt{true} das Vorhandensein eines Merkmals, während ein \texttt{false} dessen Fehlen oder das Nicht-Erkennen repräsentiert.
 Um eine strukturelle Konsistenz zu erzwingen, werden Felder, bei denen die dazugehörige Information im Dokument fehlt, bei booleschen Typen mit \texttt{false} und bei Textfeldern mit einer leeren Zeichenkette belegt.
@@ -155,6 +156,7 @@ Das Schema~\ref{lst:scheme_kg5b} definiert beispielhaft die Konfiguration für d
 Um die generierten \gls{JSON}-Objekte der \glspl{VLM} schlussendlich bewerten zu können, werden die Klassifikation und Information Extraction unabhängig voneinander bewertet.
 Für die Evaluation werden die einzelnen \gls{JSON}-Felder jedes Dokuments mithilfe der in der Konfiguration definierten Comparator mit der Ground Truth verglichen und verschiedene Metadaten erfasst.
 Die Metadaten beinhalten den Status (vorhanden, nicht vorhanden oder halluziniert), die Korrektheit sowie die Fehlerart des Feldes.
+Zu den Fehlerarten gehören Wert- und Formatfehler.
 Halluzinierte Felder sind definiert als Felder, die nicht in der jeweiligen Konfiguration vorkommen.
 Das Ergebnis ist ein Python-Dictionary (Listing~\ref{lst:dict}), das für jedes \gls{JSON}-Objekt eines Dokuments die Metadaten für jedes Feld beinhaltet.
 

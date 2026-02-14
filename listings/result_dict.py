@@ -10,10 +10,10 @@ result = {
             "is_correct": None,
             "error": None
         },
-        "birthday_child": {
-            "status": "present",
-            "is_correct": False,
-            "error": "format_error"
+        "birthday_legal_guardian": {
+            "status": "hallucinated",
+            "is_correct": None,
+            "error": None
         }
         ...
     }

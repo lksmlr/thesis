@@ -37,4 +37,4 @@ $(THESIS).aux: refs.bib
 	pdflatex $(THESIS).tex -draftmode
 
 clean:
-	-del /s /q *.aux *.lof *.log *.lot *.lol *.bcf *.toc *.bbl *.blg *.run.xml *.out *.xmpi *.xmpdata
+	-del /s /q *.aux *.lof *.log *.lot *.lol *.bcf *.toc *.bbl *.blg *.run.xml *.out *.xmpi *.xmpdata *.minted

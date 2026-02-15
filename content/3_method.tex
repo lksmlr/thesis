@@ -212,7 +212,8 @@ Wie in Abbildung~\ref{fig:overview} (grün markierte Felder) dargestellt, erfolg
 Ziel ist es, das Modell zu identifizieren, das bereits ohne Training die beste Leistung sowohl bei der Klassifikation als auch bei der Information Extraction erreichen kann.
 
 In jeder Iteration werden die Modelle Pixtral-12B und Qwen-2.5-VL-7B mit dem Validierungsdatensatz~\ref{subsec:test_val_dataset} evaluiert.
-Die Iteration gliedert sich in folgende Schritte:
+Die Temperatur der Modelle wird auf null gesetzt, um Halluzinationen zu vermeiden.
+Jede Iteration gliedert sich in folgende Schritte:
 
 \begin{enumerate}
     \item Evaluation: Durchführung der Inferenz beider Modelle mit dem Validierungsdatensatz.

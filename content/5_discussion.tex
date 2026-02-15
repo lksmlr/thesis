@@ -57,45 +57,51 @@ Kritisch betrachtet relativiert sich der Effizienzvorteil der Pipeline jedoch im
 Ein niedriger F1-Score (0,51 bei Verträgen) zieht zwangsläufig eine Nachbearbeitung durch Sachbearbeiter nch sich.
 Die durch die schnelle Verarbeitung gewonnene Zeit wird somit im Gesamtprozess durch menschliche Korrektureingriffe wieder reduziert.
 
+Eine menschliche Korrektur von einer Minute ist wirtschaftlich gesehen teurer als eine Minute Latenz.
+Die schlechtere Effektivität der YOLO/OCR-Pipeline wird damit finanziell kompensiert.
+
 Neben dem Energiebedarf ist die Hardware-Infrastruktur, spezifisch die \gls{VRAM}-Auslastung, ein limitierender Faktor.
 Während die YOLO/OCR-Pipeline auf Standard-Hardware lauffähig ist, setzen die großen \glspl{VLM} leistungsstarke \glspl{GPU} voraus.
 Das Qwen-2.5-VL-32B übertrifft das Qwen-2.5-VL-7B-finetuned zwar in der Information Extraction bei Verträgen (F1-Score 0,94 gegenüber 0,84), erkauft sich diesen Vorteil jedoch mit einem fast vierfach höheren statischen \gls{VRAM}-Bedarf.
 
-%TODO: umformulieren
 Als technischer \enquote{Sweet Spot} zwischen Verbrauch, \gls{Latenz} und Extraktionsgüte kristallisiert sich das Qwen-2.5-VL-7B-finetuned heraus.
 Es übertrifft die Pipeline sowohl in der Klassifikation als auch in der Information Extraction signifikant und bleibt dabei ressourcentechnisch niedriger als das Qwen-2.5-VL-32B.
-Mit einem statischen \gls{VRAM}-Bedarf von circa 17 GB lässt sich dieses Modell auf gängigen Enterprise-GPUs betreiben, ohne die hohen Hardwareanforderungen des 32B-Modells zu stellen.
-Zwar bestimmen die gewünschte \gls{Latenz} und der Durchsatz weiterhin die Skalierung der Infrastruktur, jedoch senkt das 7B-Modell die Einstiegshürde für einen produktiven Einsatz drastisch.
+Das Betreiben von \glspl{VLM} bleibt aber ein Skalierungsproblem, da gleichzeitige Anfragen die dynamische VRAM-Auslastung massiv beeinflussen und man somit für ein ausreichend hohen Tokendurchsatz mehrere GPUs simultan betreiben muss.
+Einfache Modelle wie die der YOLO/OCR-Pipeline haben dieses Problem nicht.
+
 
 
 \section{Komplexität und Wartbarkeit der Systemarchitekturen}\label{sec:maintainability}
 
-Neben der Modellleistung stellt die architektonische Komplexität einen zentralen Faktor für den produktiven Einsatz dar.
-Zur systematischen Einordnung wird im Folgenden das Qualitätsmodell der ISO/IEC~25010 herangezogen, insbesondere das Qualitätsmerkmal der Wartbarkeit mit den Teilaspekten Modularität, Analysierbarkeit, Änderbarkeit und Testbarkeit.
+Neben der reinen Modellleistung stellt die architektonische Komplexität einen zentralen Faktor für den produktiven Einsatz dar.
+Zur Einordnung wird das Qualitätsmodell der ISO/IEC~25010 herangezogen, wobei der Fokus auf dem Qualitätsmerkmal der Wartbarkeit mit den Teilaspekten Modularität, Analysierbarkeit, Änderbarkeit und Testbarkeit liegt.
 
-Die Architektur der YOLO/OCR-Pipeline basiert auf einer sequenziellen Verkettung mehrerer spezialisierter Modelle (siehe Abbildung~\ref{fig:aube}).
-Zwar ist die Pipeline modular aufgebaut, jedoch besteht eine starke Kopplung zwischen den Komponenten.
-Im Speziellen nimmt der Klassifikator eine zentrale Funktion ein, da dessen Entscheidung die Auswahl der nachgelagerten Modelle bestimmt.
-Fehlklassifikationen propagieren somit durch die gesamte Modellkette, wodurch die Analysierbarkeit und Fehlereingrenzung erschwert wird.
+Die Architektur der YOLO/OCR-Pipeline zeichnet sich durch eine Verkettung spezialisierter Komponenten aus (siehe Abbildung~\ref{fig:aube}).
+Obwohl dieser Aufbau grundsätzlich modular ist, entsteht durch die sequenzielle Verarbeitung eine kritische Abhängigkeit.
+Der Klassifikator nimmt eine zentrale Rolle ein, da seine Entscheidung den weiteren Verlauf bestimmt.
+Fehlklassifikationen propagieren durch die Komponenten der Pipeline, was die Fehlerursachenanalyse erschwert.
 Wie bereits in der Fehleranalyse~\ref{sec:error_patterns} identifiziert, stellt der Klassifikator hier architektonisch einen Single Point of Failure dar.
 
-Auch im Hinblick auf die Änderbarkeit zeigt sich eine erhöhte Komplexität.
-Eine neue Dokumentenart erfordert Anpassungen am Klassifikator sowie das Training zusätzlicher \gls{YOLO}-Modelle.
-Das Training dieser Modelle ist mit großem manuellem Aufwand verbunden, da Bounding-Box-Annotationen erstellt werden müssen.
-Darüber hinaus erhöhen die zahlreichen Schnittstellen zwischen den Modulen sowie notwendige Konvertierungslogiken die Fehleranfälligkeit und reduzieren die Modularität im Sinne der ISO/IEC~25010.
+Hinsichtlich der Änderbarkeit offenbart die YOLO/OCR-Pipeline einen erhöhten Aufwand.
+Die Einführung einer neuen Dokumentenart erfordert ein erneutes Training des Klassifikators und das Training eines neuen YOLO-Modells.
+Durch das manuelle Annotieren der Bounding-Boxen ist das Training eines neuen Modell mit hohem Aufwand verbunden.
+Zudem erhöhen die Schnittstellen und die Konvertierungslogiken zwischen den Modulen die Fehleranfälligkeit.
 
-Im Gegensatz dazu verfolgt ein \gls{VLM} einen Ansatz, bei dem Klassifikation und Information Extraction innerhalb eines einzelnen Modells erfolgen.
-Dadurch reduziert sich die Anzahl der Komponenten und Schnittstellen signifikant, was sich positiv auf die Modularität und Analysierbarkeit auswirkt.
-Änderungen an Dokumentenarten beschränken sich bei angepassten Modellen, wie dem Qwen-2.5-VL-7B-finetuned, auf ein erneutes Training eines einzigen Modells.
-Bei Basismodellen können Erweiterungen durch Prompt-Anpassungen realisiert werden, wodurch sich der Änderungsaufwand weiter reduziert.
+Im Gegensatz dazu verfolgt der \gls{VLM}-Ansatz eine Konsolidierung der Aufgaben: Klassifikation und Information Extraction erfolgen innerhalb eines einzigen Modells.
+Dies reduziert die Anzahl der Systemkomponenten und Schnittstellen drastisch, was die \textbf{architektonische Komplexität} senkt.
+Änderungen an Dokumentenarten beschränken sich – wie am Beispiel des Qwen-2.5-VL-7B-finetuned gezeigt – auf das Nachtraining einer einzigen Komponente oder, bei Basismodellen, auf die Anpassung des Prompts.
 
-Ein potenzieller Nachteil des \gls{VLM}-Ansatzes liegt in der stärkeren Zentralisierung der Verarbeitung, wodurch eine erhöhte Abhängigkeit von einem einzelnen Modell entsteht.
-Zudem weisen \glspl{VLM} eine höhere Varianz in ihren Ausgabeformaten auf, was zusätzliche Normalisierungsschritte erforderlich machen kann und die Testbarkeit beeinflusst.
+Dieser monolithische Ansatz bringt jedoch spezifische Nachteile für die Testbarkeit und Stabilität mit sich.
+Ein \gls{VLM} agiert als Black Box, wodurch die interne Logik schwer analysierbar ist.
+Während in der YOLO/OCR-Pipeline die Komponenten logisch entkoppelt sind – eine Änderung am YOLO-Modell lässt die Funktionalität des OCR-Moduls unberührt –, sind die Fähigkeiten eines \gls{VLM} in den Gewichten untrennbar verwoben.
+Eine Änderung des Prompts oder ein Fine-Tuning zur Verbesserung einer Dokumentenart kann unvorhersehbare Seiteneffekte (Regressionen) auf andere Dokumentenarten haben.
+Dies erhöht die Komplexität von Regressionstests signifikant, da nach jeder Änderung das gesamte Ausgabespektrum des Modells validiert werden muss.
+
 
 
 \section{Zusammenfassende Beantwortung der Forschungsfragen}\label{sec:answer_ffs}
 
-
+- Die Abwägung zwischen ökologischen Fußabdruck, Leistung und Einsparung von Mitarbeiterkosten ist
 
 \section{Limitation und Probleme der Untersuchung}\label{sec:limitations}
 

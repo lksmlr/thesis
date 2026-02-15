@@ -93,6 +93,8 @@ Die sonstigen Dokumente beinhalten keine kontextfremden Dokumente, sondern Schul
 
 Zur Erstellung der Wahrheitswerte (Ground Truth) werden alle Dokumente manuell annotiert und in das entsprechende \gls{JSON}-Schema überführt.
 
+Die bestehende YOLO/OCR-Pipeline wird mit dem Testdatensatz getestet und die Metriken bestimmt.
+
 
 \section{Evaluation der generierten JSON-Objekte}\label{sec:evaluation}
 
@@ -157,7 +159,7 @@ Um die generierten \gls{JSON}-Objekte der \glspl{VLM} schlussendlich bewerten zu
 Für die Evaluation werden die einzelnen \gls{JSON}-Felder jedes Dokuments mithilfe der in der Konfiguration definierten Comparator mit der Ground Truth verglichen und verschiedene Metadaten erfasst.
 Die Metadaten beinhalten den Status (vorhanden, nicht vorhanden oder halluziniert), die Korrektheit sowie die Fehlerart des Feldes.
 Zu den Fehlerarten gehören Wert- und Formatfehler.
-Halluzinierte Felder sind definiert als Felder, die nicht in der jeweiligen Konfiguration vorkommen.
+Halluzinierte Felder sind definiert als Felder, die nicht in der jeweiligen Konfiguration beziehungsweise Schema vorkommen.
 Das Ergebnis ist ein Python-Dictionary (Listing~\ref{lst:dict}), das für jedes \gls{JSON}-Objekt eines Dokuments die Metadaten für jedes Feld beinhaltet.
 
 \begin{listing}[H]
@@ -181,8 +183,8 @@ Zu den \gls{FN} gehören Felder, die entweder fehlen oder vorhanden, aber falsch
 Ein Feld, das vorhanden, aber falsch ist, zählt zusätzlich zu den \gls{FP}, zusammen mit den Feldern, die halluziniert werden.
 Diese doppelte Bestrafung stellt eine sehr strenge Bewertung für inhaltliche Fehler dar.
 True Negatives (\gls{TN}) sind nicht zählbar, da die Menge an nicht gefundenen, leeren Feldern theoretisch unendlich groß ist.
-Durch die Konfiguration und die Ground Truths ist eindeutig feststellbar, welche Felder halluziniert sind.
-Da mithilfe der Konfiguration auch ohne Ground Truth die benötigten Felder gefiltert werden können, kann wie in Listing~\ref{lst:penalize_halluzinations} entschieden werden, ob die Halluzinationen generell bestraft werden.
+Durch die Schemata und die Ground Truths ist eindeutig feststellbar, welche Felder halluziniert sind.
+Da mithilfe der Schemata auch ohne Ground Truth die benötigten Felder gefiltert werden können, kann wie in Listing~\ref{lst:penalize_halluzinations} entschieden werden, ob die Halluzinationen generell bestraft werden.
 
 \begin{listing}[H]
     \caption{Parameter, der bestimmt, ob Halluzinationen bestraft werden}

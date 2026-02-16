@@ -172,16 +172,58 @@ Besonders bei der Verarbeitung von mehreren Bildern wird der Kontext pro Anfrage
 Die Skalierung fällt hier wesentlich schwerer als die der deterministischen YOLO/OCR-Pipeline, da mit gewünschter Latenz und gewünschten gleichzeitigen Anfragen die Entscheidung der benötigten Hardware gefällt werden muss.
 
 
-\section{Limitation und Probleme der Untersuchung}\label{sec:limitations}
+\section{Limitation und Probleme der Evaluation}\label{sec:limitations}
 
-- merging der adapter weights deswegen höherer verbrauch -> isngesatm 11 traininglsäufe = 11 Modell = viel speicher
-- name usw auch aus sonstigen extrahieren lassen wegen klassifikationsfehlern
-- bounding boxen für Kontrolle ob wirklich unterschriften zugeordnet werden können (labeln hätte um einiges länger gedauert)
-- base64 ging nicht
-- constrained decoding
-- ram overflow Pixtral framework
-- mehrere dokumentenarten in einem dokument -> nur 32B bei 3/3 Fällen erkannt. sonst nur finetuned modell, aber hier zu wenig trainingsdaten -> augmentation
+Im Verlauf der Implementierung und Evaluation traten technische Limitationen und Herausforderungen auf, die die Ergebnisse beeinflussen und Potenziale für zukünftige Optimierungen aufzeigen.
+Diese lassen sich in framework-spezifische Probleme, Aspekte der Ressourcenverwaltung sowie methodische Grenzen der Klassifikation und Datenverarbeitung unterteilen.
 
+Eine technische Hürde stellte die Inferenz des Pixtral-12B dar.
+Das Modell wurde über den in Listing~\ref{lst:pixtral} dargestellten Code geladen.
+Hierbei zeigte sich ein Memory Leak, das trotz Bereinigung des Speichers und des Caches dazu führte, dass der \gls{VRAM} beider Grafikkarten nach vier bis fünf Inferenzen vollständig belegt war.
+Dieses Verhalten trat nur beim Pixtral-12B auf und zwang zu einer manuellen Verarbeitung der Datensätze in Batches.
+
+\begin{listing}[H]
+    \caption{Laden des Pixtral-Modells}
+    \label{lst:pixtral}
+    \inputminted[]{python}{listings/pixtral.py}
+\end{listing}
+
+Ein weiteres Problem bei der Implementierung trat bei den Qwen-Modellen auf.
+Anfänglich wurden die Dokumente als Base64-Strings an das Modell übergeben.
+Die in Listing~\ref{lst:qwen} verwendete Funktion \texttt{apply\_chat\_template} wies jedoch einen internen Fehler bei der Verarbeitung mehrerer Base64-Bilder auf, sodass lediglich das erste Bild vom Modell gesehen wurde.
+Dieses Problem konnte durch die Umstellung auf PIL-Images gelöst werden.
+
+\begin{listing}[H]
+    \caption{Laden der Qwen-Modelle}
+    \label{lst:qwen}
+    \inputminted[]{python}{listings/qwen.py}
+\end{listing}
+
+Hinsichtlich der Ressourceneffizienz zeigten die Ergebnisse in Abbildung~\ref{fig:results_vram_inference} und Abbildung~\ref{fig:results_vram_model}, dass das Qwen-2.5-VL-7B-finetuned im Vergleich zum Basismodell einen erhöhten statischen und im Vergleich zum 32B-Modell sogar einen höheren dynamischen \gls{VRAM}-Verbrauch aufweist.
+Dieser Overhead resultiert vermutlich aus der Art der Bereitstellung.
+Die Gewichte der während des Fine-Tunings trainierten \gls{LoRA}-Adapter werden nicht fest mit dem Basismodell gemerged, sondern zur Laufzeit dynamisch geladen, um Speicherplatz zu sparen.
+In einem produktiven Einsatz wird der finale Adapter mit dem Basismodell gemerged und zusammen gespeichert, was den Overhead reduzieren wird.
+
+Methodische Limitationen zeigten sich in der Robustheit der Klassifikation durch Fehlklassifikationen.
+Wie in der Fehleranalyse diskutiert, führt eine Fehlklassifikation eines Vertrags als \texttt{Sonstiges} zum Verlust aller Felder, da für die Klasse \texttt{Sonstiges} keine Extraktion stattfindet.
+Das Extrahieren von Vertragsdaten auch in sonstigen Dokumenten würde den Fehler der Klassifizierung als sonstiges Dokument reduzieren.
+Jedoch wäre dieses Vorgehen mit einem erhöhten Labeling-Aufwand verbunden.
+
+Zur Steigerung der Zuverlässigkeit der Ausgabeformate bietet sich der Einsatz von Constrained Decoding an.
+Durch die Bereitstellung des Modells über Frameworks wie \gls{vLLM} kann die Ausgabe strikt auf ein \gls{JSON}-Schema beschränkt werden.
+Damit könnte man nicht nur die Generierung von invaliden \gls{JSON}-Schemata verhindern, sondern könnte auch das Format für Datumsangaben und binäre Felder festsetzen.
+Zusätzlich ermöglicht dieser Ansatz die Auswertung der \gls{logprobs} der generierten Token.
+Durch die Analyse der Wahrscheinlichkeitsverteilung des Tokens, das auf \texttt{"type": "} folgt, ließe sich ein Confidence für die Klassifikation bestimmen.
+Dokumente, bei denen das Modell eine niedrige Confidence aufweist, könnten so markiert werden für den Sachbearbeiter.
+
+Außerdem wird in der Evaluation nicht betrachtet, dass eventuell mehrere Dokumentenarten in einem PDF zusammengefasst werden.
+Um gemischte Dokumentenarten zu erkennen, müsste das Modell in der Lage sein ein Array von \gls{JSON}-Objekten zu liefern.
+Hierfür müsste eine Anpassung der Trainingsdaten erfolgen mittels Augmentation, da für diese vermischten Dokumente wenig Trainingsdaten zur Verfügung stehen.
+
+Eine weitere Limitation stellt die maximale Kontextlänge der Modelle dar.
+Dokumente, die besonders umfangreich sind, neigen dazu das Kontextfenster des Modells zu überladen.
+Dies führt zu einem Abbruch der Inferenz oder einer einem Abschneiden relevanter Inhalte.
+Für den Fall dieser vielseitigen Dokumente muss für den produktiven Einsatz eine Strategie wie eine Vorfilterung entwickelt werden.
 
 
 \section{Handlungsempfehlung für die Bundesagentur für Arbeit}\label{sec:recommendation_for_action}
@@ -193,9 +235,7 @@ Aus der Beantwortung der Forschungsfragen leitet sich die Handlungsempfehlung f�
 - andere Projekte
 - weiter labeln mit 32B modell -> 7B-finetuned noch robuster
 
-- yolo ocr schneidet am besten ab wegen pipline design bei sonstigen dokumenten
-- fehlerhafte klassifikation zieht sich durch
-- confusion matrix yolo ocr viele als sonstige -> große Fehler
+
 - kg5d
 - hohen Verbrauch erklären
 - dynmaische vram näher betrachten

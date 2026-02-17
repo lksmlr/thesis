@@ -1,6 +1,5 @@
 \chapter{Einleitung}\label{ch:introduction}
 
-% TODO: MLLM zu VLM übersetzen
 \section{Motivation}\label{sec:motivation}
 
 Die öffentliche Verwaltung in Deutschland steht vor einer großen Herausforderung.
@@ -9,7 +8,7 @@ Dieser Wandel wird ohne Digitalisierung und Automatisierung der Prozesse kaum ab
 
 Auch in der Bundesagentur für Arbeit (\gls{BA}) macht sich dieser Wandel, hin zu mehr Digitalisierung, bemerkbar.
 Ein Beispiel hierfür ist die Bearbeitung von Kindergeldanträgen.
-Mit einem jährlichen Aufkommen von mehreren Millionen Anträgen\cite{AnzahlAntraegeProJahr} und saisonalen Spitzen, kommen hier die Sachbearbeiter an ihre Grenzen.
+Mit einem jährlichen Aufkommen von mehreren Millionen Anträgen\cite{AnzahlAntraegeProJahr} und saisonalen Spitzen kommen hier die Sachbearbeiter an ihre Grenzen.
 
 Um sich dieser Herausforderung zu stellen, wurde bereits im Oktober 2025 ein teilautomatisiertes System produktiv gesetzt.
 Hierbei wird sich auf die Kindergeldanträge von volljährigen Auszubildenden konzentriert.
@@ -19,16 +18,14 @@ Diese aktuelle \gls{YOLO}/\gls{OCR}-Pipeline wertet die Bearbeitung der Kinderge
 Aufgrund der rasanten Entwicklung im Bereich der Vision Language Models (\glspl{VLM}) werden diese zunehmend interessanter.
 In der vorliegenden Arbeit soll evaluiert werden, inwiefern ein solches Modell Potenzial hat, die \gls{YOLO}/\gls{OCR}-Pipeline zu ersetzen.
 
-
 \section{Problemstellung}\label{sec:problem}
 
 Seitdem die aktuelle Pipeline im operativen Einsatz ist, zeigen sich verschiedene Herausforderungen.
 
 Das Hauptproblem ist die hohe Varianz der hochgeladenen Dokumente, insbesondere der Ausbildungsverträge.
 Die verschiedenen Firmen und Kammern nutzen alle unterschiedliche Layouts, wodurch das Training der Modelle komplex ist.
-Es ist schwierig, die Varianz in den Trainingsdaten abzubilden, zudem es zeitaufwendig ist, eine solche Menge an Trainingsdaten bereitzustellen.
+Es ist schwierig, die Varianz in den Trainingsdaten abzubilden, zumal es zeitaufwendig ist, eine solche Menge an Trainingsdaten bereitzustellen.
 
-Ein weiteres Problem ist die Qualität der hochgeladenen Dokumente.
 Die Dokumente, die relevant für den Kindergeldantrag bei volljährigen Auszubildenden sind, benötigen in allen Fällen eine Unterschrift.
 Dadurch werden die Dokumente zwingenderweise ausgedruckt, ausgefüllt und unterschrieben, um schlussendlich wieder eingescannt zu werden.
 Dieser Prozess, den man auch Medienbruch nennt, hat eine schlechte Qualität zur Folge.
@@ -36,7 +33,6 @@ Dieser Prozess, den man auch Medienbruch nennt, hat eine schlechte Qualität zur
 Angesichts der Verwendung von vielen unterschiedlichen Modellen ist die Wartung des Systems aufwändig.
 Eine Anpassung an neue Gegebenheiten ist ein zeitaufwendiger Prozess.
 Schon kleine Änderungen an der Laufzeitumgebung, wie zum Beispiel eine neue Python-Version, erfordern meistens ein erneutes Training der Modelle.
-
 
 \section{Zielsetzung}\label{sec:goal}
 

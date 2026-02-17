@@ -312,3 +312,4 @@ Am Ende des Trainingslaufs wird das Modell geladen, das den geringsten Loss gege
 \end{listing}
 
 Abschließend wird wie bei der Auswahl des Basismodells mit dem Testdatensatz~\ref{subsec:test_val_dataset} die finalen Metriken bestimmt.
+Die trainierten \gls{LoRA}-Adapter werden zur Laufzeit geladen, um Speicherplatz zu sparen, da sonst das Qwen-2.5-VL-7B zusammen mit jedem Adapter gespeichert werden müsste.

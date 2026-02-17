@@ -169,7 +169,7 @@ Trotz des nahezu gleichen dynamischen \gls{VRAM}-Verbrauchs belegt das Qwen-2.5-
 Das Problem des dynamischen Verbrauchs liegt in der Variabilität.
 Mit jeder Anfrage wächst der Verbrauch, weshalb die \glspl{GPU} über genügend Puffer verfügen muss, um Out-of-Memory-Fehler zu vermeiden.
 Besonders bei der Verarbeitung von mehreren Bildern wird der Kontext pro Anfrage groß.
-Die Skalierung fällt hier wesentlich schwerer als die der deterministischen YOLO/OCR-Pipeline, da mit gewünschter Latenz und gewünschten gleichzeitigen Anfragen die Entscheidung der benötigten Hardware gefällt werden muss.
+Die Skalierung fällt hier wesentlich schwerer als die der deterministischen YOLO/OCR-Pipeline, da mit gewünschter \gls{Latenz} und gewünschten gleichzeitigen Anfragen die Entscheidung der benötigten Hardware gefällt werden muss.
 
 
 \section{Limitation und Probleme der Evaluation}\label{sec:limitations}
@@ -228,15 +228,19 @@ Für den Fall dieser vielseitigen Dokumente muss für den produktiven Einsatz ei
 
 \section{Handlungsempfehlung für die Bundesagentur für Arbeit}\label{sec:recommendation_for_action}
 
-Aus der Beantwortung der Forschungsfragen leitet sich die Handlungsempfehlung für die Bundesagentur für Arbeit ab.
-- Die Abwägung zwischen ökologischen Fußabdruck, Leistung und Einsparung von Mitarbeiterkosten ist
+Aus der Beantwortung der Forschungsfragen und der vorangegangenen Diskussion leitet sich eine Handlungsempfehlung für die Bundesagentur für Arbeit ab.
+Die Entscheidung beruht auf einer Abwägung zwischen Fußabdruck, Leistungsfähigkeit und der wirtschaftlichen Notwendigkeit.
 
-- mitarbeiterkosten
-- andere Projekte
-- weiter labeln mit 32B modell -> 7B-finetuned noch robuster
+Als primäre Empfehlung wird der Einsatz des \textbf{Qwen-2.5-VL-7B-finetuned} ausgesprochen.
+Dieses Modell stellt im Vergleich zur bestehenden YOLO/OCR-Pipeline sowie zum größeren Basismodell Qwen-2.5-VL-32B den besten Kompromiss dar.
+Zwar weist die YOLO/OCR-Pipeline den geringsten ökologischen Fußabdruck auf, jedoch verursacht die geringe Extraktionsgüte bei Verträgen hohe Personalkosten.
+Die Kosten der manuellen Korrektur durch Sachbearbeiter übersteigt die Kosten des Qwen-2.5-VL-7B-finetuned.
+Der Einsatz des Qwen-2.5-VL-7B-finetuned erhöht den ökologischen Fußabdruck deutlich, aber bringt eine Reduzierung der Bearbeitungszeit pro Antrag mit sich.
 
+Für die Skalierung über mehrere Projekte hinweg wird davon abgeraten ein einzelnes 32B-Modell bereitzustellen.
+Stattdessen könnten die verschiedenen Fachverfahren \gls{LoRA}-Adapter entwickeln die, wie in der Evaluation, zur Laufzeit geladen werden.
+Durch die geringere Parameteranzahl könnten drei bis vier Instanzen statt eines Qwen-2.5-VL-32B geladen werden.
+Dies erhöht den Durchsatz enorm.
+Die dynamische Anpassung der Adapter verbraucht minimal mehr Speicher und Energie, ist jedoch deutlich sparsamer als ein großes Modell.
 
-- kg5d
-- hohen Verbrauch erklären
-- dynmaische vram näher betrachten
-- 32B Modell könnten mehrere benutzen
+Zusammenfassend ermöglicht der Wechsel auf das Qwen-2.5-VL-7B-finetuned der Bundesagentur für Arbeit, den Automatisierungsgrad bei Kindergeldanträgen zu erhöhen und Fachpersonal zu entlasten, ohne dabei unverhältnismäßige Ressourcen zu binden.

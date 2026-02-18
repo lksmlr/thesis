@@ -37,7 +37,7 @@ Abbildung~\ref{fig:kg5b} zeigt ein exemplarisch ausgefülltes KG5b-Formular mit 
 
 \subsection{Ausbildungsvertrag}\label{subsec:vertraege}
 
-Im Gegensatz zu den standardisierten KG5b-Formularen weisen Ausbildungsverträge eine deutlich höhere Varianz auf.
+Im Gegensatz zu den standardisierten KG5b-Formularen weisen Ausbildungsverträge eine höhere Varianz auf.
 Dies ist auf die Vielzahl unterschiedlicher zuständiger Stellen (z.\,B. Industrie- und Handelskammern, Handwerkskammern, Ärztekammern) und Firmen zurückzuführen, die jeweils ein eigenes Layout definieren.
 Die Vielfalt der Dokumentenstruktur reicht dabei von formularbasierten Layouts bis hin zu unstrukturierten Fließtexten.
 
@@ -198,10 +198,10 @@ Besonders das Ergebnis des DocVQA-Benchmarks ist von Interesse, da hier ein Visu
 
 
 \section{Parameter-Efficient Fine-Tuning}\label{sec:peft}
-%TODO: Unsloth
+
 Das Anpassen der Gewichte eines bereits trainierten Modells an eine spezifische Domäne setzt eine Infrastruktur mit hoher Rechenleistung voraus.
-Mithilfe von Parameter-Efficient Fine-Tuning (\gls{PEFT}) kann die Anzahl der zu trainierenden oder neuen Parameter signifikant gesenkt werden.
-Infolgedessen verringert sich auch der Rechenaufwand für das Fine-Tuning der Modelle erheblich\cite{peft}.
+Mithilfe von Parameter-Efficient Fine-Tuning (\gls{PEFT}) kann die Anzahl der zu trainierenden oder neuen Parameter gesenkt werden.
+Infolgedessen verringert sich auch der Rechenaufwand für das Fine-Tuning der Modelle\cite{peft}.
 
 Eine der bekanntesten Methoden im Bereich \gls{PEFT} ist die Low-Rank Adaptation (\gls{LoRA}).
 Anstatt das gesamte Modell neu zu trainieren, friert \gls{LoRA} die ursprünglichen Gewichte ein und fügt stattdessen trainierbare Matrizen mit einem niedrigen Rang $r$ in jede Schicht der Transformer-Architektur ein.
@@ -214,4 +214,20 @@ Bei der Standard-\gls{LoRA} führt ein steigender Rang $r$ oft nicht zu einer be
 
 \section{Verwandte Arbeiten}\label{sec:relatedwork}
 
-Ein Feld gilt hierbei als True Positive (\gls{TP}), wenn sowohl der Key des Feldes vorhanden ist als auch der Value des Feldes mit dem der Ground Truth übereinstimmt\cite{ICDAR}.
+Das automatisierte Lesen, Verstehen und Analysieren von Dokument wird ein immer relevanteres Forschungsfeld und wird häufig unter dem Begriff DocumentAI~\cite{DocumentAI} zusammengefasst.
+
+Begonnen hat die Entwicklung mit
+
+
+
+
+
+
+
+\subsection{Deep Learning mit OCR-Modell}\label{subsec:deeplearning_ocr}
+
+
+
+\subsection{Transformer mit OCR-Modell}\label{subsec:tranformer_ocr}
+
+\subsection{End-to-End Transformer}\label{subsec:end_to_end_transformer}

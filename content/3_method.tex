@@ -247,7 +247,7 @@ Der hier evaluierte Prompt wird im Laufe der Arbeit auch für die Bewertung des 
 
 \subsection{Trainingsdatensatz}\label{subsec:train_dataset}
 
-Um ein qualitativ hochwertiges Fine-Tuning zu ermöglichen, ist ein deutlich umfangreicherer Datensatz als für die Modellauswahl erforderlich.
+Um ein qualitativ hochwertiges Fine-Tuning zu ermöglichen, ist ein umfangreicherer Datensatz als für die Modellauswahl erforderlich.
 Der finale Trainingsdatensatz umfasst 610 Dokumente, die sich aus 227 Verträgen, 165 KG5b-Formularen und 218 sonstigen Dokumenten zusammensetzen.
 
 Die Klassen sind bewusst ungleich verteilt.
@@ -260,7 +260,7 @@ Des Weiteren wird so ein Selection Bias verhindert.
 Zur effizienten Erstellung der Ground Truth wird ein Model-Assisted Labeling eingesetzt.
 Hierbei generiert das im Prozess der Modellauswahl~\ref{sec:model_selection} gewonnene Modell, zusammen mit dem angepassten Prompt, für jedes Dokument das jeweilige \gls{JSON}-Objekt.
 Im Anschluss werden diese \gls{JSON}-Objekte manuell kontrolliert und korrigiert.
-Durch den Einsatz des Modells zur Ermittlung der Ground Truth kann der Aufwand erheblich gesenkt werden.
+Durch den Einsatz des Modells zur Ermittlung der Ground Truth kann der Aufwand gesenkt werden.
 
 Für das Fine-Tuning muss der Datensatz in das \gls{OpenAI Message Format} (Listing~\ref{lst:messages}) gebracht werden.
 Des Weiteren müssen die \gls{JSON}-Objekte in Markdown-Blöcke eingebettet werden, um dem bereits gelernten Format des \gls{VLM} zu entsprechen.

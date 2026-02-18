@@ -9,8 +9,8 @@ Ziel war es, die Extraktionsleistung der bisherigen Lösung unter Beobachtung de
 Im Rahmen der Evaluation wurden die Modelle Pixtral-12B, Qwen-2.5-VL-7B und Qwen-2.5-VL-32B gegen die Pipeline getestet.
 Ein zentraler Bestandteil der Untersuchung war das Fine-Tuning des kleineren 7B-Modells mittels \gls{LoRA}, um dessen Leistungsfähigkeit gegenüber dem Qwen-2.5-VL-32B zu bewerten.
 
-Die Ergebnisse zeigen deutlich, dass die herkömmliche \gls{YOLO}/\gls{OCR}-Pipeline bei heterogenen Ausbildungsverträgen an ihre Grenzen stößt (F1-Score von 0,51).
-Die \glspl{VLM} konnten hier eine signifikante Leistungssteigerung erzielen.
+Die Ergebnisse zeigen, dass die herkömmliche \gls{YOLO}/\gls{OCR}-Pipeline bei heterogenen Ausbildungsverträgen an ihre Grenzen stößt (F1-Score von 0,51).
+Die \glspl{VLM} konnten hier eine Leistungssteigerung erzielen.
 Das Qwen-2.5-VL-32B lieferte mit einem F1-Score von 0,94 die besten Ergebnisse, erwies sich jedoch aufgrund einer durchschnittlichen \gls{Latenz} von 64 Sekunden und eines extrem hohen Energiebedarfs als unwirtschaftlich.
 Das nachtrainierte Qwen-2.5-VL-7B-finetuned bestätigte, dass domänenspezifisch angepasste, kleine Modelle mit großen Generalisten konkurrieren können.
 Mit einem F1-Score von 0,84 bei Verträgen und einer \gls{Latenz} von unter 10 Sekunden bietet es den optimalen Kompromiss.

@@ -194,7 +194,7 @@ Somit sind die Testdaten unabhängig von den Daten mit denen der prompt angepass
 
 \subsection{Trainingsdatensatz}\label{subsec:train_dataset}
 
-Um ein qualitativ hochwertiges Fine-Tuning zu ermöglichen, ist ein deutlich umfangreicherer Datensatz als für die Modellauswahl erforderlich.
+Um ein qualitativ hochwertiges Fine-Tuning zu ermöglichen, ist ein umfangreicherer Datensatz als für die Modellauswahl erforderlich.
 Der finale Trainingsdatensatz umfasst 610 Dokumente, die sich aus 227 Verträgen, 165 KG5b-Formularen und 218 sonstigen Dokumenten zusammensetzen.
 
 Die Klassen sind bewusst ungleich verteilt.
@@ -207,7 +207,7 @@ Des Weiteren wird so der Selektionsbias verhindert.
 Zur effizienten Erstellung der Ground Truth wird ein Model-Assisted Labeling eingesetzt.
 Hierbei generiert das im Prozess der Modellauswahl~\ref{subsec:model_selection} gewonnene Modell, zusammen mit dem angepassten Prompt, für jedes Dokument das jeweilige \gls{JSON}-Objekt.
 Im Anschluss werden diese \gls{JSON}-Objekte manuell kontrolliert und korrigiert.
-Durch den Einsatz des Modells zur Ermittelung der Ground Truth konnte der Aufwand erheblich gesenkt werden.
+Durch den Einsatz des Modells zur Ermittelung der Ground Truth konnte der Aufwand gesenkt werden.
 
 
 \section{Fine-Tuning}\label{sec:fine_tuning}

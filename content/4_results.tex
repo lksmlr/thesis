@@ -6,7 +6,7 @@ Die Evaluation der \gls{IE} in Abbildung~\ref{fig:results_ie} zeigt deutliche Un
 
 Schwächen der YOLO/OCR-Pipeline zeigten sich bei der Verarbeitung von Ausbildungsverträgen.
 Hier erreichte die Pipeline einen F1-Score von 0,51.
-Im Vergleich schnitten insbesondere die beiden Qwen-Modelle deutlich besser ab.
+Im Vergleich schnitten insbesondere die beiden Qwen-Modelle besser ab.
 Das Qwen-2.5-VL-7B erkannte mit einem F1-Score von 0,83 und das Qwen-2.5-VL-32B mit einem F1-Score von 0,94 einen Großteil der Informationen.
 Das Pixtral-12B befindet sich mit einem F1-Score von 0,50 am unteren Ende der \gls{IE}.
 
@@ -85,7 +85,7 @@ Während das Pixtral mit durchschnittlich 10,28 Sekunden nur knapp über dem Qwe
 \section{Ergebnisse des weitertrainierten Modells gegenüber dem größeren Basismodell}\label{sec:results_latency}
 
 Der Prozess der Auswahl des Basismodells~\ref{subsec:model_selection} lieferte ein eindeutiges Ergebnis.
-Wie in Abbildung~\ref{fig:results_ie} und Abbildung~\ref{fig:results_classification} schlägt das Qwen-2.5-VL-7B das Pixtral-12B deutlich.
+Wie in Abbildung~\ref{fig:results_ie} und Abbildung~\ref{fig:results_classification} schlägt das Qwen-2.5-VL-7B das Pixtral-12B.
 Besonders in der \gls{IE} stellt sich das Qwen-2.5-VL-7B als der bessere Kandidat für das Training heraus.
 Demnach wird im folgenden Abschnitt das trainierte Qwen-2.5-VL-7B (Qwen-2.5-VL-7B-finetuned) gegen das Qwen-2.5-VL-32B verglichen.
 
@@ -132,7 +132,7 @@ Im direkten Vergleich klassifiziert das Qwen-2.5-VL-7B-finetuned einen Vertrag a
 
 Die \gls{Latenz} des großen Modells ist erkennbar größer als die des Qwen-2.5-VL-7B-finetuned.
 Wie in der Abbildung~\ref{fig:results_latency_peft_32b} zu erkennen, ist die Dauer der Inferenz des Qwen-2.5-VL-32B merklich höher.
-Mit einer maximalen \gls{Latenz} von 252,06 Sekunden liegt das Qwen-2.5-VL-32B deutlich über dem Qwen-2.5-VL-7B-finetuned mit 21,6 Sekunden.
+Mit einer maximalen \gls{Latenz} von 252,06 Sekunden liegt das Qwen-2.5-VL-32B über dem Qwen-2.5-VL-7B-finetuned mit 21,6 Sekunden.
 
 \begin{figure}[!ht]
     \centering

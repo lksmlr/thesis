@@ -36,7 +36,7 @@ Das Modell generierte in keinem der Versuche die umschließenden Klammern (\{\})
 Dies deutet darauf hin, dass das Pixtral-12B eine geringere Stabilität bei der Einhaltung strikter Ausgabeformate aufweist als die Qwen-Modelle.
 
 Bei den Wertfehlern muss zwischen \gls{OCR}-Fehlern und Mapping-Fehlern (falsche semantische Zuordnung) unterschieden werden.
-Die YOLO/OCR-Pipeline zeigte deutliche Schwächen in der Erkennung von Namen und Datumsangaben.
+Die YOLO/OCR-Pipeline zeigte Schwächen in der Erkennung von Namen und Datumsangaben.
 Selbst die Levenshtein-Distanz mit einem Schwellenwert von 0,8 reichte in einigen Fällen nicht aus, um diese Fehler zu kompensieren.
 Beim Pixtral-12B und Qwen-2.5-VL-7B traten neben \gls{OCR}-Fehlern vermehrt Mapping-Fehler auf, bei denen beispielsweise das Geburtsdatum des Kindes mit dem Startdatum der Ausbildung vertauscht wurde.
 Durch das Fine-Tuning des Qwen-2.5-VL-7B konnte eine spürbare Reduzierung sowohl der \gls{OCR}- als auch der Mapping-Fehler erzielt werden.
@@ -48,7 +48,7 @@ Da diese zusätzlichen Felder durch die Schemata gefiltert werden können, stell
 \section{Abwägung Effektivität und Ressourceneffizienz}\label{sec:effectiveness_resource_efficiency}
 
 Die Ergebnisse der Untersuchung offenbaren einen Zielkonflikt zwischen der Leistungsfähigkeit der Modelle und ihrem Ressourcenbedarf.
-Während die YOLO/OCR-Pipeline durch ihre extrem geringe \gls{Latenz} und Ressourceneffizienz auffällt, zeigen die \glspl{VLM} eine deutliche Überlegenheit in der Qualität der Information Extraction.
+Während die YOLO/OCR-Pipeline durch ihre extrem geringe \gls{Latenz} und Ressourceneffizienz auffällt, zeigen die \glspl{VLM} eine Überlegenheit in der Qualität der Information Extraction.
 
 Die YOLO/OCR-Pipeline bildet mit einem durchschnittlichen Energieverbrauch von 117 Joule und einer \gls{Latenz} von unter einer Sekunde die Basislinie für die Effizienz.
 Demgegenüber steht das leistungsstärkste Modell, das Qwen-2.5-VL-32B, welches im Mittel die 160-fache Energie pro Dokument benötigt und eine \gls{Latenz} von durchschnittlich 64,16 Sekunden aufweist.
@@ -66,7 +66,7 @@ Während die YOLO/OCR-Pipeline auf einfachen \glspl{GPU} lauffähig ist, setzen 
 Das Qwen-2.5-VL-32B übertrifft das Qwen-2.5-VL-7B-finetuned zwar in der Information Extraction bei Verträgen (F1-Score 0,94 gegenüber 0,84), erkauft sich diesen Vorteil jedoch mit einem wesentlich höheren \gls{VRAM}-Bedarf.
 
 Insgesamt bringt das Qwen-2.5-VL-7B-finetuned den besten Kompromiss zwischen Effizienz und Effektivität.
-Das trainierte Modell schlägt dabei in der Klassifikation das Qwen-2.5-VL-32B, nähert sich bei der Information Extraction der Leistung des großen Modells an und ist dabei maßgeblich effizienter.
+Das trainierte Modell schlägt dabei in der Klassifikation das Qwen-2.5-VL-32B, nähert sich bei der Information Extraction der Leistung des großen Modells an und ist dabei effizienter.
 Mit einem statischen \gls{VRAM}-Bedarf von circa 17 GB ermöglicht dieses Modell den Betrieb auf kleineren \glspl{GPU}, was die Hürden für eine Integration in die Infrastruktur senkt.
 Hinsichtlich der Skalierbarkeit stellt die \gls{Latenz} der \glspl{VLM} jedoch weiterhin eine Herausforderung dar, da eine niedrige \gls{Latenz} ein Cluster aus \glspl{GPU} voraussetzt.
 
@@ -94,7 +94,7 @@ Der monolithische Ansatz bringt jedoch Nachteile für die Testbarkeit mit sich.
 Ein \gls{VLM} agiert als Black Box, wodurch die interne Logik schwer analysierbar ist.
 Während in der YOLO/OCR-Pipeline die Komponenten logisch entkoppelt sind, weshalb eine Änderung am YOLO-Modell das OCR-Modell unberührt lässt, wirken sich Änderungen bei einem \gls{VLM} auf alle Dokumentenarten aus.
 Eine Änderung des Prompts oder das Fine-Tuning für die Verbesserung einer Dokumentenart kann Regressionen auf anderen Dokumentenarten haben.
-Dies erhöht die Komplexität von Regressionstests signifikant.
+Dies erhöht die Komplexität von Regressionstests.
 Mit der Einführung von automatisierten Tests mit dem Validierungsdatensatz nach Änderungen kann dieses Risiko minimiert werden.
 
 
@@ -106,7 +106,7 @@ Mit der Einführung von automatisierten Tests mit dem Validierungsdatensatz nach
     \item [1.] Wie verhält sich ein nicht domänenspezifisch angepasstes \gls{VLM} hinsichtlich \gls{Latenz}, Klassifikations- und Extraktionsleistung im Vergleich zur \gls{YOLO}/\gls{OCR}-Pipeline, und welche Vorteile bietet ein einzelnes generalistisches Modell gegenüber spezialisierten Einzelsystemen?
 \end{enumerate}
 
-Hinsichtlich der \gls{Latenz} zeigt ein nicht domänenspezifisch angepasstes \gls{VLM} deutliche Nachteile gegenüber der YOLO/OCR-Pipeline.
+Hinsichtlich der \gls{Latenz} zeigt ein nicht domänenspezifisch angepasstes \gls{VLM} Nachteile gegenüber der YOLO/OCR-Pipeline.
 Selbst das effizienteste Basismodell, das Qwen-2.5-VL-7B, benötigt mit durchschnittlich 7,43 Sekunden fast 13-mal so viel Zeit wie die bisherige Lösung.
 
 Während die Klassifikationsleistung der Basismodelle mit der Leistung der Pipeline übereinstimmt, zeigt sich ein klarer Unterschied in der Extraktionsgüte.
@@ -121,7 +121,7 @@ Eine Fehlklassifikation führt zur Verwendung falscher Modelle oder zum sofortig
 Ein \gls{VLM} hingegen ist weniger anfällig bei einem Teil von Fehlklassifikationen, da aufgrund überlappender Schemata dennoch relevante Informationen extrahiert werden.
 
 Der monolithische Ansatz eines \gls{VLM} reduziert des Weiteren die Anzahl der Komponenten und Schnittstellen drastisch.
-Während die Pipeline für jede neue Dokumentenart neue Modelle und Schnittstellen braucht, reduziert sich der Aufwand bei einem \gls{VLM} erheblich.
+Während die Pipeline für jede neue Dokumentenart neue Modelle und Schnittstellen braucht, reduziert sich der Aufwand bei einem \gls{VLM}.
 Anstatt zeitaufwendig Bounding-Boxen für das Training von \gls{YOLO}-Modellen zu annotieren, genügt die Anpassung des Prompts oder ein Fine-Tuning mittels Model-Assisted-Labeling, was den manuellen Aufwand senkt.
 
 
@@ -133,8 +133,8 @@ Anstatt zeitaufwendig Bounding-Boxen für das Training von \gls{YOLO}-Modellen z
 
 Der Vergleich zeigt, dass ein Training eines kleineren Modells einen merklichen Effizienzvorteil gegenüber einem größeren Basismodell bringt und sogar in der Klassifikation überlegen ist, wobei man jedoch leichte Abstriche bei der Information Extraction hinnehmen muss.
 
-Hinsichtlich der \gls{Latenz} schlägt das angepasste Modell aufgrund der Größe das 32B-Modell signifikant.
-Während das Qwen-2.5-VL-7B-finetuned durchschnittlich innerhalb 9,57 Sekunden antwortet, benötigt das Qwen-2.5-VL-32B mit 64,16 Sekunden erheblich länger.
+Hinsichtlich der \gls{Latenz} schlägt das angepasste Modell aufgrund der Größe das 32B-Modell.
+Während das Qwen-2.5-VL-7B-finetuned durchschnittlich innerhalb 9,57 Sekunden antwortet, benötigt das Qwen-2.5-VL-32B mit 64,16 Sekunden länger.
 Insbesondere die maximale \gls{Latenz} des großen Modells ist mit 252,06 Sekunden bedenklich.
 
 Die Klassifikationsleistung ist bei beiden Modellen beeindruckend, jedoch schneidet hier das angepasste Modell besser ab.
@@ -157,14 +157,14 @@ Trotz der minimal besseren Information Extraction des großen Modells bietet das
 
 Der Vergleich des Ressourcenverbrauchs zeigt die gravierendsten Unterschiede zwischen der bisherigen Pipeline und den \glspl{VLM}.
 
-Beim Energieverbrauch zeigt die Pipeline mit 117 Joule im Durchschnitt pro Dokument einen signifikanten Unterschied zu dem Verbrauch der \glspl{VLM}.
+Beim Energieverbrauch zeigt die Pipeline mit 117 Joule im Durchschnitt pro Dokument einen deutlichen Unterschied zu dem Verbrauch der \glspl{VLM}.
 Selbst das effizienteste Modell, das Qwen-2.5-VL-7B, steht mit einem Verbrauch von durchschnittlich 2587 Joule pro Dokument in starkem Kontrast.
 Das leistungsstarke Qwen-2.5-VL-32B verbraucht mit im Mittel 18.786 Joule sogar das 160-fache der Energie der Pipeline.
 
 Ein kritischer Aspekt für den operativen Betrieb ist neben dem statischen der dynamische \gls{VRAM}-Verbrauch.
 Während die YOLO/OCR-Pipeline mit 0,49 GB kaum ins Gewicht fällt und durch die geringe \gls{Latenz} der Speicher schnell wieder freigegeben wird, verbrauchen die \glspl{VLM} beträchtlich mehr.
-Interessanterweise liegt der durchschnittliche dynamische Verbrauch des Qwen-2.5-VL-7B-finetuned mit 3,03 GB leicht über dem des deutlich größeren Qwen-2.5-VL-32B (3,01 GB).
-Trotz des nahezu gleichen dynamischen \gls{VRAM}-Verbrauchs belegt das Qwen-2.5-VL-7B-finetuned mit 23,89 GB erheblich weniger statischen \gls{VRAM}, wodurch mehr Speicher für die dynamische Allokation freisteht.
+Interessanterweise liegt der durchschnittliche dynamische Verbrauch des Qwen-2.5-VL-7B-finetuned mit 3,03 GB leicht über dem des größeren Qwen-2.5-VL-32B (3,01 GB).
+Trotz des nahezu gleichen dynamischen \gls{VRAM}-Verbrauchs belegt das Qwen-2.5-VL-7B-finetuned mit 23,89 GB weniger statischen \gls{VRAM}, wodurch mehr Speicher für die dynamische Allokation freisteht.
 
 Das Problem des dynamischen Verbrauchs liegt in der Variabilität.
 Mit jeder Anfrage wächst der Verbrauch, weshalb die \glspl{GPU} über genügend Puffer verfügen muss, um Out-of-Memory-Fehler zu vermeiden.
@@ -235,12 +235,11 @@ Als primäre Empfehlung wird der Einsatz des \textbf{Qwen-2.5-VL-7B-finetuned} a
 Dieses Modell stellt im Vergleich zur bestehenden YOLO/OCR-Pipeline sowie zum größeren Basismodell Qwen-2.5-VL-32B den besten Kompromiss dar.
 Zwar weist die YOLO/OCR-Pipeline den geringsten ökologischen Fußabdruck auf, jedoch verursacht die geringe Extraktionsgüte bei Verträgen hohe Personalkosten.
 Die Kosten der manuellen Korrektur durch Sachbearbeiter übersteigt die Kosten des Qwen-2.5-VL-7B-finetuned.
-Der Einsatz des Qwen-2.5-VL-7B-finetuned erhöht den ökologischen Fußabdruck deutlich, aber bringt eine Reduzierung der Bearbeitungszeit pro Antrag mit sich.
+Der Einsatz des Qwen-2.5-VL-7B-finetuned erhöht den ökologischen Fußabdruck, aber bringt eine Reduzierung der Bearbeitungszeit pro Antrag mit sich.
 
 Für die Skalierung über mehrere Projekte hinweg wird davon abgeraten ein einzelnes 32B-Modell bereitzustellen.
 Stattdessen könnten die verschiedenen Fachverfahren \gls{LoRA}-Adapter entwickeln die, wie in der Evaluation, zur Laufzeit geladen werden.
 Durch die geringere Parameteranzahl könnten drei bis vier Instanzen statt eines Qwen-2.5-VL-32B geladen werden.
-Dies erhöht den Durchsatz enorm.
-Die dynamische Anpassung der Adapter verbraucht minimal mehr Speicher und Energie, ist jedoch deutlich sparsamer als ein großes Modell.
+Die dynamische Anpassung der Adapter verbraucht minimal mehr Speicher und Energie, ist jedoch sparsamer als ein großes Modell.
 
 Zusammenfassend ermöglicht der Wechsel auf das Qwen-2.5-VL-7B-finetuned der Bundesagentur für Arbeit, den Automatisierungsgrad bei Kindergeldanträgen zu erhöhen und Fachpersonal zu entlasten, ohne dabei unverhältnismäßige Ressourcen zu binden.

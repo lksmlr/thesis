@@ -1,10 +1,10 @@
 \chapter{Ergebnisse}\label{ch:results}
 % TODO: Penalize hallucinations false
-\section{Ergebnisse der YOLO/OCR-Pipeline gegenüber der Basismodelle}\label{sec:results_ie}
+\section{Ergebnisse der OCR/YOLO-Pipeline gegenüber der Basismodelle}\label{sec:results_ie}
 
-Die Evaluation der \gls{IE} in Abbildung~\ref{fig:results_ie} zeigt deutliche Unterschiede zwischen den modernen \glspl{VLM} und der YOLO/OCR-Pipeline.
+Die Evaluation der \gls{IE} in Abbildung~\ref{fig:results_ie} zeigt deutliche Unterschiede zwischen den modernen \glspl{VLM} und der OCR/YOLO-Pipeline.
 
-Schwächen der YOLO/OCR-Pipeline zeigten sich bei der Verarbeitung von Ausbildungsverträgen.
+Schwächen der OCR/YOLO-Pipeline zeigten sich bei der Verarbeitung von Ausbildungsverträgen.
 Hier erreichte die Pipeline einen F1-Score von 0,51.
 Im Vergleich schnitten insbesondere die beiden Qwen-Modelle besser ab.
 Das Qwen-2.5-VL-7B erkannte mit einem F1-Score von 0,83 und das Qwen-2.5-VL-32B mit einem F1-Score von 0,94 einen Großteil der Informationen.
@@ -25,7 +25,7 @@ Die Ergebnisse der Klassifikation in Abbildung~\ref{fig:results_classification} 
 Besonders hervorzuheben ist das Qwen-2.5-VL-32B, das alle Dokumentenarten am besten klassifiziert, während sich die restlichen Modelle mit einer maximalen Differenz von 0,03 in allen Dokumentenarten auf einem Level befinden.
 Bei Betrachtung der in der Abbildung~\ref{fig:confusion_matrices_overview} beinhalteten Confusion Matrices fallen jedoch qualitative Unterschiede auf.
 Das Qwen-2.5-VL-32B klassifiziert die Verträge als auch KG5b-Formulare fehlerfrei.
-Im Gegensatz dazu erkennt die YOLO/OCR-Pipeline die sonstigen Dokumente perfekt, klassifiziert aber einige der Verträge und KG5b-Formulare als sonstige Dokumente.
+Im Gegensatz dazu erkennt die OCR/YOLO-Pipeline die sonstigen Dokumente perfekt, klassifiziert aber einige der Verträge und KG5b-Formulare als sonstige Dokumente.
 Das Pixtral-12B weist die größten Unsicherheiten auf und klassifizierte insgesamt 25 Dokumente als Vertrag.
 Im Vergleich dazu liefert das Qwen-2.5-VL-7B ein ähnliches Ergebnis, klassifizierte jedoch ein KG5b-Formular mehr richtig.
 
@@ -61,7 +61,7 @@ Im Vergleich dazu liefert das Qwen-2.5-VL-7B ein ähnliches Ergebnis, klassifizi
     \begin{subfigure}{0.49\textwidth}
         \centering
         \includegraphics[width=\linewidth]{figures/results_confusion_matrix_yolo_ocr}
-        \caption{Confusion Matrix für die YOLO/OCR-Pipeline}
+        \caption{Confusion Matrix für die OCR/YOLO-Pipeline}
     \end{subfigure}
 
     \caption{Confusion Matrices aller Modelle}
@@ -69,7 +69,7 @@ Im Vergleich dazu liefert das Qwen-2.5-VL-7B ein ähnliches Ergebnis, klassifizi
 \end{figure}
 
 Hinsichtlich der \gls{Latenz} kehrt sich das Bild, wie in Abbildung~\ref{fig:results_latency} um.
-Die YOLO/OCR-Pipeline antwortet mit einer durchschnittlichen \gls{Latenz} von 0,58 Sekunden nahezu sofort.
+Die OCR/YOLO-Pipeline antwortet mit einer durchschnittlichen \gls{Latenz} von 0,58 Sekunden nahezu sofort.
 Das kleinste \gls{VLM}, das Qwen-2.5-VL-7B, benötigt mit durchschnittlich 7,43 Sekunden fast 13-mal länger als die Pipeline.
 Während das Pixtral mit durchschnittlich 10,28 Sekunden nur knapp über dem Qwen-2.5-VL-7B liegt, braucht das größte Modell im Durchschnitt 64,16 Sekunden
 
@@ -142,17 +142,16 @@ Mit einer maximalen \gls{Latenz} von 252,06 Sekunden liegt das Qwen-2.5-VL-32B �
 \end{figure}
 
 
-\section{Ressourcenverbrauch der VLMs gegenüber der YOLO/OCR-Pipeline}\label{sec:results_vram_usage}
+\section{Ressourcenverbrauch der VLMs gegenüber der OCR/YOLO-Pipeline}\label{sec:results_vram_usage}
 
 Für den Vergleich des Ressourcenverbrauchs wird sowohl die \gls{VRAM}-Auslastung als auch der Energieverbrauch betrachtet.
 
 In Abbildung~\ref{fig:results_vram_model} ist die statische \gls{VRAM}-Auslastung abgebildet.
-% TODO: Precision der Modelle hinzufügen
-Die niedrigste Auslastung hat die YOLO/OCR-Pipeline mit 4,21 GB\@.
+Die niedrigste Auslastung hat die OCR/YOLO-Pipeline mit 4,21 GB\@.
 Das Qwen-2.5-VL-7B und Qwen-2.5-VL-7B-finetuned befinden sich 16,4 GB und 16,88 GB auf einer Ebene.
 Während das Pixtral-12B mit 23,89 GB knapp über den 7B Modellen liegt, ist das Qwen-2.5-VL-32B mit 64,18 GB mit Abstand das größte Modell.
 
-Die dynamische \gls{VRAM}-Auslastung in Abbildung~\ref{fig:results_vram_inference} zeigt ein anderes Ergebnis, jedoch liegt auch hier die YOLO/OCR-Pipeline mit einer durchschnittlichen Auslastung von 0,49 GB und einer maximalen von 1,02 GB unter den Mitstreitern.
+Die dynamische \gls{VRAM}-Auslastung in Abbildung~\ref{fig:results_vram_inference} zeigt ein anderes Ergebnis, jedoch liegt auch hier die OCR/YOLO-Pipeline mit einer durchschnittlichen Auslastung von 0,49 GB und einer maximalen von 1,02 GB unter den Mitstreitern.
 Interessant sind die Werte des Qwen-2.5-VL-7B-finetuned und des Qwen-2.5-VL-32B, denn hier liegt das kleinere Modell mit durchschnittlich 3,03 GB über dem großen Modell mit durchschnittlich 3,01 GB
 
 
@@ -170,7 +169,7 @@ Interessant sind die Werte des Qwen-2.5-VL-7B-finetuned und des Qwen-2.5-VL-32B,
     \label{fig:results_vram_inference}
 \end{figure}
 
-Der Energieverbrauch in Abbildung~\ref{fig:results_energy_usage} zeigt den markantesten Unterschied zwischen der YOLO/OCR-Pipeline und den \glspl{VLM}.
+Der Energieverbrauch in Abbildung~\ref{fig:results_energy_usage} zeigt den markantesten Unterschied zwischen der OCR/YOLO-Pipeline und den \glspl{VLM}.
 Während die Pipeline nur 117 J im Durchschnitt verbraucht, benötigt selbst das effizienteste Modell, das Qwen-2.5-VL-7B, etwas das 22-fache an Energie.
 Im Vergleich zum Qwen-2.5-VL-32B, ist die Pipeline bei dem maximalen Verbrauch rund 250-fach sparsamer.
 

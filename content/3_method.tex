@@ -1,11 +1,11 @@
 \chapter{Methodik und Implementierung}\label{ch:methodology}
 
-Um die Eignung der \glspl{VLM} als potenziellen Ersatz für die \gls{YOLO}/\gls{OCR}-Pipeline zu beurteilen, werden die folgenden Forschungsfragen beantwortet:
+Um die Eignung der \glspl{VLM} als potenziellen Ersatz für die OCR/YOLO-Pipeline zu beurteilen, werden die folgenden Forschungsfragen beantwortet:
 
 \begin{enumerate}
-    \item Wie verhält sich ein nicht domänenspezifisch angepasstes \gls{VLM} hinsichtlich \gls{Latenz}, Klassifikations- und Extraktionsleistung im Vergleich zur \gls{YOLO}/\gls{OCR}-Pipeline, und welche Vorteile bietet ein einzelnes generalistisches Modell gegenüber spezialisierten Einzelsystemen?
+    \item Wie verhält sich ein nicht domänenspezifisch angepasstes \gls{VLM} hinsichtlich \gls{Latenz}, Klassifikations- und Extraktionsleistung im Vergleich zur OCR/YOLO-Pipeline, und welche Vorteile bietet ein einzelnes generalistisches Modell gegenüber spezialisierten Einzelsystemen?
     \item Welche Auswirkungen hat ein domänenspezifisches Training eines kleineren Modells auf dessen \gls{Latenz}, Klassifikations- und Extraktionsleistung im Vergleich zu einem leistungsstärkeren Basismodell?
-    \item Wie unterscheidet sich der Ressourcenverbrauch (Energieverbrauch und \gls{VRAM}"=Auslastung) der \glspl{VLM} von dem der \gls{YOLO}/\gls{OCR}-Pipeline?
+    \item Wie unterscheidet sich der Ressourcenverbrauch (Energieverbrauch und \gls{VRAM}"=Auslastung) der \glspl{VLM} von dem der OCR/YOLO-Pipeline?
 \end{enumerate}
 
 Abbildung~\ref{fig:overview} zeigt einen Überblick der gesamten Methodik.
@@ -92,7 +92,7 @@ Die sonstigen Dokumente beinhalten keine kontextfremden Dokumente, sondern Schul
 
 Zur Erstellung der Wahrheitswerte (Ground Truth) werden alle Dokumente manuell annotiert und in das entsprechende \gls{JSON}-Schema überführt.
 
-Die bestehende YOLO/OCR-Pipeline wird mit dem Testdatensatz getestet und die Metriken bestimmt.
+Die bestehende OCR/YOLO-Pipeline wird mit dem Testdatensatz getestet und die Metriken bestimmt.
 
 
 \section{Evaluation der generierten JSON-Objekte}\label{sec:evaluation}
@@ -122,7 +122,7 @@ Für den Vergleich werden auf Basis der Klasse in Listing~\ref{lst:comparator} v
 Der \texttt{NameComparator} in Listing~\ref{lst:name_comparator} vergleicht die Namensfelder mithilfe der Levenshtein-Similarity, um kleinere Fehler und verschiedene Schreibweisen zu tolerieren.
 Beispielsweise wird ein Name, der \texttt{ue} statt \texttt{ü} enthält, nicht als Fehler gewertet.
 Der Threshold, der zwischen korrekt und nicht korrekt entscheidet, liegt bei 0,8.
-Da die \gls{YOLO}/\gls{OCR}-Pipeline denselben Vergleich mit identischem Threshold verwendet, wird eine Vergleichbarkeit der Ergebnisse gewährleistet.
+Da die OCR/YOLO-Pipeline denselben Vergleich mit identischem Threshold verwendet, wird eine Vergleichbarkeit der Ergebnisse gewährleistet.
 
 \begin{listing}[H]
     \caption{Comparator für Namen}

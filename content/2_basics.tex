@@ -92,7 +92,7 @@ Auf Basis des extrahierten Textes wird in der nächsten Stufe zu Beginn eine Kla
 Hierbei unterscheidet der Klassifikator zwischen den bereits vorgestellten Dokumententypen: KG5b, Vertrag und Sonstiges.
 Wurde das Dokument als \texttt{Sonstiges} klassifiziert, endet an dieser Stelle die Bearbeitung.
 Handelt es sich hingegen um ein KG5b oder einen Vertrag, wird je nach Dokumententyp eine Erkennung mit einem \gls{YOLO}-Modell gestartet.
-Innerhalb der Bounding-Boxen wird der Text extrahiert und dem jeweiligen Label zugeordnet.
+Innerhalb der Bounding-Boxes wird der Text extrahiert und dem jeweiligen Label zugeordnet.
 
 Schlussendlich stehen die erkannten Informationen zur weiteren Verarbeitung bereit.
 
@@ -111,8 +111,8 @@ Die technische Architektur ist in Abbildung~\ref{fig:infrastructure} schematisch
 \end{figure}
 
 Das System basiert auf einem abgeschotteten Kubernetes-Cluster.
-Für die rechenintensiven Aufgaben, insbesondere das Fine-Tuning und die Inferenz der \glspl{VLM}, stehen innerhalb des Clusters zwei NVIDIA A40 GPUs mit jeweils 48 GB \gls{VRAM}\cite{NVIDIAA40} zur Verfügung.
-Um die Bereitstellung der \glspl{VLM} zu erleichtern, wird auf dem Cluster Kubeflow verwendet.
+Für die rechenintensiven Aufgaben, insbesondere das Fine-Tuning und die Inferenz der VLMs, stehen innerhalb des Clusters zwei NVIDIA A40 GPUs mit jeweils 48 GB \gls{VRAM}\cite{NVIDIAA40} zur Verfügung.
+Um die Bereitstellung der VLMs zu erleichtern, wird auf dem Cluster Kubeflow verwendet.
 Kubeflow ist eine Open-Source-Plattform, die speziell für das Entwickeln, Trainieren und Deployen von Machine-Learning-Modellen konzipiert wurde.
 
 Der Zugang zum Cluster sowie zur Integrated Development Environment (\gls{IDE}) erfolgt über eine noVNC-Schnittstelle (browserbasierter Remote-Desktop).
@@ -120,7 +120,7 @@ Der Zugang zum Cluster sowie zur Integrated Development Environment (\gls{IDE}) 
 Um einen Test- oder Trainingslauf durchzuführen, wird der folgende Prozess durchlaufen:
 \begin{enumerate}
     \item \textbf{Initialisierung:} Ein Python-Skript in der \gls{IDE} startet den Kubeflow-Job.
-    \item \textbf{Datenbereitstellung:} Die Pipeline lädt sowohl das \gls{VLM} als auch die zu klassifizierenden Dokumentenbilder aus dem S3-Store in den GPU-Cluster.
+    \item \textbf{Datenbereitstellung:} Die Pipeline lädt sowohl das VLM als auch die zu klassifizierenden Dokumentenbilder aus dem S3-Store in den GPU-Cluster.
     \item \textbf{Verarbeitung:} Die Inferenz oder das Training findet im Kubernetes-Cluster statt.
     \item \textbf{Persistierung:} Die Ergebnisse werden zurück in den S3-Store geladen.
 \end{enumerate}
@@ -128,7 +128,7 @@ Um einen Test- oder Trainingslauf durchzuführen, wird der folgende Prozess durc
 
 \section{Vision Language Models (VLMs)}\label{sec:vlms}
 
-Ein \gls{VLM} besteht aus drei Komponenten: einem Image-Encoder, einem Adapter und einem Large Language Model (\gls{LLM}).
+Ein VLM besteht aus drei Komponenten: einem Image-Encoder, einem Adapter und einem Large Language Model (LLM).
 In Abbildung~\ref{fig:vlm} wird der Aufbau dargestellt.
 
 \begin{figure}[!ht]
@@ -139,7 +139,7 @@ In Abbildung~\ref{fig:vlm} wird der Aufbau dargestellt.
 \end{figure}
 
 Der Image-Encoder verarbeitet die Bildeingabe und extrahiert visuelle Merkmale (Features).
-Zu diesem Zweck kommen häufig vortrainierte Modelle wie Vision Transformer (\gls{ViT}) oder CLIP zum Einsatz.
+Zu diesem Zweck kommen häufig vortrainierte Modelle wie Vision Transformer oder CLIP zum Einsatz.
 Diese Modelle zerlegen ein Bild in kleinere Patches, die ähnlich wie Token in Sprachmodellen behandelt werden.
 Jeder Patch wird in einen Vektor überführt, der die Eigenschaften dieses Bildausschnitts repräsentiert.
 Das Ergebnis ist eine Sequenz von Bildvektoren, die die visuellen Informationen des gesamten Bildes beinhaltet.
@@ -147,10 +147,10 @@ Das Ergebnis ist eine Sequenz von Bildvektoren, die die visuellen Informationen 
 Der Adapter verbindet den Image-Encoder mit dem Sprachmodell.
 Diese Schicht transformiert die Ausgabe des Image-Encoders in ein Format, das mit den Textvektoren des Sprachmodells kompatibel ist.
 In vielen Modellen besteht der Adapter aus einer linearen Schicht oder einem kleinen neuronalen Netz.
-Die Bildvektoren des Image-Encoders werden in denselben Vektorraum wie die Textvektoren des \gls{LLM} projiziert.
+Die Bildvektoren des Image-Encoders werden in denselben Vektorraum wie die Textvektoren des LLM projiziert.
 
-Die Hauptkomponente bildet das \gls{LLM}, welches für die eigentliche Verarbeitung und Generierung zuständig ist.
-Das \gls{LLM} erhält die Textvektoren zusammen mit den Bildvektoren und fusioniert diese.
+Die Hauptkomponente bildet das LLM, welches für die eigentliche Verarbeitung und Generierung zuständig ist.
+Das LLM erhält die Textvektoren zusammen mit den Bildvektoren und fusioniert diese.
 Mithilfe des Attention-Mechanismus werden Beziehungen zwischen visuellen und textuellen Elementen verstanden.
 So ist es möglich, Fragen zu Bildinhalten zu beantworten oder Bildbeschreibungen zu generieren.
 
@@ -161,7 +161,7 @@ Dabei setzt sich der statische Verbrauch aus den Gewichten der Modelle zusammen,
 
 \section{Vorstellung der Modelle}\label{sec:models}
 
-Für die Klassifikation und die Extraktion der Informationen aus den Dokumenten wurden drei verschiedene \glspl{VLM} evaluiert.
+Für die Klassifikation und die Extraktion der Informationen aus den Dokumenten wurden drei verschiedene VLMs evaluiert.
 
 \subsection{Pixtral-12B}\label{subsec:pixtral}
 
@@ -200,16 +200,16 @@ Besonders das Ergebnis des DocVQA-Benchmarks ist von Interesse, da hier ein Visu
 \section{Parameter-Efficient Fine-Tuning}\label{sec:peft}
 
 Das Anpassen der Gewichte eines bereits trainierten Modells an eine spezifische Domäne setzt eine Infrastruktur mit hoher Rechenleistung voraus.
-Mithilfe von Parameter-Efficient Fine-Tuning (\gls{PEFT}) kann die Anzahl der zu trainierenden oder neuen Parameter gesenkt werden.
+Mithilfe von Parameter-Efficient Fine-Tuning (PEFT) kann die Anzahl der zu trainierenden oder neuen Parameter gesenkt werden.
 Infolgedessen verringert sich auch der Rechenaufwand für das Fine-Tuning der Modelle\cite{peft}.
 
-Eine der bekanntesten Methoden im Bereich \gls{PEFT} ist die Low-Rank Adaptation (\gls{LoRA}).
-Anstatt das gesamte Modell neu zu trainieren, friert \gls{LoRA} die ursprünglichen Gewichte ein und fügt stattdessen trainierbare Matrizen mit einem niedrigen Rang $r$ in jede Schicht der Transformer-Architektur ein.
+Eine der bekanntesten Methoden im Bereich PEFT ist die Low-Rank Adaptation (LoRA).
+Anstatt das gesamte Modell neu zu trainieren, friert LoRA die ursprünglichen Gewichte ein und fügt stattdessen trainierbare Matrizen mit einem niedrigen Rang $r$ in jede Schicht der Transformer-Architektur ein.
 Um Rechenaufwand und Speicherplatz zu sparen, werden ausschließlich diese kleineren Matrizen trainiert\cite{LoRA}.
 
-Ergänzend zu \gls{LoRA} wird die Variante Rank-Stabilized \gls{LoRA} (\gls{rsLoRA}) betrachtet.
-Bei der Standard-\gls{LoRA} führt ein steigender Rang $r$ oft nicht zu einer besseren Performance, da der verwendete Faktor ($\alpha/r$) das Lernen bei höheren Rängen verlangsamen oder hemmen kann.
-\gls{rsLoRA} stabilisiert diesen Prozess, indem die Adapter durch die Quadratwurzel des Rangs ($\alpha/\sqrt{r}$) geteilt werden\cite{rsLoRA}.
+Ergänzend zu LoRA wird die Variante Rank-Stabilized LoRA (rsLoRA) betrachtet.
+Bei der Standard-LoRA führt ein steigender Rang $r$ oft nicht zu einer besseren Performance, da der verwendete Faktor ($\alpha/r$) das Lernen bei höheren Rängen verlangsamen oder hemmen kann.
+Durch rsLoRA wird der Prozess stabilisiert, indem die Adapter durch die Quadratwurzel des Rangs ($\alpha/\sqrt{r}$) geteilt werden\cite{rsLoRA}.
 
 
 \section{Verwandte Arbeiten}\label{sec:relatedwork}

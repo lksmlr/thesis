@@ -3,7 +3,7 @@
 
 \section{Interpretation der Fehler}\label{sec:error_patterns}
 
-Sowohl die OCR/YOLO-Pipeline als auch die \glspl{VLM} weisen spezifische Fehlermuster auf, die sich in Klassifikations-, Format-, Detektions- und Wertfehler unterteilen lassen.
+Sowohl die OCR/YOLO-Pipeline als auch die VLMs weisen spezifische Fehlermuster auf, die sich in Klassifikations-, Format-, Detektions- und Wertfehler unterteilen lassen.
 
 Klassifikationsfehler wiegen in der aus mehreren Einzelkomponenten bestehenden OCR/YOLO-Pipeline besonders schwer, da die Klassifikation hier einen logischen Single Point of Failure darstellt.
 Wie die Confusion Matrix in Abbildung~\ref{fig:confusion_matrices_overview} verdeutlicht, wurden fünf Dokumente fälschlicherweise als \texttt{Sonstiges} eingestuft, was aufgrund der Systemarchitektur (siehe Abbildung~\ref{fig:aube}) zu einem sofortigen Abbruch der Verarbeitung führt.
@@ -12,11 +12,11 @@ Fotos weisen häufig Verzerrungen, Schattenwurf oder eine schlechte Beleuchtung 
 
 Diese Klassifikationsfehler mindern die Leistung der Information Extraction, da mit einem einzigen Fehler bereits zehn (Vertrag) oder zwölf (KG5b) Felder fehlen.
 Auch die Verwechslung von Verträgen mit KG5b-Formularen wirkt sich negativ auf die OCR/YOLO-Pipeline aus, da für beide Dokumentenarten unterschiedliche, spezialisierte Modelle trainiert wurden.
-Ein entscheidender Vorteil der generalistischen \glspl{VLM} ist hier die Robustheit durch das einheitliche Modell.
+Ein entscheidender Vorteil der generalistischen VLMs ist hier die Robustheit durch das einheitliche Modell.
 Da die Felder eines Vertrags eine Teilmenge des KG5b-Schemas darstellen, bleibt die Information Extraction teilweise erfolgreich, selbst wenn das Dokument falsch klassifiziert wurde.
 Ein Fehler in der Klassifikation propagiert somit nicht so stark wie bei der OCR/YOLO-Pipeline.
 Im Idealfall fehlt bei der Erkennung eines Vertrages statt eines KG5b-Formulars kein Feld und im umgekehrten Fall fehlen maximal zwei Felder.
-Die Fehlklassifizierung als \texttt{Sonstiges} ist jedoch auch bei den \glspl{VLM} kritisch, da das Modell in diesem Fall keine Extraktion durchführt.
+Die Fehlklassifizierung als \texttt{Sonstiges} ist jedoch auch bei den VLMs kritisch, da das Modell in diesem Fall keine Extraktion durchführt.
 Wie in den Confusion Matrices in Abbildung~\ref{fig:confusion_matrices_32b_peft} ersichtlich, erweisen sich jedoch insbesondere das Qwen-2.5-VL-7B-finetuned und das Qwen-2.5-VL-32B als äußerst zuverlässig in der Klassifizierung.
 
 Die Detektionsfehler beziehen sich primär auf Checkboxen, Stempel und Unterschriften.
@@ -48,7 +48,7 @@ Da diese zusätzlichen Felder durch die Schemata gefiltert werden können, stell
 \section{Abwägung Effektivität und Ressourceneffizienz}\label{sec:effectiveness_resource_efficiency}
 
 Die Ergebnisse der Untersuchung offenbaren einen Zielkonflikt zwischen der Leistungsfähigkeit der Modelle und ihrem Ressourcenbedarf.
-Während die OCR/YOLO-Pipeline durch ihre extrem geringe \gls{Latenz} und Ressourceneffizienz auffällt, zeigen die \glspl{VLM} eine Überlegenheit in der Qualität der Information Extraction.
+Während die OCR/YOLO-Pipeline durch ihre extrem geringe \gls{Latenz} und Ressourceneffizienz auffällt, zeigen die VLMs eine Überlegenheit in der Qualität der Information Extraction.
 
 Die OCR/YOLO-Pipeline bildet mit einem durchschnittlichen Energieverbrauch von 117 Joule und einer \gls{Latenz} von unter einer Sekunde die Basislinie für die Effizienz.
 Demgegenüber steht das leistungsstärkste Modell, das Qwen-2.5-VL-32B, welches im Mittel die 160-fache Energie pro Dokument benötigt und eine \gls{Latenz} von durchschnittlich 64,16 Sekunden aufweist.
@@ -58,17 +58,17 @@ Ein niedriger F1-Score (0,51 bei Verträgen) zieht eine manuelle Nachbearbeitung
 Die durch die schnelle technische Verarbeitung gewonnene Zeit wird somit im Gesamtprozess durch menschliche Korrektureingriffe wieder aufgezehrt.
 
 Betrachtet man die Wirtschaftlichkeit, so übersteigen die Kosten für eine einminütige manuelle Korrektur die Energiekosten einer einminütigen \gls{GPU}-Inferenz um ein Vielfaches.
-Die höhere Rechenzeit der \glspl{VLM} gleicht sich somit durch die Einsparung von Arbeitszeit in der Sachbearbeitung aus.
+Die höhere Rechenzeit der VLMs gleicht sich somit durch die Einsparung von Arbeitszeit in der Sachbearbeitung aus.
 Bei einem F1-Score bei Verträgen von 0,94 (Qwen-2.5-VL-32B) muss im Schnitt ein Feld korrigiert werden, während bei einem F1-Score von 0,51 (OCR/YOLO-Pipeline) vier bis fünf Felder korrigiert werden müssen.
 
 Neben dem Energiebedarf ist die Infrastruktur, spezifisch die \gls{VRAM}-Auslastung, ein Faktor.
-Während die OCR/YOLO-Pipeline auf einfachen \glspl{GPU} lauffähig ist, setzen die großen \glspl{VLM} leistungsstarke \glspl{GPU} voraus.
+Während die OCR/YOLO-Pipeline auf einfachen \glspl{GPU} lauffähig ist, setzen die großen VLMs leistungsstarke \glspl{GPU} voraus.
 Das Qwen-2.5-VL-32B übertrifft das Qwen-2.5-VL-7B-finetuned zwar in der Information Extraction bei Verträgen (F1-Score 0,94 gegenüber 0,84), erkauft sich diesen Vorteil jedoch mit einem wesentlich höheren \gls{VRAM}-Bedarf.
 
 Insgesamt bringt das Qwen-2.5-VL-7B-finetuned den besten Kompromiss zwischen Effizienz und Effektivität.
 Das trainierte Modell schlägt dabei in der Klassifikation das Qwen-2.5-VL-32B, nähert sich bei der Information Extraction der Leistung des großen Modells an und ist dabei effizienter.
 Mit einem statischen \gls{VRAM}-Bedarf von circa 17 GB ermöglicht dieses Modell den Betrieb auf kleineren \glspl{GPU}, was die Hürden für eine Integration in die Infrastruktur senkt.
-Hinsichtlich der Skalierbarkeit stellt die \gls{Latenz} der \glspl{VLM} jedoch weiterhin eine Herausforderung dar, da eine niedrige \gls{Latenz} ein Cluster aus \glspl{GPU} voraussetzt.
+Hinsichtlich der Skalierbarkeit stellt die \gls{Latenz} der VLMs jedoch weiterhin eine Herausforderung dar, da eine niedrige \gls{Latenz} ein Cluster aus \glspl{GPU} voraussetzt.
 
 
 \section{Komplexität und Wartbarkeit der Systemarchitekturen}\label{sec:maintainability}
@@ -84,15 +84,15 @@ Wie bereits in der Fehleranalyse~\ref{sec:error_patterns} identifiziert, stellt 
 
 Hinsichtlich der Änderbarkeit offenbart die OCR/YOLO-Pipeline einen erhöhten Aufwand.
 Die Einführung einer neuen Dokumentenart erfordert nicht nur Anpassungen am Klassifikator, sondern auch das Training eines neuen \gls{YOLO}-Modells.
-Dies ist mit hohem manuellem Aufwand verbunden, da das Annotieren von Bounding-Boxen zeitintensiv ist.
+Dies ist mit hohem manuellem Aufwand verbunden, da das Annotieren von Bounding-Boxes zeitintensiv ist.
 Des Weiteren gibt es durch die vielen Komponenten zahlreiche Schnittstellen, die bei einer Änderung der Dokumentenstrukturen gegebenenfalls geändert werden müssen.
-Im Gegensatz dazu reduziert der generalistische Ansatz mit den \glspl{VLM} die Anzahl der Komponenten und Schnittstellen.
+Im Gegensatz dazu reduziert der generalistische Ansatz mit den VLMs die Anzahl der Komponenten und Schnittstellen.
 Änderungen an den Dokumentenarten beschränken sich auf die Änderungen des Prompts oder im Fall des Qwen-2.5-VL-7B-finetuned auf das Training eines Modells.
 Hierbei muss auch ein Modell trainiert werden und gegebenenfalls die Schnittstelle angepasst werden, aber die Annotation der Daten ist aufgrund von Model-Assisted-Labeling wesentlich einfacher.
 
 Der monolithische Ansatz bringt jedoch Nachteile für die Testbarkeit mit sich.
-Ein \gls{VLM} agiert als Black Box, wodurch die interne Logik schwer analysierbar ist.
-Während in der OCR/YOLO-Pipeline die Komponenten logisch entkoppelt sind, weshalb eine Änderung am YOLO-Modell das OCR-Modell unberührt lässt, wirken sich Änderungen bei einem \gls{VLM} auf alle Dokumentenarten aus.
+Ein VLM agiert als Black Box, wodurch die interne Logik schwer analysierbar ist.
+Während in der OCR/YOLO-Pipeline die Komponenten logisch entkoppelt sind, weshalb eine Änderung am YOLO-Modell das OCR-Modell unberührt lässt, wirken sich Änderungen bei einem VLM auf alle Dokumentenarten aus.
 Eine Änderung des Prompts oder das Fine-Tuning für die Verbesserung einer Dokumentenart kann Regressionen auf anderen Dokumentenarten haben.
 Dies erhöht die Komplexität von Regressionstests.
 Mit der Einführung von automatisierten Tests mit dem Validierungsdatensatz nach Änderungen kann dieses Risiko minimiert werden.
@@ -103,10 +103,10 @@ Mit der Einführung von automatisierten Tests mit dem Validierungsdatensatz nach
 \subsection{Beantwortung der Forschungsfrage 1}\label{subsec:answer_ff1}
 
 \begin{enumerate}
-    \item [1.] Wie verhält sich ein nicht domänenspezifisch angepasstes \gls{VLM} hinsichtlich \gls{Latenz}, Klassifikations- und Extraktionsleistung im Vergleich zur OCR/YOLO-Pipeline, und welche Vorteile bietet ein einzelnes generalistisches Modell gegenüber spezialisierten Einzelsystemen?
+    \item [1.] Wie verhält sich ein nicht domänenspezifisch angepasstes VLM hinsichtlich \gls{Latenz}, Klassifikations- und Extraktionsleistung im Vergleich zur OCR/YOLO-Pipeline, und welche Vorteile bietet ein einzelnes generalistisches Modell gegenüber spezialisierten Einzelsystemen?
 \end{enumerate}
 
-Hinsichtlich der \gls{Latenz} zeigt ein nicht domänenspezifisch angepasstes \gls{VLM} Nachteile gegenüber der OCR/YOLO-Pipeline.
+Hinsichtlich der \gls{Latenz} zeigt ein nicht domänenspezifisch angepasstes VLM Nachteile gegenüber der OCR/YOLO-Pipeline.
 Selbst das effizienteste Basismodell, das Qwen-2.5-VL-7B, benötigt mit durchschnittlich 7,43 Sekunden fast 13-mal so viel Zeit wie die bisherige Lösung.
 
 Während die Klassifikationsleistung der Basismodelle mit der Leistung der Pipeline übereinstimmt, zeigt sich ein klarer Unterschied in der Extraktionsgüte.
@@ -118,11 +118,11 @@ Einzig das Pixtral-12B erzielte gegenüber der Pipeline sowohl in der Klassifika
 Neben der verbesserten Leistung bietet ein generalistischer Ansatz wesentliche Vorteile in der Architektur und Wartbarkeit.
 Durch den Single Point of Failure des Klassifikators ist die OCR/YOLO-Pipeline weniger robust gegenüber Klassifikationsfehlern.
 Eine Fehlklassifikation führt zur Verwendung falscher Modelle oder zum sofortigen Abbruch.
-Ein \gls{VLM} hingegen ist weniger anfällig bei einem Teil von Fehlklassifikationen, da aufgrund überlappender Schemata dennoch relevante Informationen extrahiert werden.
+Ein VLM hingegen ist weniger anfällig bei einem Teil von Fehlklassifikationen, da aufgrund überlappender Schemata dennoch relevante Informationen extrahiert werden.
 
-Der monolithische Ansatz eines \gls{VLM} reduziert des Weiteren die Anzahl der Komponenten und Schnittstellen drastisch.
-Während die Pipeline für jede neue Dokumentenart neue Modelle und Schnittstellen braucht, reduziert sich der Aufwand bei einem \gls{VLM}.
-Anstatt zeitaufwendig Bounding-Boxen für das Training von \gls{YOLO}-Modellen zu annotieren, genügt die Anpassung des Prompts oder ein Fine-Tuning mittels Model-Assisted-Labeling, was den manuellen Aufwand senkt.
+Der monolithische Ansatz eines VLM reduziert des Weiteren die Anzahl der Komponenten und Schnittstellen drastisch.
+Während die Pipeline für jede neue Dokumentenart neue Modelle und Schnittstellen braucht, reduziert sich der Aufwand bei einem VLM.
+Anstatt zeitaufwendig Bounding-Boxes für das Training von \gls{YOLO}-Modellen zu annotieren, genügt die Anpassung des Prompts oder ein Fine-Tuning mittels Model-Assisted-Labeling, was den manuellen Aufwand senkt.
 
 
 \subsection{Beantwortung der Forschungsfrage 2}\label{subsec:answer_ff2}
@@ -152,17 +152,17 @@ Trotz der minimal besseren Information Extraction des großen Modells bietet das
 \subsection{Beantwortung der Forschungsfrage 3}\label{subsec:answer_ff3}
 
 \begin{enumerate}
-    \item [3.] Wie unterscheidet sich der Ressourcenverbrauch (Energieverbrauch und \gls{VRAM}"=Auslastung) der \glspl{VLM} von dem der OCR/YOLO-Pipeline?
+    \item [3.] Wie unterscheidet sich der Ressourcenverbrauch (Energieverbrauch und \gls{VRAM}"=Auslastung) der VLMs von dem der OCR/YOLO-Pipeline?
 \end{enumerate}
 
-Der Vergleich des Ressourcenverbrauchs zeigt die gravierendsten Unterschiede zwischen der bisherigen Pipeline und den \glspl{VLM}.
+Der Vergleich des Ressourcenverbrauchs zeigt die gravierendsten Unterschiede zwischen der bisherigen Pipeline und den VLMs.
 
-Beim Energieverbrauch zeigt die Pipeline mit 117 Joule im Durchschnitt pro Dokument einen deutlichen Unterschied zu dem Verbrauch der \glspl{VLM}.
+Beim Energieverbrauch zeigt die Pipeline mit 117 Joule im Durchschnitt pro Dokument einen deutlichen Unterschied zu dem Verbrauch der VLMs.
 Selbst das effizienteste Modell, das Qwen-2.5-VL-7B, steht mit einem Verbrauch von durchschnittlich 2587 Joule pro Dokument in starkem Kontrast.
 Das leistungsstarke Qwen-2.5-VL-32B verbraucht mit im Mittel 18.786 Joule sogar das 160-fache der Energie der Pipeline.
 
 Ein kritischer Aspekt für den operativen Betrieb ist neben dem statischen der dynamische \gls{VRAM}-Verbrauch.
-Während die OCR/YOLO-Pipeline mit 0,49 GB kaum ins Gewicht fällt und durch die geringe \gls{Latenz} der Speicher schnell wieder freigegeben wird, verbrauchen die \glspl{VLM} beträchtlich mehr.
+Während die OCR/YOLO-Pipeline mit 0,49 GB kaum ins Gewicht fällt und durch die geringe \gls{Latenz} der Speicher schnell wieder freigegeben wird, verbrauchen die VLMs beträchtlich mehr.
 Interessanterweise liegt der durchschnittliche dynamische Verbrauch des Qwen-2.5-VL-7B-finetuned mit 3,03 GB leicht über dem des größeren Qwen-2.5-VL-32B (3,01 GB).
 Trotz des nahezu gleichen dynamischen \gls{VRAM}-Verbrauchs belegt das Qwen-2.5-VL-7B-finetuned mit 23,89 GB weniger statischen \gls{VRAM}, wodurch mehr Speicher für die dynamische Allokation freisteht.
 
@@ -201,7 +201,7 @@ Dieses Problem konnte durch die Umstellung auf PIL-Images gelöst werden.
 
 Hinsichtlich der Ressourceneffizienz zeigten die Ergebnisse in Abbildung~\ref{fig:results_vram_inference} und Abbildung~\ref{fig:results_vram_model}, dass das Qwen-2.5-VL-7B-finetuned im Vergleich zum Basismodell einen erhöhten statischen und im Vergleich zum 32B-Modell sogar einen höheren dynamischen \gls{VRAM}-Verbrauch aufweist.
 Dieser Overhead resultiert vermutlich aus der Art der Bereitstellung.
-Die Gewichte der während des Fine-Tunings trainierten \gls{LoRA}-Adapter werden nicht fest mit dem Basismodell gemerged, sondern zur Laufzeit dynamisch geladen, um Speicherplatz zu sparen.
+Die Gewichte der während des Fine-Tunings trainierten LoRA-Adapter werden nicht fest mit dem Basismodell gemerged, sondern zur Laufzeit dynamisch geladen, um Speicherplatz zu sparen.
 In einem produktiven Einsatz wird der finale Adapter mit dem Basismodell gemerged und zusammen gespeichert, was den Overhead reduzieren wird.
 
 Methodische Limitationen zeigten sich in der Robustheit der Klassifikation durch Fehlklassifikationen.
@@ -238,7 +238,7 @@ Die Kosten der manuellen Korrektur durch Sachbearbeiter übersteigt die Kosten d
 Der Einsatz des Qwen-2.5-VL-7B-finetuned erhöht den ökologischen Fußabdruck, aber bringt eine Reduzierung der Bearbeitungszeit pro Antrag mit sich.
 
 Für die Skalierung über mehrere Projekte hinweg wird davon abgeraten ein einzelnes 32B-Modell bereitzustellen.
-Stattdessen könnten die verschiedenen Fachverfahren \gls{LoRA}-Adapter entwickeln die, wie in der Evaluation, zur Laufzeit geladen werden.
+Stattdessen könnten die verschiedenen Fachverfahren LoRA-Adapter entwickeln die, wie in der Evaluation, zur Laufzeit geladen werden.
 Durch die geringere Parameteranzahl könnten drei bis vier Instanzen statt eines Qwen-2.5-VL-32B geladen werden.
 Die dynamische Anpassung der Adapter verbraucht minimal mehr Speicher und Energie, ist jedoch sparsamer als ein großes Modell.
 

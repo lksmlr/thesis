@@ -7,10 +7,10 @@ Die vorliegende Bachelorarbeit untersuchte das Potenzial von multimodalen Large 
 Ziel war es, die Extraktionsleistung der bisherigen Lösung unter Beobachtung des Ressourcenverbrauchs zu verbessern.
 
 Im Rahmen der Evaluation wurden die Modelle Pixtral-12B, Qwen-2.5-VL-7B und Qwen-2.5-VL-32B gegen die Pipeline getestet.
-Ein zentraler Bestandteil der Untersuchung war das Fine-Tuning des kleineren 7B-Modells mittels \gls{LoRA}, um dessen Leistungsfähigkeit gegenüber dem Qwen-2.5-VL-32B zu bewerten.
+Ein zentraler Bestandteil der Untersuchung war das Fine-Tuning des kleineren 7B-Modells mittels LoRA, um dessen Leistungsfähigkeit gegenüber dem Qwen-2.5-VL-32B zu bewerten.
 
 Die Ergebnisse zeigen, dass die herkömmliche OCR/YOLO-Pipeline bei heterogenen Ausbildungsverträgen an ihre Grenzen stößt (F1-Score von 0,51).
-Die \glspl{VLM} konnten hier eine Leistungssteigerung erzielen.
+Die VLMs konnten hier eine Leistungssteigerung erzielen.
 Das Qwen-2.5-VL-32B lieferte mit einem F1-Score von 0,94 die besten Ergebnisse, erwies sich jedoch aufgrund einer durchschnittlichen \gls{Latenz} von 64 Sekunden und eines extrem hohen Energiebedarfs als unwirtschaftlich.
 Das nachtrainierte Qwen-2.5-VL-7B-finetuned bestätigte, dass domänenspezifisch angepasste, kleine Modelle mit großen Generalisten konkurrieren können.
 Mit einem F1-Score von 0,84 bei Verträgen und einer \gls{Latenz} von unter 10 Sekunden bietet es den optimalen Kompromiss.
@@ -21,11 +21,11 @@ Die Arbeit zieht als Fazit, dass der Einsatz eines kleinen angepassten Modells d
 \section{Ausblick}\label{sec:outlook}
 
 Obwohl der entwickelte Prototyp bereits vielversprechende Ergebnisse liefert, stehen dem Einsatz in einer produktiven Umgebung noch Hürden im Weg.
-Die Umgebung der bisherigen Pipeline muss für den Einsatz angepasst und die Ausgabe des \gls{VLM} stabilisiert werden.
+Die Umgebung der bisherigen Pipeline muss für den Einsatz angepasst und die Ausgabe des VLM stabilisiert werden.
 Durch die Einführung von Constrained Decoding mithilfe von \gls{vLLM} wird in Zukunft die Generierung der \gls{JSON}-Objekte sichergestellt.
 Außerdem ermöglicht das Auslesen von Token-Wahrscheinlichkeiten eine Auswertung der Konfidenz für die Klassifikation.
 
-Hinsichtlich der Robustheit muss die \gls{VLM}-Pipeline für komplexere Szenarien, wie zum Beispiel vermischte oder vielseitige Dokumente, weiter angepasst werden.
+Hinsichtlich der Robustheit muss die VLM-Pipeline für komplexere Szenarien, wie zum Beispiel vermischte oder vielseitige Dokumente, weiter angepasst werden.
 
 Um das Potenzial kleiner trainierter Modelle anderen Fachverfahren zu erläutern, wird das Proof of Concept anderen Abteilungen vorgestellt.
 Dies fördert die weitere Digitalisierung der Bundesagentur für Arbeit.

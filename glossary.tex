@@ -1,52 +1,30 @@
-\newglossaryentry{LLM}{
-    name={LLM},
-    description={Large Language Model}
-}
-
-\newglossaryentry{MLLM}{
-    name={MLLM},
-    description={Multimodal Large Language Model}
-}
-
-\newglossaryentry{VLM}{
-    name={VLM},
-    description={Vision Language Model}
-}
-
-\newglossaryentry{PEFT}{
-    name={PEFT},
-    description={Parameter-Efficient Fine-Tuning}
-}
-
 \newglossaryentry{YOLO}{
     name={YOLO},
-    description={You Only Look Once}
+    description={
+        Ein YOLO-Modell (You Only Look Once) ist ein Deep-Learning-Verfahren zur Objekterkennung, das Objekte und die dazugehörigen Klassen in einem einzigen Durchlauf erkennt.
+        Für die Detektion werden Bounding-Boxes und Klassenwahrscheinlichkeiten berechnet, was eine schnelle Erkennung ermöglicht.
+    }
 }
 
 \newglossaryentry{OCR}{
     name={OCR},
-    description={Optical Character Recognition}
+    description={
+        OCR (Optical Character Recognition) ist ein Verfahren zu Texterkennung, das hand- und maschinenschriftliche Zeichen aus Bilder extrahiert und in einen Text umwandelt.
+    }
 }
-
 
 \newglossaryentry{JSON}{
     name={JSON},
-    description={JavaScript Object Notation}
+    description={
+        JSON (JavaScript Object Notation) basiert auf Schlüssel-Wert-Paaren und ist ein textbasiertes Datenformat zur strukturierten Speicherung und Übertragung von Daten.
+    }
 }
 
 \newglossaryentry{VQA}{
     name={VQA},
-    description={Visual Question Answering}
+    description={VQA (Visual Question Answering) ist eine Aufgabe, bei der ein Modell ein Bild analysiert und auf Basis desen eine Frage beantwortet.}
 }
 
-\newglossaryentry{LoRA}{
-    name={LoRA},
-    description={Low-Rank Adaptation}
-}
-
-\newglossaryentry{rsLoRA}{
-    name={rsLoRA},
-    description={Rank-Stabilized Low-Rank Adaptation}}
 
 \newglossaryentry{IE}{
     name={IE},
@@ -54,62 +32,78 @@
     Ziel hierbei ist es, vordefinierte Entitäten aus einem Dokumentenbild zu extrahieren und diese in ein maschinenlesbares Schema zu überführen.}
 }
 
-\newglossaryentry{TP}{
-    name={TP},
-    description={True Positive}
+\newglossaryentry{GPU}{
+    name={GPU},
+    description={Eine GPU (Graphics Processing Unit) ist ein spezialisierter Prozessor in einem Computer oder Server, der rechenintesive Arbeiten parallelisiert.}
 }
 
-\newglossaryentry{TN}{
-    name={TN},
-    description={True Negative}
-}
-
-\newglossaryentry{FP}{
-    name={FP},
-    description={False Positive}
-}
-
-\newglossaryentry{FN}{
-    name={FN},
-    description={False Negative}
-}
-
-% TODO: statischer und dynamischer VRAM
 \newglossaryentry{VRAM}{
     name={VRAM},
-    description={Video Random Access Memory}
-}
-
-\newglossaryentry{EXIF}{
-    name={EXIF},
-    description={Exchangeable Image File Format}
+    description={
+        VRAM (Video Random Access Memory) ist ein spezieller Grafikspeicher auf einer GPU, der zur schnellen Speicherung und Verabreitung während rechenintesiver Anwendungen verwendet wird.
+    }
 }
 
 \newglossaryentry{IDE}{
     name={IDE},
-    description={Integrated Development Environment}
+    description={Eine IDE (Integrated Development Environment) ist eine Entwicklungsumgebung die spezielle Werkzeuge für Entwickler bereitstellt.}
 }
 
-\newglossaryentry{BA}{
-    name={BA},
-    description={Bundesagentur für Arbeit}
+\newglossaryentry{KV-Cache}{
+    name={KV-Cache},
+    description={Der KV-Cache (Key-Value-Cache) speichert die Key-Value-Vektoren der bereits generierten Token, sodass nur die Vektoren der neuen Token berechnet werden müssen.}
 }
 
-\newglossaryentry{ViT}{
-    name={ViT},
-    description={Vision Transformer}
+\newglossaryentry{logprobs}{
+    name={logprobs},
+    description={Logprobs (Logarithmic Probailities) sind die logarithmierten Wahrscheinlichkeiten der möglichen Token pro Inferenzschritt.}
+}
+
+\newglossaryentry{vLLM}{
+    name={vLLM},
+    description={vLLM ist eine Open-Source-Engine für die effiziente Inferenz von großen Sprachmodellen.}
 }
 
 \newglossaryentry{Unsloth}{
     name={Unsloth},
-    description={Open-Source-Framework zum beschleunigten und speichereffizienten Fine-Tuning von Large Models, das speziell für Methoden des PEFT optimiert ist.}
+    description={Unsloth ist ein Open-Source-Framework zum beschleunigten und speichereffizienten Fine-Tuning von Large Models, das speziell für Methoden des PEFT optimiert ist.}
 }
 
 \newglossaryentry{Levenshtein-Similarity}{
     name={Levensthein-Similarity},
-    description={Die Levenshtein-Similarity ist ein aus der Levenshtein-Distanz abgeleiteter, normalisierter Ähnlichkeitswert zwischen zwei Zeichenketten.
-Formal basiert sie auf der Levenshtein-Distanz, also der minimalen Anzahl von Einfügungen, Löschungen oder Ersetzungen, die nötig sind, um eine Zeichenkette in eine andere zu überführen\cite{gld}.}
+    description={
+        Die Levenshtein-Similarity ist ein aus der Levenshtein-Distanz abgeleiteter, normalisierter Ähnlichkeitswert zwischen zwei Zeichenketten.
+        Formal basiert sie auf der Levenshtein-Distanz, also der minimalen Anzahl von Einfügungen, Löschungen oder Ersetzungen, die nötig sind, um eine Zeichenkette in eine andere zu überführen\cite{gld}.}
 }
+
+\newglossaryentry{TP}{
+    name={TP},
+    description={
+        TP (True Positive) sind alle positiven Fälle, die tatsächlich als positiv klassifiziert wurden.
+    }
+}
+
+\newglossaryentry{TN}{
+    name={TN},
+    description={
+        TN (True Negative) sind alle negativen Fälle, die tatsächlich als negativ klassifiziert wurden.
+    }
+}
+
+\newglossaryentry{FP}{
+    name={FP},
+    description={
+        FP (False Positive) sind alle negativen Fälle, die fälschlicherweise als positiv klassifiziert wurden.
+    }
+}
+
+\newglossaryentry{FN}{
+    name={FN},
+    description={
+        FN (False Negative) sind alle positiven Fälle, die fälschlicherweise als negativ klassifiziert wurden.
+    }
+}
+
 
 \newglossaryentry{Accuracy}{
     name={Accuracy},
@@ -169,27 +163,7 @@ Formal basiert sie auf der Levenshtein-Distanz, also der minimalen Anzahl von Ei
 
 \newglossaryentry{OpenAI Message Format}{
     name={OpenAI Message Format},
-    description={Das \textbf{OpenAI Message Format} ist ein standardisiertes, rollenbasiertes Datenformat zur Interaktion mit Modellen, bei dem Nachrichten nach Rollen (z. B. \texttt{user}, \texttt{assistant}) unterteilt und Inhalte als Array aus verschiedenen Typen wie Text und Bild definiert werden.}
-}
-
-\newglossaryentry{GPU}{
-    name={GPU},
-    description={}
-}
-
-\newglossaryentry{KV-Cache}{
-    name={KV-Cache},
-    description={}
-}
-
-\newglossaryentry{logprobs}{
-    name={logprobs},
-    description={}
-}
-
-\newglossaryentry{vLLM}{
-    name={vLLM},
-    description={}
+    description={Das OpenAI Message Format ist ein standardisiertes, rollenbasiertes Datenformat zur Interaktion mit Modellen, bei dem Nachrichten nach Rollen unterteilt und Inhalte als Array aus verschiedenen Typen wie Text und Bild definiert werden.}
 }
 
 \glsaddall

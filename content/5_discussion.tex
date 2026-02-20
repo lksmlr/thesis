@@ -5,8 +5,8 @@
 
 Sowohl die OCR/YOLO-Pipeline als auch die VLMs weisen spezifische Fehlermuster auf, die sich in Klassifikations-, Format-, Detektions- und Wertfehler unterteilen lassen.
 
-Klassifikationsfehler wiegen in der aus mehreren Einzelkomponenten bestehenden OCR/YOLO-Pipeline besonders schwer, da die Klassifikation hier einen logischen Single Point of Failure darstellt.
-Wie die Confusion Matrix in Abbildung~\ref{fig:confusion_matrices_overview} verdeutlicht, wurden fünf Dokumente fälschlicherweise als \texttt{Sonstiges} eingestuft, was aufgrund der Systemarchitektur (siehe Abbildung~\ref{fig:aube}) zu einem sofortigen Abbruch der Verarbeitung führt.
+Klassifikationsfehler wiegen in der aus mehreren Komponenten bestehenden OCR/YOLO-Pipeline besonders schwer, da die Klassifikation hier einen logischen Single Point of Failure darstellt.
+Wie die Confusion Matrix in Abbildung~\ref{fig:confusion_matrices} verdeutlicht, wurden fünf Dokumente fälschlicherweise als \texttt{Sonstiges} eingestuft, was aufgrund der Systemarchitektur (siehe Abbildung~\ref{fig:aube}) zu einem sofortigen Abbruch der Verarbeitung führt.
 Bei diesen fünf Dokumenten handelte es sich auffälligerweise ausschließlich um fotografierte Dokumente.
 Fotos weisen häufig Verzerrungen, Schattenwurf oder eine schlechte Beleuchtung auf, wodurch die \gls{OCR}-Ergebnisse des vorgeschalteten Systems schlechter ausfallen und die Klassifikation behindern.
 
@@ -201,8 +201,8 @@ Dieses Problem konnte durch die Umstellung auf PIL-Images gelöst werden.
 
 Hinsichtlich der Ressourceneffizienz zeigten die Ergebnisse in Abbildung~\ref{fig:results_vram_inference} und Abbildung~\ref{fig:results_vram_model}, dass das Qwen-2.5-VL-7B-finetuned im Vergleich zum Basismodell einen erhöhten statischen und im Vergleich zum 32B-Modell sogar einen höheren dynamischen \gls{VRAM}-Verbrauch aufweist.
 Dieser Overhead resultiert vermutlich aus der Art der Bereitstellung.
-Die Gewichte der während des Fine-Tunings trainierten LoRA-Adapter werden nicht fest mit dem Basismodell gemerged, sondern zur Laufzeit dynamisch geladen, um Speicherplatz zu sparen.
-In einem produktiven Einsatz wird der finale Adapter mit dem Basismodell gemerged und zusammen gespeichert, was den Overhead reduzieren wird.
+Die Gewichte der während des Fine-Tunings trainierten LoRA-Adapter werden nicht fest mit dem Basismodell verschmolzen, sondern zur Laufzeit dynamisch geladen, um Speicherplatz zu sparen.
+In einem produktiven Einsatz wird der finale Adapter mit dem Basismodell verschmolzen und zusammen gespeichert, was den Overhead reduzieren wird.
 
 Methodische Limitationen zeigten sich in der Robustheit der Klassifikation durch Fehlklassifikationen.
 Wie in der Fehleranalyse diskutiert, führt eine Fehlklassifikation eines Vertrags als \texttt{Sonstiges} zum Verlust aller Felder, da für die Klasse \texttt{Sonstiges} keine Extraktion stattfindet.

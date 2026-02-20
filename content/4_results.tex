@@ -94,7 +94,8 @@ Die OCR/YOLO-Pipeline neigt zur Zuordnung zu den sonstigen Dokumenten, wodurch r
     \label{fig:results_latency}
 \end{figure}
 
-Das Diagramm~\ref{fig:results_latency} verdeutlicht den Zusammenhang zwischen der Größe des Modells und dessen \gls{Latenz}.
+Das Diagramm~\ref{fig:results_latency} zeigt die durchschnittliche und maximale \gls{Latenz} in Sekunden der Basismodelle und der OCR/YOLO-Pipeline.
+
 Aufgrund der Architektur antwortet die OCR/YOLO-Pipeline mit einer durchschnittlichen \gls{Latenz} von 0,58 Sekunden nahezu in Echtzeit.
 Gegenüber der Pipeline braucht selbst das kleinste Modell mit 7,43 Sekunden fast 13-mal länger.
 Besonders auffällig ist die hohe maximale \gls{Latenz} des Qwen-2.5-VL-32B mit 252 Sekunden, womit dieses Modell deutlich über den anderen liegt.
@@ -102,39 +103,44 @@ Besonders auffällig ist die hohe maximale \gls{Latenz} des Qwen-2.5-VL-32B mit 
 Die \gls{Latenz}messung belegt den Zusammenhang der Modellgröße von VLMs mit dessen Antwortgeschwindigkeit.
 Mit zunehmender Parameteranzahl wächst die \gls{Latenz} überproportional.
 
+Mit den hier vorgestellten Ergebnissen ist zudem die Auswahl des Basismodells erfolgt.
+Durch die Überlegenheit des Qwen-2.5-VL-7B gegenüber des Pixtral-12B in der Information Extraction sowie der Klassifikation, stellt sich das Qwen-Modell als besserer Kandidat für das training heraus.
+
 
 \section{Ergebnisse des weitertrainierten Modells gegenüber dem größeren Basismodell}\label{sec:results_latency}
 
-Der Prozess der Auswahl des Basismodells~\ref{subsec:model_selection} lieferte ein eindeutiges Ergebnis.
-Wie in Abbildung~\ref{fig:results_ie} und Abbildung~\ref{fig:results_classification} schlägt das Qwen-2.5-VL-7B das Pixtral-12B.
-Besonders in der \gls{IE} stellt sich das Qwen-2.5-VL-7B als der bessere Kandidat für das Training heraus.
-Demnach wird im folgenden Abschnitt das trainierte Qwen-2.5-VL-7B (Qwen-2.5-VL-7B-finetuned) gegen das Qwen-2.5-VL-32B verglichen.
-
-Trotz ähnlicher Ergebnisse zeigt das Qwen-2.5-VL-32B auch gegenüber dem angepassten Modell seine Stärken.
-Wie in Abbildung~\ref{fig:results_ie_peft_32b} zu erkennen, erreichten die beiden Modelle bei den KG5b-Formularen einen F1-Score von 0,87.
-Bei den Verträgen lag das Qwen-2.5-VL-32B mit einem F1-Score von 0,94 mit 0,10 über dem Qwen-2.5-VL-7B-finetuned.
-
-\begin{figure}[!ht]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{figures/results_ie_peft_32b}
+    \includegraphics[width=0.8\textwidth]{figures/results_ie_peft_32b_7b}
     \caption{Ergebnisse der Information Extraction}
-    \label{fig:results_ie_peft_32b}
+    \label{fig:results_ie_peft_32b_7b}
 \end{figure}
 
-Abbildung~\ref{fig:results_classification_peft_32b} zeigt eine geringe Differenz in der Klassifikationsleistung auf.
-Während beide Modelle die KG5b-Formulare perfekt zuordnen, liegt das Qwen-2.5-VL-7B-finetuned in den anderen Dokumentenarten vorne.
-Hier erzielt das Modell einen F1-Score von 0,94 bei den Verträgen und 0,95 bei den sonstigen Dokumenten.
-Die Confusion Matrices in Abbildung~\ref{fig:confusion_matrices_32b_peft} verdeutlichen dieses Ergebnis.
-Im direkten Vergleich klassifiziert das Qwen-2.5-VL-7B-finetuned einen Vertrag als sonstiges Dokument, während das Qwen-2.5-VL-32B drei sonstige Dokumente als Vertrag erkannte.
+Abbildung~\ref{fig:results_ie_peft_32b_7b} stellt die F1-Scores der Information Extraction des Qwen-2.5-VL-7B-finetuned und des Qwen-2.5-VL-32B dar.
 
-\begin{figure}[!ht]
+Bei den standardisierten KG5b-Formularen erzielten beide Modelle identische Ergebnisse mit einem F1-Score von 0,87.
+Demgegenüber zeigen die Ausbildungsverträge einen deutlicheren Unterschied.
+Während das Qwen-2.5-VL-32B ein F1-Score von 0,94 aufweist, liegt das angepasste Modell mit einer Differenz von 0,10 signifikant darunter.
+
+Die Verteilung deutet darauf hin, dass ein domänenspezifisches Training ausreicht um bei starren Layouts auf die Leistung des Qwen-2.5-VL-32B zu schließen.
+Bei variablen Dokumenten wie die Ausbildungsverträge profitiert das 32B-Modell jedoch weiterhin von seinem umfangreicheren Weltwissen.
+Dadurch wird die Information Extraction präziser.
+
+
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{figures/results_classification_peft_32b}
+    \includegraphics[width=0.8\textwidth]{figures/results_classification_peft_32b_7b}
     \caption{Ergebnisse der Klassifikation}
-    \label{fig:results_classification_peft_32b}
+    \label{fig:results_classification_peft_32b_7b}
 \end{figure}
 
-\begin{figure}[htbp]
+Die Abbildung~\ref{fig:results_classification_peft_32b_7b} visualisiert die Klassifikationsleistung der Modelle anhand der F1-Scores.
+
+Beide Modelle erreichen bei den KG5b-Formularen ein perfektes Ergebnis mit einem F1-Score von 1,0.
+Die anderen beiden Kategorien legen einen minimalen Vorsprung des angepassten Modells dar.
+Hier erreicht das Qwen-2.5-VL-7B-finetuned einen F1-Score von 0,97 bei den Verträgen und 0,95 bei den sonstigen Dokumenten.
+
+\begin{figure}[H]
     \centering
     \begin{subfigure}{0.49\textwidth}
         \centering
@@ -151,16 +157,14 @@ Im direkten Vergleich klassifiziert das Qwen-2.5-VL-7B-finetuned einen Vertrag a
     \label{fig:confusion_matrices_32b_peft}
 \end{figure}
 
-Die \gls{Latenz} des großen Modells ist erkennbar größer als die des Qwen-2.5-VL-7B-finetuned.
-Wie in der Abbildung~\ref{fig:results_latency_peft_32b} zu erkennen, ist die Dauer der Inferenz des Qwen-2.5-VL-32B merklich höher.
-Mit einer maximalen \gls{Latenz} von 252,06 Sekunden liegt das Qwen-2.5-VL-32B über dem Qwen-2.5-VL-7B-finetuned mit 21,6 Sekunden.
 
-\begin{figure}[!ht]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{figures/results_latency_peft_32b}
+    \includegraphics[width=0.8\textwidth]{figures/results_latency_peft_32b_7b}
     \caption{Ergebnisse der Latenzmessung pro Dokument}
-    \label{fig:results_latency_peft_32b}
+    \label{fig:results_latency_peft_32b_7b}
 \end{figure}
+
 
 
 \section{Ressourcenverbrauch der VLMs gegenüber der OCR/YOLO-Pipeline}\label{sec:results_vram_usage}

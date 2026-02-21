@@ -134,7 +134,6 @@ Anstatt zeitaufwendig Bounding-Boxes für das Training von \gls{YOLO}-Modellen z
 Der Vergleich zeigt, dass ein Training eines kleineren Modells einen merklichen Effizienzvorteil gegenüber einem größeren Basismodell bringt und sogar in der Klassifikation überlegen ist, wobei man jedoch leichte Abstriche bei der Information Extraction hinnehmen muss.
 
 Hinsichtlich der \gls{Latenz} schlägt das angepasste Modell aufgrund der Größe das 32B-Modell.
-Während das Qwen-2.5-VL-7B-finetuned durchschnittlich innerhalb 9,57 Sekunden antwortet, benötigt das Qwen-2.5-VL-32B mit 64,16 Sekunden länger.
 Insbesondere die maximale \gls{Latenz} des großen Modells ist mit 252,06 Sekunden bedenklich.
 
 Die Klassifikationsleistung ist bei beiden Modellen beeindruckend, jedoch schneidet hier das angepasste Modell besser ab.
@@ -231,7 +230,7 @@ Für den Fall dieser vielseitigen Dokumente muss für den produktiven Einsatz ei
 Aus der Beantwortung der Forschungsfragen und der vorangegangenen Diskussion leitet sich eine Handlungsempfehlung für die Bundesagentur für Arbeit ab.
 Die Entscheidung beruht auf einer Abwägung zwischen Fußabdruck, Leistungsfähigkeit und der wirtschaftlichen Notwendigkeit.
 
-Als primäre Empfehlung wird der Einsatz des \textbf{Qwen-2.5-VL-7B-finetuned} ausgesprochen.
+Als primäre Empfehlung wird der Einsatz des Qwen-2.5-VL-7B-finetuned ausgesprochen.
 Dieses Modell stellt im Vergleich zur bestehenden OCR/YOLO-Pipeline sowie zum größeren Basismodell Qwen-2.5-VL-32B den besten Kompromiss dar.
 Zwar weist die OCR/YOLO-Pipeline den geringsten ökologischen Fußabdruck auf, jedoch verursacht die geringe Extraktionsgüte bei Verträgen hohe Personalkosten.
 Die Kosten der manuellen Korrektur durch Sachbearbeiter übersteigt die Kosten des Qwen-2.5-VL-7B-finetuned.

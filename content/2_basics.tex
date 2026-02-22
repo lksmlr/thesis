@@ -214,20 +214,25 @@ Durch rsLoRA wird der Prozess stabilisiert, indem die Adapter durch die Quadratw
 
 \section{Verwandte Arbeiten}\label{sec:relatedwork}
 
-Das automatisierte Lesen, Verstehen und Analysieren von Dokument wird ein immer relevanteres Forschungsfeld und wird häufig unter dem Begriff DocumentAI~\cite{DocumentAI} zusammengefasst.
+Das automatisierte Lesen, Verstehen und Analysieren von Dokumenten wird ein zunehmend relevanteres Forschungsfeld und wird nach häufig unter dem Begriff DocumentAI zusammengefasst.
+Cui et al.\ liefern eine Übersicht über die Entwicklung dieses Bereichs und definieren den Begriff Document AI als Prozess, der Webseiten, digitale und gescannte Dokumente in strukturierte Information überführt~\cite{DocumentAI}.
 
-Begonnen hat die Entwicklung mit
-
-
-
+Die Entwicklung lässt sich dabei in drei wesentliche Phasen einteilen, die im Folgenden besprochen werden.
 
 
+\subsection{Die Grenzen sequentieller OCR-Pipeline}\label{subsec:deeplearning_ocr}
+
+Frühe Ansätze im Bereich der Document AI beruhten auf Pipelines, bei der mithilfe eines \gls{OCR}-Modells Text extrahiert wurde.
+Ein Problem besteht darin, dass herkömmliche \gls{OCR}-Modelle den Text als zusammenhängende Zeichenkette verarbeiten, wodurch die zweidimensionalen Layout-Informationen verloren gehen.
+Um diese Informationen zu behalten, stellte Katti et al.\ mit Chargrid einen Ansatz vor, bei der Dokumente als zweidimensionales Raster von Zeichen (Character Grid) repräsentiert werden.
+Durch den Einsatz von Convolutional Neural Networks auf dieser Struktur konnten sowohl textuelle als auch räumliche Merkmale genutzt werden.
+Mit der Einführung von Chargrid verbesserte sich die Leistung von sämtlichen NLP-Aufgaben wie die Klassifikation von Dokumenten~\cite{chargrid}.
+
+Der Ansatz der Verarbeitung des Textes mit einem \gls{OCR}-Modell ähnelt dem Klassifikationsschritt der OCR/YOLO-Pipeline.
+Hier wird auf Basis des Textes klassifiziert, ohne dabei räumliche Merkmale zu beachten.
+Durch die notwendige Einführung von räumlichen Merkmalen für die Klassifikation nach Katti et al.\ ist die OCR/YOLO-Pipeline Fehleranfällig.
 
 
-\subsection{Deep Learning mit OCR-Modell}\label{subsec:deeplearning_ocr}
+\subsection{Semantische Layout-Modellierung}\label{subsec:tranformer_ocr}
 
-
-
-\subsection{Transformer mit OCR-Modell}\label{subsec:tranformer_ocr}
-
-\subsection{End-to-End Transformer}\label{subsec:end_to_end_transformer}
+\subsection{OCR-freie und multimodale Ansätze}\label{subsec:end_to_end_transformer}

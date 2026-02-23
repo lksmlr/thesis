@@ -14,26 +14,8 @@ Da diese für den Kindergeldantrag nicht im Fokus stehen, fallen sie im Folgende
 Das Formular KG5b ist, wie bereits erwähnt, ein offizielles Dokument der Bundesagentur für Arbeit, welches als Bescheinigung der Ausbildungsstätte dient.
 Volljährige Kinder weisen damit gegenüber der Familienkasse den Status ihrer Ausbildung nach, was die Voraussetzung für den weiteren Kindergeldbezug ist.
 
-Abbildung~\ref{fig:kg5b} zeigt ein exemplarisch ausgefülltes KG5b-Formular mit Markierung der für den Kindergeldantrag relevanten Felder.
+Anhang~\ref{sec:kg5b-formular} zeigt ein exemplarisch ausgefülltes KG5b-Formular mit Markierung der für den Kindergeldantrag relevanten Felder.
 
-\begin{figure}[!ht]
-    \centering
-    \begin{subfigure}[b]{0.49\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{figures/kg5b_page_1}
-        \caption{Erste Seite}
-        \label{fig:kg5bpage1}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.49\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{figures/kg5b_page_2}
-        \caption{Zweite Seite}
-        \label{fig:kg5bpage2}
-    \end{subfigure}
-    \caption{Exemplarisch ausgefülltes KG5b-Formular mit Markierung der relevanten Felder}
-    \label{fig:kg5b}
-\end{figure}
 
 \subsection{Ausbildungsvertrag}\label{subsec:vertraege}
 
@@ -41,26 +23,8 @@ Im Gegensatz zu den standardisierten KG5b-Formularen weisen Ausbildungsverträge
 Dies ist auf die Vielzahl unterschiedlicher zuständiger Stellen (z.\,B. Industrie- und Handelskammern, Handwerkskammern, Ärztekammern) und Firmen zurückzuführen, die jeweils ein eigenes Layout definieren.
 Die Vielfalt der Dokumentenstruktur reicht dabei von formularbasierten Layouts bis hin zu unstrukturierten Fließtexten.
 
-In der folgenden Abbildung~\ref{fig:vertrag} ist ein synthetischer Ausbildungsvertrag der Industrie- und Handelskammer\cite{Vertrag} abgebildet, in dem die relevanten Felder markiert sind.
+In Anhang~\ref{sec:ausbildungsvertrag-der-ihk} ist ein synthetischer Ausbildungsvertrag der Industrie- und Handelskammer~\cite{Vertrag} abgebildet, in dem die relevanten Felder markiert sind.
 
-\begin{figure}[!ht]
-    \centering
-    \begin{subfigure}[b]{0.49\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{figures/vertrag_page_1}
-        \caption{Erste Seite}
-        \label{fig:vertragpage1}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.49\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{figures/vertrag_page_2}
-        \caption{Zweite Seite}
-        \label{fig:vertragpage2}
-    \end{subfigure}
-    \caption{Synthetischer Ausbildungsvertrag der Industrie- und Handelskammer mit markierten Datenfeldern}
-    \label{fig:vertrag}
-\end{figure}
 
 \subsection{Sonstige Dokumente}\label{subsec:other_documents}
 
@@ -73,7 +37,7 @@ Da diese Dokumente keine Relevanz für die Weiterbeantragung des Kindergeldes be
 
 \subsection{Der Ist-Zustand}\label{subsec:current}
 
-Der schematische Ablauf der OCR/YOLO-Pipeline ist in Abbildung~\ref{fig:aube} dargestellt.
+Der schematische Ablauf der OCR/YOLO-Pipeline ist in Abbildung~\ref{fig:aube} dargestellt und lässt sich in zwei Stufen einteilen.
 
 \begin{figure}[!ht]
     \centering
@@ -81,8 +45,6 @@ Der schematische Ablauf der OCR/YOLO-Pipeline ist in Abbildung~\ref{fig:aube} da
     \caption{Schematischer Workflow der aktuellen OCR/YOLO-Pipeline zur Dokumentenverarbeitung}
     \label{fig:aube}
 \end{figure}
-
-Der Prozess der Dokumentenverarbeitung lässt sich in zwei Stufen einteilen.
 
 In der ersten Stufe nimmt die Anwendung die hochgeladenen Dokumente des Kunden entgegen.
 Wenn ein Dokument als PDF vorliegt, extrahiert die Pipeline den Text mithilfe des Textlayers und eines \gls{OCR}-Modells, während bei einer Bilddatei lediglich das \gls{OCR}-Modell zum Einsatz kommt.
@@ -128,9 +90,9 @@ Um einen Test- oder Trainingslauf durchzuführen, durchläuft das System den fol
 \end{enumerate}
 
 
-\section{Vision Language Models (VLMs)}\label{sec:vlms}
+\section{Vision Language Models}\label{sec:vlms}
 
-Ein VLM besteht aus drei Komponenten: einem Image-Encoder, einem Adapter und einem Large Language Model (LLM).
+Ein Vision Language Model (VLM) besteht aus drei Komponenten: einem Image-Encoder, einem Adapter und einem Large Language Model (LLM).
 Abbildung~\ref{fig:vlm} stellt den Aufbau dar.
 
 \begin{figure}[!ht]
@@ -219,7 +181,7 @@ Das automatisierte Lesen, Verstehen und Analysieren von Dokumenten entwickelt si
 Cui et al.\ liefern eine Übersicht über die Entwicklung dieses Bereichs und definieren den Begriff Document AI als Prozess, der Webseiten, digitale und gescannte Dokumente in strukturierte Information überführt~\cite{DocumentAI}.
 Die Entwicklung lässt sich dabei in drei wesentliche Phasen einteilen, die die folgenden Unterkapitel besprechen.
 
-\subsection{Die Grenzen sequentieller OCR-Pipelines}\label{subsec:deeplearning_ocr}
+\subsection{Grenzen sequentieller OCR-Pipelines}\label{subsec:deeplearning_ocr}
 
 Frühe Ansätze im Bereich der Document AI beruhten auf Pipelines, bei denen ein \gls{OCR}-Modell den Text extrahierte.
 Ein Problem besteht darin, dass herkömmliche \gls{OCR}-Modelle den Text als zusammenhängende Zeichenkette verarbeiten, wodurch die zweidimensionalen Layout-Informationen, wie die räumliche Anordnung von Tabellen und Textblöcken, verloren gehen.
@@ -231,7 +193,7 @@ Chargrid baut auf den Bounding-Boxen und Koordinaten der \gls{OCR}-Modelle auf u
 Dieser Ansatz der Verarbeitung des Textes mit einem \gls{OCR}-Modell ähnelt dem Klassifikationsschritt der aktuellen OCR/YOLO-Pipeline, die das Dokument ebenfalls ohne räumliche Merkmale klassifiziert.
 Die Einbeziehung räumlicher Merkmale ist für die Robustheit notwendig, was die Fehleranfälligkeit insbesondere bei komplexen Layouts erklärt.
 
-\subsection{Semantische Layout-Modellierung}\label{subsec:tranformer_ocr}
+\subsection{Layoutbewusste Transformer-Modelle}\label{subsec:tranformer_ocr}
 
 Mit der Vorstellung der Transformer-Architektur begann eine tiefere Analyse der Semantik.
 Xu et al.\ erkannten, dass bisherige Lösungen sich fast ausschließlich auf Text konzentrieren, während das Layout eines Dokuments eine entscheidende Rolle für das Verständnis spielt.
@@ -247,7 +209,7 @@ Mit dieser Trennung stützt sich die Verarbeitung weiterhin auf mehrere Modelle,
 Jeder \gls{OCR}-Fehler beeinträchtigt die anschließende semantische Analyse.
 Diese Abhängigkeit unterschiedlicher Modelle ist auch eine Schwachstelle der OCR/YOLO-Pipeline, weshalb ein End-To-End-Ansatz Abhilfe schaffen könnte.
 
-\subsection{End-To-End-Architekturen und multimodale Ansätze}\label{subsec:end_to_end_transformer}
+\subsection{End-To-End-Architekturen}\label{subsec:end_to_end_transformer}
 
 Um die Abhängigkeit und Fehleranfälligkeit sequentieller Pipelines zu reduzieren, entwickelte sich die Forschung hin zu End-To-End-Architekturen.
 Kim et al.\ stellten mit Donut ein \gls{OCR}-freies Transformer-Modell vor, das durch einen Vision-Encoder und einen Textual-Decoder Bilder von Dokumenten direkt in eine strukturierte \gls{JSON}-Ausgabe überführt.

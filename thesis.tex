@@ -1,7 +1,6 @@
 \pdfminorversion=7
 \documentclass[
-    11pt,
-    a4paper,
+ figures/kg5baper,
     sfdefaults=false,
     toc=chapterentrywithdots,
     twoside,openright,
@@ -183,8 +182,49 @@
 \bibliographystyle{wmaainf}
 \bibliography{refs}
 
+
 \printnoidxglossaries
 
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{part}{Appendix}
+\appendix
+
+
+\chapter{KG5b-Formular}\label{sec:kg5b-formular}
+\thispagestyle{scrheadings}
+
+\begin{center}
+    \includegraphics[page=1, height=0.75\textheight, keepaspectratio]{figures/kg5b}
+    \captionof{figure}{KG5b-Formular (Seite 1)}\label{fig:kg5b_page_1}
+\end{center}
+
+\clearpage
+
+\begin{center}
+    \includegraphics[page=2, height=0.75\textheight]{figures/kg5b}
+    \captionof{figure}{KG5b-Formular (Seite 2)}\label{fig:kg5b_page_2}
+\end{center}
+\clearpage
+
+
+\chapter{Ausbildungsvertrag der IHK}\label{sec:ausbildungsvertrag-der-ihk}
+\thispagestyle{scrheadings}
+
+\begin{center}
+    \includegraphics[page=1, height=0.75\textheight, keepaspectratio]{figures/vertrag}
+    \captionof{figure}{Ausbildungsvertrag der IHK (Seite 1)}\label{fig:vertrag_page_1}
+\end{center}
+
+\clearpage
+
+\begin{center}
+    \includegraphics[page=2, height=0.75\textheight]{figures/vertrag}
+    \captionof{figure}{Ausbildungsvertrag der IHK (Seite 2)}\label{fig:vertrag_page_2}
+\end{center}
+\clearpage
+
+\cleardoublepage
 \includepdf[pages=-]{SB_0009_FO_Pruefungsrechtliche_Erklaerung_und_Erklaerung_zur_Veroeffentlichung_der_Abschlussarbeit_public.pdf}
 
 \end{document}

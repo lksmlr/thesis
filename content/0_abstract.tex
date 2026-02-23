@@ -5,10 +5,10 @@ Angesichts des demografischen Wandels und steigender Antragszahlen ist die Autom
 Das bestehende System zur teilautomatisierten Verarbeitung von Ausbildungsnachweisen, basierend auf einer OCR/YOLO-Pipeline, weist jedoch Defizite bei variablen Dokumentenlayouts auf.
 
 Ziel dieser Arbeit ist die Evaluation multimodaler Large Language Models als potenzielles Ersatzsystem.
-Verglichen wurden die Modelle Pixtral-12B, Qwen-2.5-VL-7B und Qwen-2.5-VL-32B hinsichtlich ihrer Klassifikations- und Extraktionsleistung sowie ihrer Ressourceneffizienz (Latenz, Energie, VRAM).
-Ein Schwerpunkt lag auf der Untersuchung, ob ein domänenspezifisch nachtrainiertes 7B-Modell mit leistungsstärkeren Basismodellen konkurrieren kann.
+Verglichen wurden die Modelle Pixtral-12B, Qwen-2.5-VL-7B und Qwen-2.5-VL-32B hinsichtlich ihrer Klassifikations- und Extraktionsleistung, Latenz sowie ihrer Ressourceneffizienz (Energieverbrauch und VRAM-Auslastung).
+Ein Schwerpunkt lag auf der Untersuchung, ob ein kleineres, domänenspezifisch trainiertes Modell mit leistungsstärkeren Basismodellen konkurrieren kann.
 
-Die Ergebnisse belegen, dass die bisherige Pipeline bei komplexen Verträgen lediglich einen niedrigen F1-Score aufweist.
+Die Ergebnisse belegen, dass die bisherige Pipeline bei komplexen Dokumenten einen niedrigen F1-Score aufweist.
 Das Qwen-2.5-VL-32B liefert die qualitativ besten Ergebnisse, ist jedoch aufgrund der Ressourcenineffizienz ungeeignet.
 Als Handlungsempfehlung wird der Einsatz des nachtrainierten Qwen-2.5-VL-7B ausgesprochen.
 Mit der Leistungssteigerung bietet dieses Modell den besten Kompromiss zwischen Leistungsfähigkeit und Ressourceneffizienz.

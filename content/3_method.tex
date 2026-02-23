@@ -70,7 +70,7 @@ Die Felder der \gls{JSON}-Schemata geben die relevanten Informationen aus Abschn
 Die Klassifikation wird im \gls{JSON}-Objekt über das Feld \texttt{type} abgebildet und ist in allen \gls{JSON}-Schemata vorhanden.
 Felder der Information Extraction sind über die Dokumentenarten nicht konsistent, jedoch bildet das Schema eines Vertrags eine Teilmenge des Schemas eines KG5b-Formulars.
 Das Schema des KG5b-Formulars beinhaltet zusätzlich die Felder \texttt{apprenticeship\_finished} und \texttt{exam\_month}.
-\texttt{apprenticeship\_finished} ist ein binäres Feld und bildet die Checkboxen auf der ersten Seite des Formulars ab (siehe Abbildung~\ref{fig:kg5bpage1}).
+\texttt{apprenticeship\_finished} ist ein binäres Feld und bildet die Checkboxen auf der ersten Seite des Formulars ab (siehe Anhang~\ref{fig:kg5b_page_1}).
 
 Bei den binären, booleschen Feldern markiert ein \texttt{true} das Vorhandensein eines Merkmals, während ein \texttt{false} dessen Fehlen oder das Nicht-Erkennen repräsentiert.
 Um eine strukturelle Konsistenz zu erzwingen, werden Felder, bei denen die dazugehörige Information im Dokument fehlt, bei booleschen Typen mit \texttt{false} und bei Textfeldern mit einer leeren Zeichenkette belegt.
@@ -104,7 +104,7 @@ Schlägt das Parsen der \gls{JSON}-Objekte fehl, werden diese zurück an das VLM
 Das Modell bekommt insgesamt drei Versuche, ein valides \gls{JSON}-Objekt zu generieren, bevor das Dokument als ungültig eingestuft wird.
 
 
-\subsection{Vergleichslogik der unterschiedlichen JSON-Felder}\label{subsec:comparator}
+\subsection{Vergleichslogiken der unterschiedlichen JSON-Felder}\label{subsec:comparator}
 
 Im Gegensatz zur Verarbeitung von Antworten herköModels weisen VLMs eine hohe Varianz an Ausgabeformaten auf.
 Verschiedene Feldtypen der generierten \gls{JSON}-Objekte müssen deshalb spezifisch normalisiert werden, um eine Grundlage für den Vergleich zu bilden.

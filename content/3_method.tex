@@ -44,7 +44,7 @@ Listing~\ref{lst:preprocessing} zeigt die Korrektur der Bildausrichtung und Skal
 Für die standardisierte Weiterverarbeitung der Modellausgaben ist eine konsistente Struktur essenziell.
 Da moderne VLMs darauf trainiert sind, Antworten im JavaScript Object Notation (\gls{JSON})-Format zu liefern, werden die extrahierten Informationen in ein vordefiniertes \gls{JSON}-Schema überführt.
 
-Ein wesentlicher Vorteil gegenüber der herkömmlichen Pipeline besteht in der simultanen Klassifikation sowie der Information Extraction (\gls{IE}) in einem einzigen Inferenzschritt.
+Ein wesentlicher Vorteil gegenüber der herkömmlichen Pipeline besteht in der simultanen Klassifikation sowie der Information Extraction (IE) in einem einzigen Inferenzschritt.
 Die \gls{JSON}-Schemata für die relevanten Dokumentenarten sind in den Listings~\ref{lst:json_kg5b} und~\ref{lst:json_vertrag} dargestellt.
 Bei dem \gls{JSON}-Schema der sonstigen Dokumente in Listing~\ref{lst:json_sonstiges} findet nur die Klassifikation statt, da hier keine Informationen relevant sind.
 Die Felder der \gls{JSON}-Schemata geben die relevanten Informationen aus Abschnitt~\ref{sec:documenttypes} wieder.
@@ -100,13 +100,13 @@ Zur Erstellung der Wahrheitswerte (Ground Truth) werden alle Dokumente manuell a
 Um eine korrekte Formatierung des \gls{JSON}-Outputs der VLMs sicherzustellen, existieren verschiedene Ansätze.
 Während komplexere Lösungen nur Tokens zulassen, die syntaktisch in \gls{JSON}-Objekten enthalten sein könnten (Constrained Decoding), wird in dieser Evaluation ein direkterer Ansatz gewählt.
 Hierbei werden aus der generierten Antwort potenzielle \gls{JSON}-Objekte extrahiert und geparst.
-Schlägt das Parsen der \gls{JSON}-Objekte fehl, werden diese zurück an das VLM geliefert, mit der Anweisung, diese zu korrigieren.
+Schlägt das Parsen der \gls{JSON}-Objekte fehl, werden diese zurück an das VLM geliefert mit der Anweisung, diese zu korrigieren.
 Das Modell bekommt insgesamt drei Versuche, ein valides \gls{JSON}-Objekt zu generieren, bevor das Dokument als ungültig eingestuft wird.
 
 
 \subsection{Vergleichslogik der unterschiedlichen JSON-Felder}\label{subsec:comparator}
 
-Im Gegensatz zur Verarbeitung von Antworten herkömmlicher Modelle weisen VLMs eine hohe Varianz an Ausgabeformaten auf.
+Im Gegensatz zur Verarbeitung von Antworten herköModels weisen VLMs eine hohe Varianz an Ausgabeformaten auf.
 Verschiedene Feldtypen der generierten \gls{JSON}-Objekte müssen deshalb spezifisch normalisiert werden, um eine Grundlage für den Vergleich zu bilden.
 Des Weiteren müssen Feldtypen wie Namen, Booleans, Zeichenketten, Datumsangaben und Monate nach unterschiedlichen Logiken verglichen werden.
 Für den Vergleich werden auf Basis der Klasse in Listing~\ref{lst:comparator} verschiedene Komparatoren (Comparator) definiert.
@@ -140,7 +140,7 @@ Obwohl dies nicht dem internationalen Standard entspricht, erweist sich dieses V
 Der \texttt{MonthComparator} normalisiert alphanumerische Monate in eine numerische Darstellung.
 Falls vollständige Datumsangaben geliefert werden, wird der \texttt{DateComparator} genutzt und anschließend der Monat extrahiert.
 
-Um die verschiedenen Comparator den Feldern zuzuordnen, existiert für jede Dokumentenart eine Konfiguration, die dem jeweiligen \gls{JSON}-Schema aus Abschnitt~\ref{subsec:documents_as_json} entspricht.
+Um die verschiedenen Komparatoren den Feldern zuzuordnen, existiert für jede Dokumentenart eine Konfiguration, die dem jeweiligen \gls{JSON}-Schema aus Abschnitt~\ref{subsec:documents_as_json} entspricht.
 Das Schema~\ref{lst:scheme_kg5b} definiert beispielhaft die Konfiguration für das KG5b-Formular.
 
 \begin{listing}[H]
@@ -153,10 +153,10 @@ Das Schema~\ref{lst:scheme_kg5b} definiert beispielhaft die Konfiguration für d
 \subsection{Bewertung der Klassifikation und der Information Extraction}\label{subsec:evaluation_classification_ie}
 
 Um die generierten \gls{JSON}-Objekte der VLMs schlussendlich bewerten zu können, werden die Klassifikation und Information Extraction unabhängig voneinander bewertet.
-Für die Evaluation werden die einzelnen \gls{JSON}-Felder jedes Dokuments mithilfe der in der Konfiguration definierten Comparator mit der Ground Truth verglichen und verschiedene Metadaten erfasst.
+Für die Evaluation werden die einzelnen \gls{JSON}-Felder jedes Dokuments mithilfe der in der Konfiguration definierten Komparatoren mit der Ground Truth verglichen und verschiedene Metadaten erfasst.
 Die Metadaten beinhalten den Status (vorhanden, nicht vorhanden oder halluziniert), die Korrektheit sowie die Fehlerart des Feldes.
 Zu den Fehlerarten gehören Wert- und Formatfehler.
-Halluzinierte Felder sind definiert als Felder, die nicht in der jeweiligen Konfiguration beziehungsweise Schema vorkommen.
+Halluzinierte Felder sind definiert als Felder, die nicht in der jeweiligen Konfiguration beziehungsweise im Schema vorkommen.
 Das Ergebnis ist ein Python-Dictionary (Listing~\ref{lst:dict}), das für jedes \gls{JSON}-Objekt eines Dokuments die Metadaten für jedes Feld beinhaltet.
 
 \begin{listing}[H]
@@ -221,7 +221,7 @@ Jede Iteration gliedert sich in folgende Schritte:
 \end{enumerate}
 
 Der Prozess wird so lange durchlaufen, bis durch Änderungen des Prompts keine Steigerungen der Metriken mehr erzielt werden.
-Im Anschluss werden mit dem finalen Prompt und dem Testdatensatz~\ref{subsec:test_val_dataset} die finalen Metriken bestimmt und auf Basis dieser das Modell gewählt.
+Im Anschluss werden mit dem finalen Prompt und dem Testdatensatz~\ref{subsec:test_val_dataset} die finalen Metriken bestimmt und auf deren Basis das Modell gewählt.
 Die Trennung von Validierungs- und Trainingsdatensatz schließt ein Data Leakage aus und verhindert ein Overfitting auf den Testdaten.
 
 Bezogen auf das Prompt-Engineering wird bewusst ein Zero-Shot-Ansatz gewählt.
@@ -309,5 +309,5 @@ Am Ende des Trainingslaufs wird das Modell geladen, das den geringsten Loss gege
     \label{lst:parameter}
 \end{listing}
 
-Abschließend wird wie bei der Auswahl des Basismodells mit dem Testdatensatz~\ref{subsec:test_val_dataset} die finalen Metriken bestimmt.
+Abschließend werden wie bei der Auswahl des Basismodells mit dem Testdatensatz~\ref{subsec:test_val_dataset} die finalen Metriken bestimmt.
 Die trainierten LoRA-Adapter werden zur Laufzeit geladen, um Speicherplatz zu sparen, da sonst das Qwen-2.5-VL-7B zusammen mit jedem Adapter gespeichert werden müsste.

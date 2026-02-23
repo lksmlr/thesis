@@ -3,7 +3,7 @@
 \section{Zusammenfassung}\label{sec:summary}
 
 Vor dem Hintergrund des demografischen Wandels und steigender Antragszahlen ist die Automatisierung von Verwaltungsprozessen für die Bundesagentur für Arbeit von Bedeutung.
-Die vorliegende Bachelorarbeit untersuchte das Potenzial von multimodalen Large Language Models als Nachfolger für die bestehende OCR/YOLO-Pipeline zur Verarbeitung von Ausbildungsnachweisen von volljährigen Auszubildenden.
+Die vorliegende Bachelorarbeit untersuchte das Potenzial von multimodalen Large Language Models als Nachfolger für die bestehende OCR/YOLO-Pipeline zur Verarbeitung von Ausbildungsnachweisen volljähriger Auszubildender.
 Ziel war es, die Extraktionsleistung der bisherigen Lösung unter Beobachtung des Ressourcenverbrauchs zu verbessern.
 
 Im Rahmen der Evaluation wurden die Modelle Pixtral-12B, Qwen-2.5-VL-7B und Qwen-2.5-VL-32B gegen die Pipeline getestet.
@@ -14,9 +14,9 @@ Die VLMs konnten hier eine Leistungssteigerung erzielen.
 Das Qwen-2.5-VL-32B lieferte mit einem F1-Score von 0,94 die besten Ergebnisse, erwies sich jedoch aufgrund einer durchschnittlichen \gls{Latenz} von 64 Sekunden und eines extrem hohen Energiebedarfs als unwirtschaftlich.
 Das nachtrainierte Qwen-2.5-VL-7B-finetuned bestätigte, dass domänenspezifisch angepasste, kleine Modelle mit großen Generalisten konkurrieren können.
 Mit einem F1-Score von 0,84 bei Verträgen und einer \gls{Latenz} von unter 10 Sekunden bietet es den optimalen Kompromiss.
-Zwar steigt der Energieverbrauch im Vergleich zur alten Pipeline an, steht jedoch der Minderung der manuellen Nachbearbeitung gegenüber.
+Zwar steigt der Energieverbrauch im Vergleich zur alten Pipeline an, dies steht jedoch der Minderung der manuellen Nachbearbeitung gegenüber.
 
-Die Arbeit zieht als Fazit, dass der Einsatz eines kleinen angepassten Modells den nächsten logischen Schritt in der teil-automatisierten Verarbeitung von Dokumenten darstellt.
+Als Fazit ergibt sich, dass der Einsatz eines kleinen, angepassten Modells den nächsten logischen Schritt in der teil-automatisierten Verarbeitung von Dokumenten darstellt.
 
 \section{Ausblick}\label{sec:outlook}
 
@@ -27,5 +27,5 @@ Außerdem ermöglicht das Auslesen von Token-Wahrscheinlichkeiten eine Auswertun
 
 Hinsichtlich der Robustheit muss die VLM-Pipeline für komplexere Szenarien, wie zum Beispiel vermischte oder vielseitige Dokumente, weiter angepasst werden.
 
-Um das Potenzial kleiner trainierter Modelle anderen Fachverfahren zu erläutern, wird das Proof of Concept anderen Abteilungen vorgestellt.
+Um das Potenzial kleiner, trainierter Modelle anderen Fachverfahren zu erläutern, wird das Proof of Concept anderen Abteilungen vorgestellt.
 Dies fördert die weitere Digitalisierung der Bundesagentur für Arbeit.

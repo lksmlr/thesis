@@ -8,7 +8,7 @@ messages = [{"messages": [{"role": "user",
                                         ...
                                        ]
                            },
-                          {"role": "assistent",
+                          {"role": "assistant",
                            "content": [{"type": "text", "text": response}]
                            }
                           ]

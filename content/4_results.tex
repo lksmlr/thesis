@@ -14,7 +14,7 @@ Bei der~\gls{Information Extraction} wurden die Halluzinationen von Feldern nich
 
 Abbildung~\ref{fig:results_ie} stellt die F1-Scores der Basismodelle im Vergleich zur OCR/YOLO-Pipeline für die KG5b-Formulare und Ausbildungsverträge dar.
 
-Bei den KG5b-Formularen zeigt sich ein enges Feld der Qwen-Modelle und der OCR/YOLO-Pipeline.
+Bei den KG5b-Formularen liegen die Qwen-Modelle und die OCR/YOLO-Pipeline nah beieinander.
 Die Pipeline liegt mit einem F1-Score von 0,75 geringfügig hinter dem Qwen-2.5-VL-7B.
 Das größere Qwen-2.5-VL-32B bildet die Spitze mit einem F1-Score von 0,87, während sich das Pixtral-12B am unteren Ende befindet.
 
@@ -23,7 +23,7 @@ Die OCR/YOLO-Pipeline fällt auf einen F1-Score von 0,51 ab.
 Demgegenüber stehen die Qwen-Modelle mit 0,94 (Qwen-2.5-VL-32B) und 0,84 (Qwen-2.5-VL-7B), die bei den Verträgen besser abschneiden als bei den KG5b-Formularen.
 Das Pixtral-12B bildet erneut das Schlusslicht, liegt jedoch nur minimal hinter der OCR/YOLO-Pipeline.
 
-Die Ergebnisse der~\gls{Information Extraction} zeigen die Abhängigkeit der Leistungsfähigkeit von der Dokumentenart bei der OCR/YOLO-Pipeline.
+Die Ergebnisse der~\gls{Information Extraction} verdeutlichen die Abhängigkeit der Leistungsfähigkeit von der Dokumentenart bei der OCR/YOLO-Pipeline.
 Im Vergleich zu den Qwen-Modellen sinkt die Leistung bei den variablen Verträgen gegenüber den starren KG5b-Formularen.
 Die Daten belegen zusätzlich, dass bereits ein kleines Modell wie das Qwen-2.5-VL-7B die Pipeline übertrifft.
 In keiner Dokumentenart schneidet das Pixtral-12B besser als die bisherige Lösung ab.

@@ -181,12 +181,12 @@ Ein Feld, das vorhanden, aber falsch ist, zählt zusätzlich zu den \gls{FP}, zu
 Diese doppelte Bestrafung stellt eine sehr strenge Bewertung für inhaltliche Fehler dar.
 True Negatives (\gls{TN}) sind nicht zählbar, da die Menge an nicht gefundenen, leeren Feldern theoretisch unendlich groß ist.
 Durch die Schemata und die Ground Truths ist eindeutig feststellbar, welche Felder halluziniert sind.
-Da mithilfe der Schemata auch ohne Ground Truth die benötigten Felder gefiltert werden können, kann wie in Listing~\ref{lst:penalize_halluzinations} entschieden werden, ob die Halluzinationen generell bestraft werden.
+Da mithilfe der Schemata auch ohne Ground Truth die benötigten Felder gefiltert werden können, kann wie in Listing~\ref{lst:penalize_hallucinations} entschieden werden, ob die Halluzinationen generell bestraft werden.
 
 \begin{listing}[H]
     \caption{Parameter, der bestimmt, ob Halluzinationen bestraft werden}
-    \label{lst:penalize_halluzinations}
-    \inputminted[]{python}{listings/penalize_halluzinations.py}
+    \label{lst:penalize_hallucinations}
+    \inputminted[]{python}{listings/penalize_hallucinations.py}
 \end{listing}
 
 \section{Messung von Latenz, Energieverbrauch und VRAM-Auslastung}\label{sec:measure}

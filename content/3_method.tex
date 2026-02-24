@@ -1,6 +1,7 @@
 \chapter{Methodik und Implementierung}\label{ch:methodology}
 
-Um die Eignung der VLMs als potenziellen Ersatz für die OCR/YOLO-Pipeline zu beurteilen, werden die folgenden Forschungsfragen beantwortet:
+Um die Eignung der VLMs als potenziellen Ersatz für die OCR/YOLO-Pipeline zu beurteilen, wird die in Abbildung~\ref{fig:overview} skizzierte Methodik herangezogen.
+Die Arbeit beantwortet folgende Forschungsfragen:
 
 \begin{enumerate}
     \item Wie verhält sich ein nicht domänenspezifisch angepasstes VLM hinsichtlich \gls{Latenz}, Klassifikations- und Extraktionsleistung im Vergleich zur OCR/YOLO-Pipeline, und welche Vorteile bietet ein einzelnes generalistisches Modell gegenüber spezialisierten Einzelsystemen?
@@ -8,9 +9,8 @@ Um die Eignung der VLMs als potenziellen Ersatz für die OCR/YOLO-Pipeline zu be
     \item Wie unterscheidet sich der Ressourcenverbrauch (Energieverbrauch und \gls{VRAM}"=Auslastung) der VLMs von dem der OCR/YOLO-Pipeline?
 \end{enumerate}
 
-Abbildung~\ref{fig:overview} zeigt einen Überblick der gesamten Methodik.
 
-\begin{figure}[!ht]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{figures/overview}
     \caption{Überblick der Methodik}
@@ -24,11 +24,11 @@ Abbildung~\ref{fig:overview} zeigt einen Überblick der gesamten Methodik.
 
 Durch Datenlieferungen der Familienkasse stehen für die Evaluation mehrere Tausend Dokumente als PDF oder Bilddatei zur Verfügung.
 Um einen einheitlichen Dokumentenkorpus zu schaffen und die Klassifikations- und Extraktionsleistung zu verbessern, erfolgt eine Vorverarbeitung der Dokumente.
-Dieser Prozess ist in Abbildung~\ref{fig:overview} in Rot dargestellt.
+Dieser Prozess ist im Überblick der Methodik~\ref{fig:overview} in Rot dargestellt.
 
 Im Fokus des Preprocessings stehen die Korrektur der Bildausrichtung sowie die Konvertierung der PDF-Dokumente in Bilddateien.
 Zur Korrektur der Rotation werden die Exchangeable Image File Format (EXIF)-Metadaten ausgelesen, um die ursprüngliche Ausrichtung wiederherzustellen.
-Während ältere Modelle Bilder auf eine feste Dimension skalieren, unterstützen die in dieser Arbeit evaluierten Modelle eine dynamische Skalierung.
+Während ältere VLMs Bilder auf eine feste Dimension skalieren, unterstützen die in dieser Arbeit evaluierten Modelle eine dynamische Skalierung.
 Zur Begrenzung der maximalen Token-Anzahl werden die Bilder dennoch auf eine maximale Pixelanzahl skaliert, wobei das ursprüngliche Seitenverhältnis beibehalten wird.
 Listing~\ref{lst:preprocessing} zeigt die Korrektur der Bildausrichtung und Skalierung innerhalb des Preprocessings.
 
@@ -44,7 +44,6 @@ Listing~\ref{lst:preprocessing} zeigt die Korrektur der Bildausrichtung und Skal
 Für die standardisierte Weiterverarbeitung der Modellausgaben ist eine konsistente Struktur essenziell.
 Da moderne VLMs darauf trainiert sind, Antworten im JavaScript Object Notation (\gls{JSON})-Format zu liefern, werden die extrahierten Informationen in ein vordefiniertes \gls{JSON}-Schema überführt.
 
-Ein wesentlicher Vorteil gegenüber der herkömmlichen Pipeline besteht in der simultanen Klassifikation sowie der Information Extraction (IE) in einem einzigen Inferenzschritt.
 Die \gls{JSON}-Schemata für die relevanten Dokumentenarten sind in den Listings~\ref{lst:json_kg5b} und~\ref{lst:json_vertrag} dargestellt.
 Bei dem \gls{JSON}-Schema der sonstigen Dokumente in Listing~\ref{lst:json_sonstiges} findet nur die Klassifikation statt, da hier keine Informationen relevant sind.
 Die Felder der \gls{JSON}-Schemata geben die relevanten Informationen aus Abschnitt~\ref{sec:documenttypes} wieder.
@@ -75,7 +74,7 @@ Das Schema des KG5b-Formulars beinhaltet zusätzlich die Felder \texttt{apprenti
 Bei den binären, booleschen Feldern markiert ein \texttt{true} das Vorhandensein eines Merkmals, während ein \texttt{false} dessen Fehlen oder das Nicht-Erkennen repräsentiert.
 Um eine strukturelle Konsistenz zu erzwingen, werden Felder, bei denen die dazugehörige Information im Dokument fehlt, bei booleschen Typen mit \texttt{false} und bei Textfeldern mit einer leeren Zeichenkette belegt.
 
-Da die Dokumente in den meisten Fällen aus mehreren Seiten bestehen, repräsentiert ein \gls{JSON}-Objekt das mehrseitige Dokument.
+Mehrseitige Dokumente werden durch ein \gls{JSON}-Objekt repräsentiert.
 
 
 \subsection{Test- und Validierungsdatensatz}\label{subsec:test_val_dataset}
@@ -106,7 +105,7 @@ Das Modell bekommt insgesamt drei Versuche, ein valides \gls{JSON}-Objekt zu gen
 
 \subsection{Vergleichslogiken der unterschiedlichen JSON-Felder}\label{subsec:comparator}
 
-Im Gegensatz zur Verarbeitung von Antworten herköModels weisen VLMs eine hohe Varianz an Ausgabeformaten auf.
+Im Gegensatz zur Verarbeitung von Antworten herkömmlicher Modelle weisen VLMs eine hohe Varianz an Ausgabeformaten auf.
 Verschiedene Feldtypen der generierten \gls{JSON}-Objekte müssen deshalb spezifisch normalisiert werden, um eine Grundlage für den Vergleich zu bilden.
 Des Weiteren müssen Feldtypen wie Namen, Booleans, Zeichenketten, Datumsangaben und Monate nach unterschiedlichen Logiken verglichen werden.
 Für den Vergleich werden auf Basis der Klasse in Listing~\ref{lst:comparator} verschiedene Komparatoren (Comparator) definiert.
@@ -117,7 +116,8 @@ Für den Vergleich werden auf Basis der Klasse in Listing~\ref{lst:comparator} v
     \inputminted[]{python}{listings/comparator.py}
 \end{listing}
 
-Der \texttt{NameComparator} in Listing~\ref{lst:name_comparator} vergleicht die Namensfelder mithilfe der Levenshtein-Similarity, um kleinere Fehler und verschiedene Schreibweisen zu tolerieren.
+\newpage
+Der \texttt{NameComparator} in Listing~\ref{lst:name_comparator} vergleicht die Namensfelder mithilfe der \gls{Levenshtein-Similarity}, um kleinere Fehler und verschiedene Schreibweisen zu tolerieren.
 Beispielsweise wird ein Name, der \texttt{ue} statt \texttt{ü} enthält, nicht als Fehler gewertet.
 Der Threshold, der zwischen korrekt und nicht korrekt entscheidet, liegt bei 0,8.
 Da die OCR/YOLO-Pipeline denselben Vergleich mit identischem Threshold verwendet, wird eine Vergleichbarkeit der Ergebnisse gewährleistet.
@@ -132,7 +132,7 @@ Der \texttt{BooleanComparator} normalisiert boolesche Felder entsprechend der Py
 Zu den akzeptierten Varianten gehören sowohl \texttt{true} und \texttt{false}, \texttt{0} und \texttt{1}, \texttt{wahr} und \texttt{falsch} als auch \texttt{vorhanden} und \texttt{nicht vorhanden}.
 
 Zeichenketten, die keine Namen darstellen, werden durch den \texttt{ExactComparator} verglichen.
-Hierbei findet keine Normalisierung statt, sodass die Zeichenketten exakt übereinstimmen müssen.
+Hierbei findet keine Normalisierung statt und die Zeichenketten müssen exakt übereinstimmen.
 
 Datumsangaben werden durch den \texttt{DateComparator} einheitlich in das Format \texttt{DD.MM.YYYY} überführt.
 Obwohl dies nicht dem internationalen Standard entspricht, erweist sich dieses Vorgehen als am robustesten, da die vorliegenden deutschen Dokumente primär in diesem Format ausgefüllt sind.
@@ -176,7 +176,7 @@ Um den Entity-Level F1-Score, der die Hauptmetrik für den Vergleich darstellt, 
 
 Auf Basis dieser Metadaten werden für den gesamten Dokumentenkorpus die True Positives (\gls{TP}), False Positives (\gls{FP}) und False Negatives (\gls{FN}) gezählt.
 Ein Feld zählt als \gls{TP}, wenn es vorhanden sowie korrekt ist.
-Zu den \gls{FN} gehören Felder, die entweder fehlen oder vorhanden, aber falsch sind.
+Zu den \gls{FN} gehören Felder, die entweder fehlen oder vorhanden sind, aber falsch erkannt wurden.
 Ein Feld, das vorhanden, aber falsch ist, zählt zusätzlich zu den \gls{FP}, zusammen mit den Feldern, die halluziniert werden.
 Diese doppelte Bestrafung stellt eine sehr strenge Bewertung für inhaltliche Fehler dar.
 True Negatives (\gls{TN}) sind nicht zählbar, da die Menge an nicht gefundenen, leeren Feldern theoretisch unendlich groß ist.
@@ -201,13 +201,13 @@ Des Weiteren wird der Energieverbrauch während der Inferenz in Joule erfasst.
 Die Messung der Leistung in Watt ist nicht zielführend, da sie die Zeit nicht berücksichtigt und Modelle mit geringerer \gls{Latenz} bei vergleichbarem Energieverbrauch benachteiligt werden.
 
 Ebenso wie der Energieverbrauch wird der dynamische \gls{VRAM}-Verbrauch während der Inferenz gemessen.
-Mit der Initialisierung des Modells wird zudem einmalig der statische Verbrauch erfasst.
+Mit der Initialisierung des Modells wird zudem einmalig der statische Verbrauch des VLMs erfasst.
 
 \newpage
 \section{Auswahl des Basismodells}\label{sec:model_selection}
 
 Die Auswahl eines geeigneten Basismodells ist ein wichtiger Schritt für das spätere Fine-Tuning.
-Wie in Abbildung~\ref{fig:overview} (grün markierte Felder) dargestellt, erfolgt diese Auswahl in einem iterativen Prozess.
+Wie im Überblick der Methodik~\ref{fig:overview} (grün markierte Felder) dargestellt, erfolgt diese Auswahl in einem iterativen Prozess.
 Ziel ist es, das Modell zu identifizieren, das bereits ohne Training die beste Leistung sowohl bei der Klassifikation als auch bei der Information Extraction erreichen kann.
 
 In jeder Iteration werden die Modelle Pixtral-12B und Qwen-2.5-VL-7B mit dem Validierungsdatensatz~\ref{subsec:test_val_dataset} evaluiert.
@@ -215,20 +215,20 @@ Die Temperatur der Modelle wird auf null gesetzt, um Halluzinationen zu vermeide
 Jede Iteration gliedert sich in folgende Schritte:
 
 \begin{enumerate}
-    \item Evaluation: Durchführung der Inferenz beider Modelle mit dem Validierungsdatensatz.
-    \item Fehleranalyse: Untersuchung der Fehler in der Klassifikation und in der Information Extraction.
-    \item Prompt-Refinement: Anpassung des Prompts auf Basis der Fehleranalyse.
+    \item \textbf{Evaluation}: Durchführung der Inferenz beider Modelle mit dem Validierungsdatensatz.
+    \item \textbf{Fehleranalyse}: Untersuchung der Fehler in der Klassifikation und in der Information Extraction.
+    \item \textbf{Prompt-Refinement}: Anpassung des Prompts auf Basis der Fehleranalyse.
 \end{enumerate}
 
 Der Prozess wird so lange durchlaufen, bis durch Änderungen des Prompts keine Steigerungen der Metriken mehr erzielt werden.
 Im Anschluss werden mit dem finalen Prompt und dem Testdatensatz~\ref{subsec:test_val_dataset} die finalen Metriken bestimmt und auf deren Basis das Modell gewählt.
-Die Trennung von Validierungs- und Trainingsdatensatz schließt ein Data Leakage aus und verhindert ein Overfitting auf den Testdaten.
+Die Trennung von Validierungs- und Testdatensatz schließt ein Data Leakage aus und verhindert ein Overfitting auf den Testdaten.
 
-Bezogen auf das Prompt-Engineering wird bewusst ein Zero-Shot-Ansatz gewählt.
-Im Gegensatz zu One-Shot- und Few-Shot-Prompting werden hier weniger Tokens verbraucht, was die Kosten pro Inferenz senkt.
+Bezogen auf das \gls{Prompt Engineering} wird bewusst ein \gls{Zero-Shot Prompting} gewählt.
+Im Gegensatz zu \gls{One-Shot Prompting} und \gls{Few-Shot Prompting} werden hier weniger Tokens verbraucht, was die Kosten pro Inferenz senkt.
 Des Weiteren kann das Modell so schneller antworten, da es weniger Input-Tokens verarbeiten muss.
 
-Die Gestaltung des finalen Prompts (siehe Listing~\ref{lst:prompt}) folgt der R-K-F-Formel.
+Die Gestaltung des finalen Prompts (siehe Listing~\ref{lst:prompt}) folgt der \gls{R-K-F-Formel}.
 Während der Kontext die vorliegenden Dokumentenarten beschreibt und die Schemata definiert, gibt das Format die Ausgabeformatierung vor.
 Zum Einsparen von Tokens wird das Modell strikt angewiesen, lediglich das \gls{JSON}-Objekt zu generieren.
 
@@ -285,14 +285,14 @@ Der Systemprompt in Listing~\ref{lst:prompt_finetuning} ist pragmatisch gehalten
     \inputminted[]{python}{listings/prompt_finetuning.py}
 \end{listing}
 
-Der Trainingsdatensatz~\ref{subsec:train_dataset} wird mithilfe von Datenaugmentation an das Training angepasst.
+Der Trainingsdatensatz wird mithilfe von Datenaugmentation an das Training angepasst.
 Vor jedem Trainingslauf wird der Datensatz vollständig randomisiert, um eine zufällige Reihenfolge der Trainingsdaten zu erhalten.
 Darüber hinaus werden die Seiten der Dokumente zufällig getauscht, um dem Modell anzutrainieren, Informationen unabhängig von der Position zu extrahieren.
 
-Die Parameteroptimierung erfolgt iterativ, wie im blau markierten Bereich in Abbildung~\ref{fig:overview} zu erkennen ist, und es werden alle Komponenten des VLM trainiert.
+Die Parameteroptimierung erfolgt iterativ, wie im blau markierten Bereich in Abbildung~\ref{fig:overview} zu erkennen ist und es werden alle Komponenten des VLM trainiert.
 Die wichtigsten Parameter der finalen Konfiguration sind in Listing~\ref{lst:parameter} abgebildet.
 
-Um ein Overfitting zu vermeiden, wird neben dem Trainingsdatensatz auch hier der Validierungsdatensatz~\ref{subsec:test_val_dataset} verwendet.
+Um ein Overfitting zu vermeiden, wird neben dem Trainingsdatensatz auch hier der Validierungsdatensatz verwendet.
 Nach 80 Dokumenten wird mit dem Validierungsdatensatz der Trainingsfortschritt gemessen.
 Am Ende des Trainingslaufs wird das Modell geladen, das den geringsten Loss gegenüber dem Validierungsdatensatz hat.
 
@@ -309,5 +309,5 @@ Am Ende des Trainingslaufs wird das Modell geladen, das den geringsten Loss gege
     \label{lst:parameter}
 \end{listing}
 
-Abschließend werden wie bei der Auswahl des Basismodells mit dem Testdatensatz~\ref{subsec:test_val_dataset} die finalen Metriken bestimmt.
+Abschließend werden wie bei der Auswahl des Basismodells mit dem Testdatensatz die finalen Metriken bestimmt.
 Die trainierten LoRA-Adapter werden zur Laufzeit geladen, um Speicherplatz zu sparen, da sonst das Qwen-2.5-VL-7B zusammen mit jedem Adapter gespeichert werden müsste.

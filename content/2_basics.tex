@@ -39,21 +39,23 @@ Da diese Dokumente keine Relevanz für die Weiterbeantragung des Kindergeldes be
 
 Der schematische Ablauf der OCR/YOLO-Pipeline ist in Abbildung~\ref{fig:aube} dargestellt und lässt sich in zwei Stufen einteilen.
 
-\begin{figure}[!ht]
+\begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{figures/aube}
     \caption{Schematischer Workflow der aktuellen OCR/YOLO-Pipeline zur Dokumentenverarbeitung}
     \label{fig:aube}
 \end{figure}
 
-In der ersten Stufe nimmt die Anwendung die hochgeladenen Dokumente des Kunden entgegen.
-Wenn ein Dokument als PDF vorliegt, extrahiert die Pipeline den Text mithilfe des Textlayers und eines \gls{OCR}-Modells, während bei einer Bilddatei lediglich das \gls{OCR}-Modell zum Einsatz kommt.
-Die erste Stufe liefert ein PDF/A und den extrahierten Text als Ergebnis zurück.
+In der ersten Stufe werden die hochgeladenen Dokumente des Kunden entgegengenommen.
+Dieses vorgeschaltete System ist nicht Teil der OCR/YOLO-Pipeline und somit kein Bestandteil dieser Arbeit.
+Wenn ein Dokument als PDF vorliegt, extrahiert das System den Text mithilfe des Textlayers und eines \gls{OCR}-Modells.
+Bei einer Bilddatei kommt lediglich das \gls{OCR}-Modell zum Einsatz.
+Das Ergebnis sind eine PDF/A sowie der \gls{OCR}-Text.
 
-Auf Basis des extrahierten Textes führt dIe Pipeline in der nächsten Stufe zunächst eine Klassifikation durch.
+Auf Basis des extrahierten \gls{OCR}-Textes führt die Pipeline in der nächsten Stufe zunächst eine Klassifikation durch.
 Hierbei unterscheidet der Klassifikator zwischen den bereits vorgestellten Dokumententypen: KG5b, Vertrag und Sonstiges.
 Erkennt der Klassifikator das Dokument als \texttt{Sonstiges}, endet an dieser Stelle die Bearbeitung.
-Handelt es sich hingegen um ein KG5b-Formular oder einen Vertrag, startet das System je nach Dokumententyp eine Erkennung mit einem \gls{YOLO}-Modell.
+Handelt es sich hingegen um ein KG5b-Formular oder einen Vertrag, startet das System je nach Dokumententyp eine Erkennung mit einem spezifischen \gls{YOLO}-Modell.
 Innerhalb der Bounding-Boxes extrahiert die Pipeline mit einem \gls{OCR}-Modell den Text und ordnet ihn dem jeweiligen Label zu.
 
 Schlussendlich stehen die erkannten Informationen zur weiteren Verarbeitung bereit.
@@ -74,17 +76,17 @@ Die technische Architektur ist in Abbildung~\ref{fig:infrastructure} schematisch
 \end{figure}
 
 Das System basiert auf einem abgeschotteten Kubernetes-Cluster.
-Für die rechenintensiven Aufgaben, insbesondere das Fine-Tuning und die Inferenz der VLMs, stehen innerhalb des Clusters zwei NVIDIA A40 GPUs mit jeweils 48 GB \gls{VRAM}\cite{NVIDIAA40} zur Verfügung.
+Für die rechenintensiven Aufgaben, insbesondere das Fine-Tuning und die Inferenz der VLMs, stehen innerhalb des Clusters zwei NVIDIA A40 \glspl{GPU} mit jeweils 48 GB \gls{VRAM}\cite{NVIDIAA40} zur Verfügung.
 Um die Bereitstellung der VLMs zu erleichtern, nutzt das System Kubeflow.
-Kubeflow ist eine Open-Source-Plattform, die speziell für das Entwickeln, Trainieren und Deployen von Machine-Learning-Modellen konzipiert wurde.
+Kubeflow ist eine Open-Source-Plattform, die speziell für das Entwickeln, Trainieren und Deployen von Machine-Learning-Modellen konzipiert wurde~\cite{Kubeflow}.
 
-Der Zugang zum Cluster sowie zur Integrated Development Environment (\gls{IDE}) erfolgt über eine noVNC-Schnittstelle (browserbasierter Remote-Desktop).
+Der Zugang zum Cluster sowie zur Integrated Development Environment (\gls{IDE}) erfolgt über eine noVNC-Schnittstelle (browserbasierter Remote-Desktop)~\cite{noVNC}.
 
 Um einen Test- oder Trainingslauf durchzuführen, durchläuft das System den folgenden Prozess:
 
 \begin{enumerate}
     \item \textbf{Initialisierung:} Ein Python-Skript in der \gls{IDE} startet den Kubeflow-Job.
-    \item \textbf{Datenbereitstellung:} Die Pipeline lädt sowohl das VLM als auch die zu klassifizierenden Dokumentenbilder aus dem S3-Store in den GPU-Cluster.
+    \item \textbf{Datenbereitstellung:} Die Pipeline lädt sowohl das VLM als auch die Dokumente aus dem S3-Store in den \gls{GPU}-Cluster.
     \item \textbf{Verarbeitung:} Die Inferenz oder das Training findet im Kubernetes-Cluster statt.
     \item \textbf{Persistierung:} Das System lädt die Ergebnisse zurück in den S3-Store.
 \end{enumerate}
@@ -105,8 +107,8 @@ Abbildung~\ref{fig:vlm} stellt den Aufbau dar.
 Der Image-Encoder verarbeitet die Bildeingabe und extrahiert visuelle Merkmale (Features).
 Zu diesem Zweck kommen häufig vortrainierte Modelle wie Vision Transformer oder CLIP zum Einsatz.
 Diese Modelle zerlegen ein Bild in kleinere Bildausschnitte (Patches), die sie ähnlich wie Token in Sprachmodellen behandeln.
-Der Encoder überführt jeden Patch in einen Vektor, der die Eigenschaften repräsentiert.
-Das Ergebnis ist eine Sequenz von Bildvektoren, die die visuellen Informationen des gesamten Bildes beinhaltet.
+Der Encoder überführt jeden Patch in einen Vektor, der die Eigenschaften des Ausschnitts repräsentiert.
+Das Ergebnis ist eine Sequenz von Bildvektoren, die die visuellen Features des gesamten Bildes beinhaltet.
 
 Der Adapter verbindet den Image-Encoder mit dem Sprachmodell.
 Diese Schicht transformiert die Ausgabe des Image-Encoders in ein Format, das mit den Textvektoren des Sprachmodells kompatibel ist.
@@ -146,19 +148,22 @@ Eine Besonderheit dieser Modelle ist, dass sie speziell auf das Verarbeiten von 
 Im Folgenden sind die Benchmarks der einzelnen Modelle gelistet.
 Besonders das Ergebnis des DocVQA-Benchmarks ist von Interesse, da der Benchmark ein Visual Question Answering (\gls{VQA}) auf Dokumentenbildern durchführt\cite{DocVQA}.
 
+
+
 \begin{table}[ht]
     \centering
-    \begin{tabular}{lccc}
+    \begin{tabularx}{\textwidth}{Xccc} % 'X' nimmt den restlichen Platz ein
         \hline
         \textbf{Modell} & \textbf{Pixtral-12B} & \textbf{Qwen2.5-VL-7B} & \textbf{Qwen2.5-VL-32B} \\
         \hline
         \textbf{DocVQA} & 90,7 & 95,7 & 94,8 \\
         \textbf{MMMU} & 52,0 & 58,6 & 70,0 \\
         \hline
-    \end{tabular}
+    \end{tabularx}
     \caption{Benchmark-Ergebnisse der evaluierten Modelle\cite{QwenPaper, Qwen32B, PixtralPaper}}
     \label{tab:benchmark}
 \end{table}
+
 
 
 \section{Parameter-Efficient Fine-Tuning}\label{sec:peft}
@@ -179,7 +184,7 @@ rsLoRA stabilisiert den Prozess, indem das Verfahren die Adapter durch die Quadr
 
 Das automatisierte Lesen, Verstehen und Analysieren von Dokumenten entwickelt sich zu einem zunehmend relevanten Forschungsfeld, das die Literatur häufig unter dem Begriff Document AI zusammenfasst.
 Cui et al.\ liefern eine Übersicht über die Entwicklung dieses Bereichs und definieren den Begriff Document AI als Prozess, der Webseiten, digitale und gescannte Dokumente in strukturierte Information überführt~\cite{DocumentAI}.
-Die Entwicklung lässt sich dabei in drei wesentliche Phasen einteilen, die die folgenden Unterkapitel besprechen.
+Die Entwicklung lässt sich dabei in drei wesentliche Phasen einteilen, die im Folgenden besprochen werden.
 
 \subsection{Grenzen sequentieller OCR-Pipelines}\label{subsec:deeplearning_ocr}
 

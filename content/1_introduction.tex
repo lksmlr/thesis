@@ -13,7 +13,7 @@ Mit einem jährlichen Aufkommen von mehreren Millionen Anträgen~\cite{AnzahlAnt
 Um sich dieser Herausforderung zu stellen, startete bereits im Oktober 2025 der Produktivbetrieb eines teilautomatisierten Systems.
 Der Fokus liegt hierbei auf den Kindergeldanträgen volljähriger Auszubildender.
 Das System klassifiziert die Dokumente, erkennt mithilfe von \gls{OCR}- und \gls{YOLO}-Modellen Inhalte aus hochgeladenen Dokumenten und zeigt dem Sachbearbeiter entsprechende Vorschläge an.
-Diese aktuelle OCR/YOLO-Pipeline wertet die Bearbeitung der Kindergeldanträge für die Sachbearbeiter bereits auf, stößt jedoch an ihre Grenzen.
+Diese aktuelle OCR/YOLO-Pipeline optimiert die Bearbeitung der Kindergeldanträge für die Sachbearbeiter bereits, stößt jedoch an ihre Grenzen.
 
 Aufgrund der schnellen Entwicklung im Bereich der Vision Language Models (VLMs) werden diese zunehmend relevanter für Aufgaben im Bereich der Dokumentenverarbeitung~\cite{SurveyVLMs}.
 Die vorliegende Arbeit evaluiert, inwiefern ein solches Modell das Potenzial besitzt, die OCR/YOLO-Pipeline zu ersetzen.
@@ -29,9 +29,9 @@ Es ist schwierig, die Varianz in den Trainingsdaten abzubilden, zumal es zeitauf
 
 Die Dokumente, die relevant für den Kindergeldantrag bei volljährigen Auszubildenden sind, benötigen in allen Fällen eine Unterschrift.
 Dadurch werden die Dokumente zwingenderweise ausgedruckt, ausgefüllt und unterschrieben, um schlussendlich wieder eingescannt zu werden.
-Dieser Prozess, auch Medienbruch genannt, hat eine schlechte Qualität zur Folge.
+Dieser Prozess, auch Medienbruch genannt, führt zu einer geminderten Bildqualität.
 
-Angesichts der Verwendung von vielen unterschiedlichen Modellen ist die Wartung des Systems aufwendig.
+Angesichts der Verwendung vieler unterschiedlicher Modelle ist die Wartung des Systems aufwendig.
 Eine Anpassung an neue Gegebenheiten ist ein zeitaufwendiger Prozess.
 Schon kleine Änderungen an der Laufzeitumgebung, wie zum Beispiel eine neue Python-Version, können ein erneutes Training erforderlich machen.
 
@@ -45,7 +45,7 @@ Die Arbeit umfasst die Implementierung einer Pipeline, die gescannte Dokumente a
 Das System soll den Dokumententyp eigenständig erkennen und definierte Inhalte, darunter handschriftliche Merkmale wie Unterschriften oder Stempel, in ein standardisiertes Format überführen.
 
 Ein weiteres Ziel ist der Vergleich unterschiedlicher Modellansätze hinsichtlich ihrer Extraktionsperformance und Effizienz.
-Hierbei wird ein kleineres, domänenspezifisch nachtrainiertes Modell gegen leistungsstärkere Modelle mit höherer Parameteranzahl antreten.
+Hierbei wird ein kleineres, domänenspezifisch nachtrainiertes Modell mit einem leistungsstärkeren Modell mit höherer Parameteranzahl verglichen.
 Die Evaluation untersucht, ob ein Fine-Tuning mit einem begrenzten Datensatz vergleichbare oder bessere Ergebnisse erzielt als der Einsatz größerer Basismodelle.
 
 Diese Arbeit konzentriert sich auf die Machbarkeit und die Evaluation der Modelle anhand eines Testdatensatzes.

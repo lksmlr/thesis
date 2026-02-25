@@ -67,7 +67,7 @@ Die Felder der \gls{JSON}-Schemata geben die relevanten Informationen aus Abschn
 \end{listing}
 
 Die Klassifikation wird im \gls{JSON}-Objekt über das Feld \texttt{type} abgebildet und ist in allen \gls{JSON}-Schemata vorhanden.
-Felder der Information Extraction sind über die Dokumentenarten nicht konsistent, jedoch bildet das Schema eines Vertrags eine Teilmenge des Schemas eines KG5b-Formulars.
+Felder der Information Extraction sind über die Dokumentenarten hinweg nicht konsistent, jedoch bildet das Schema eines Vertrags eine Teilmenge des Schemas eines KG5b-Formulars.
 Das Schema des KG5b-Formulars beinhaltet zusätzlich die Felder \texttt{apprenticeship\_finished} und \texttt{exam\_month}.
 \texttt{apprenticeship\_finished} ist ein binäres Feld und bildet die Checkboxen auf der ersten Seite des Formulars ab (siehe Anhang~\ref{fig:kg5b_page_1}).
 
@@ -99,7 +99,7 @@ Zur Erstellung der Wahrheitswerte (Ground Truth) werden alle Dokumente manuell a
 Um eine korrekte Formatierung des \gls{JSON}-Outputs der VLMs sicherzustellen, existieren verschiedene Ansätze.
 Während komplexere Lösungen nur Tokens zulassen, die syntaktisch in \gls{JSON}-Objekten enthalten sein könnten (Constrained Decoding), wird in dieser Evaluation ein direkterer Ansatz gewählt.
 Hierbei werden aus der generierten Antwort potenzielle \gls{JSON}-Objekte extrahiert und geparst.
-Schlägt das Parsen der \gls{JSON}-Objekte fehl, werden diese zurück an das VLM geliefert mit der Anweisung, diese zu korrigieren.
+Schlägt das Parsen der \gls{JSON}-Objekte fehl, werden diese mit der Anweisung, sie zu korrigieren, an das VLM zurückgeliefert.
 Das Modell bekommt insgesamt drei Versuche, ein valides \gls{JSON}-Objekt zu generieren, bevor das Dokument als ungültig eingestuft wird.
 
 
@@ -166,7 +166,7 @@ Das Ergebnis ist ein Python-Dictionary (Listing~\ref{lst:dict}), das für jedes 
 \end{listing}
 
 Auf Basis dieses Dictionaries wird für die Bewertung der Klassifikation aus jedem Dokument das Feld \texttt{type} extrahiert.
-Da das Feld \texttt{type} in jeder \gls{JSON} der Dokumentenarten (siehe Listings~\ref{lst:json_kg5b},~\ref{lst:json_vertrag} und~\ref{lst:json_sonstiges}) vorkommt, kann es nicht halluziniert werden.
+Da das Feld \texttt{type} in jedem \gls{JSON}-Objekt der Dokumentenarten (siehe Listings~\ref{lst:json_kg5b},~\ref{lst:json_vertrag} und~\ref{lst:json_sonstiges}) vorkommt, kann es nicht halluziniert werden.
 Jedoch kann das Feld fehlen, weshalb neben den Klassen KG5b, Vertrag und Sonstiges eine weitere Klasse \texttt{missing} eingeführt wird.
 \texttt{Missing} wird in der Auswertung nur betrachtet, wenn mindestens ein Dokument in der Klasse vorkommt.
 Für die Bestimmung der Güte der Modelle wird eine Confusion-Matrix erstellt, wobei der Fokus auf dem F1-Score liegt.
@@ -289,7 +289,7 @@ Der Trainingsdatensatz wird mithilfe von Datenaugmentation an das Training angep
 Vor jedem Trainingslauf wird der Datensatz vollständig randomisiert, um eine zufällige Reihenfolge der Trainingsdaten zu erhalten.
 Darüber hinaus werden die Seiten der Dokumente zufällig getauscht, um dem Modell anzutrainieren, Informationen unabhängig von der Position zu extrahieren.
 
-Die Parameteroptimierung erfolgt iterativ, wie im blau markierten Bereich in Abbildung~\ref{fig:overview} zu erkennen ist und es werden alle Komponenten des VLM trainiert.
+Die Parameteroptimierung erfolgt iterativ, wie im blau markierten Bereich in Abbildung~\ref{fig:overview} zu erkennen ist, und es werden alle Komponenten des VLM trainiert.
 Die wichtigsten Parameter der finalen Konfiguration sind in Listing~\ref{lst:parameter} abgebildet.
 
 Um ein Overfitting zu vermeiden, wird neben dem Trainingsdatensatz auch hier der Validierungsdatensatz verwendet.

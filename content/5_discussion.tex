@@ -14,7 +14,7 @@ Auch die Verwechslung von Verträgen mit KG5b-Formularen wirkt sich negativ auf 
 Ein entscheidender Vorteil der generalistischen VLMs ist hier die Robustheit durch das einheitliche Modell.
 Da die Felder eines Vertrags eine Teilmenge des KG5b-Schemas darstellen, bleibt die Information Extraction teilweise erfolgreich, selbst wenn das Dokument falsch klassifiziert wurde.
 Ein Fehler in der Klassifikation wirkt sich somit nicht so stark aus wie bei der OCR/YOLO-Pipeline.
-Im Idealfall fehlt bei der Erkennung eines Vertrages statt eines KG5b-Formulars kein Feld und im umgekehrten Fall fehlen maximal zwei Felder.
+Im Idealfall bleibt bei der Erkennung eines Vertrages statt eines KG5b-Formulars kein Feld unerkannt, und im umgekehrten Fall werden maximal zwei Felder ausgelassen.
 Die Fehlklassifizierung als \texttt{Sonstiges} ist jedoch auch bei den VLMs kritisch, da das Modell in diesem Fall keine Extraktion durchführt.
 Wie in den Confusion Matrices in Abbildung~\ref{fig:confusion_matrices_32b_peft} ersichtlich, erweisen sich jedoch insbesondere das Qwen-2.5-VL-7B-finetuned und das Qwen-2.5-VL-32B als äußerst zuverlässig in der Klassifizierung.
 
@@ -50,8 +50,8 @@ Die Ergebnisse der Untersuchung offenbaren einen Zielkonflikt zwischen der Leist
 Während die OCR/YOLO-Pipeline durch ihre extrem geringe \gls{Latenz} und Ressourceneffizienz auffällt, zeigen die VLMs eine Überlegenheit in der Qualität der Information Extraction.
 
 Die OCR/YOLO-Pipeline bildet mit einem durchschnittlichen Energieverbrauch von 117 Joule und einer \gls{Latenz} von unter einer Sekunde die Basislinie für die Effizienz.
-Demgegenüber steht das leistungsstärkste Modell, das Qwen-2.5-VL-32B, welches im Mittel die 160-fache Energie pro Dokument benötigt und eine \gls{Latenz} von durchschnittlich 64,16 Sekunden aufweist.
-Selbst das kleinste Modell, das Qwen-2.5-VL-7B, verbraucht rund das 22-fache an Energie.
+Demgegenüber steht das leistungsstärkste Modell, das Qwen-2.5-VL-32B, welches im Mittel die 160-Fache Energie pro Dokument benötigt und eine \gls{Latenz} von durchschnittlich 64,16 Sekunden aufweist.
+Selbst das kleinste Modell, das Qwen-2.5-VL-7B, verbraucht rund das 22-Fache an Energie.
 Kritisch betrachtet relativiert sich der reine Effizienzvorteil der Pipeline jedoch im operativen Kontext.
 Ein niedriger F1-Score (0,51 bei Verträgen) zieht eine manuelle Nachbearbeitung durch Sachbearbeiter nach sich.
 Die durch die schnelle technische Verarbeitung gewonnene Zeit wird somit im Gesamtprozess durch menschliche Korrektureingriffe wieder aufgezehrt.
@@ -157,7 +157,7 @@ Der Vergleich des Ressourcenverbrauchs zeigt die gravierendsten Unterschiede zwi
 
 Beim Energieverbrauch verzeichnet die Pipeline mit 117 Joule im Durchschnitt pro Dokument einen deutlichen Unterschied zum Verbrauch der VLMs.
 Selbst das effizienteste Modell, das Qwen-2.5-VL-7B, steht mit einem Verbrauch von durchschnittlich 2587 Joule pro Dokument in starkem Kontrast dazu.
-Das leistungsstarke Qwen-2.5-VL-32B verbraucht mit im Mittel 18.786 Joule sogar das 160-fache der Energie der Pipeline.
+Das leistungsstarke Qwen-2.5-VL-32B verbraucht mit im Mittel 18.786 Joule sogar das 160-Fache der Energie der Pipeline.
 
 Ein kritischer Aspekt für den operativen Betrieb ist neben dem statischen auch der dynamische \gls{VRAM}-Verbrauch.
 Während die OCR/YOLO-Pipeline mit 0,49 GB kaum ins Gewicht fällt und der Speicher durch die geringe \gls{Latenz} schnell wieder freigegeben wird, verbrauchen die VLMs beträchtlich mehr.
@@ -227,7 +227,7 @@ Für den Fall derartig vielseitiger Dokumente muss für den produktiven Einsatz 
 \section{Handlungsempfehlung für die Bundesagentur für Arbeit}\label{sec:recommendation_for_action}
 
 Aus der Beantwortung der Forschungsfragen und der vorangegangenen Diskussion leitet sich eine Handlungsempfehlung für die Bundesagentur für Arbeit ab.
-Die Entscheidung beruht auf einer Abwägung zwischen ökologischem Fußabdruck, Leistungsfähigkeit und wirtschaftlicher Notwendigkeit.
+Die Entscheidung beruht auf der Abwägung von ökologischem Fußabdruck, Leistungsfähigkeit und wirtschaftlicher Notwendigkeit.
 
 Als primäre Empfehlung wird der Einsatz des Qwen-2.5-VL-7B-finetuned ausgesprochen.
 Dieses Modell stellt im Vergleich zur bestehenden OCR/YOLO-Pipeline sowie zum größeren Basismodell Qwen-2.5-VL-32B den besten Kompromiss dar.

@@ -12,10 +12,11 @@ Um die Eignung der VLMs als potenziellen Ersatz für die OCR/YOLO-Pipeline zu be
 \section{Überblick der Methodik}\label{sec:overview}
 
 Abbildung~\ref{fig:overview} skizziert einen Gesamtüberblick der Methodik.
-Die Methodik gliedert sich in vier Phasen, die farblich markiert sind.
+Die Methodik gliedert sich in vier Phasen, die farblich getrennt sind.
 Ausgehend vom Dokumentenbestand erfolgt zunächst ein Preprocessing der Daten, bevor aus einem Teil der Dokumente ein Test- und Validierungsdatensatz erstellt wird.
 Im Anschluss wird in einem iterativen Prozess mithilfe von Prompt-Refinement und Fehleranalysen das am besten geeignete Basismodell ausgewählt.
 Dieses dient zusammen mit dem Trainingsdatensatz als Grundlage für das Fine-Tuning.
+Die Anpassung der Parameter des Fine-Tunings basiert ebenfalls auf einem iterativen Prozess der Fehleranalyse.
 Die finalen Metriken werden mithilfe des Testdatensatzes bestimmt.
 
 \begin{figure}[H]
@@ -119,7 +120,7 @@ Im Gegensatz zur Verarbeitung von Antworten herkömmlicher Modelle weisen VLMs e
 Verschiedene Feldtypen der generierten \gls{JSON}-Objekte müssen deshalb spezifisch normalisiert werden, um eine Grundlage für den Vergleich zu bilden.
 Des Weiteren müssen Feldtypen wie Namen, Booleans, Zeichenketten, Datumsangaben und Monate nach unterschiedlichen Logiken verglichen werden.
 Für den Vergleich werden auf Basis der Klasse in Listing~\ref{lst:comparator} verschiedene Komparatoren (Comparator) definiert.
-Jeder Comparator besitzt die Funktion \texttt{compare}, die den vorhergesagten Wert und den korrekten Wert übergeben bekommt.
+Jeder Comparator implementiert die Funktion \texttt{compare}, die den vorhergesagten Wert und den korrekten Wert übergeben bekommt.
 
 \begin{listing}[H]
     \caption{Basisklasse der verschiedenen Comparator}
@@ -152,10 +153,10 @@ Obwohl dies nicht dem internationalen Standard entspricht, erweist sich dieses V
 Der \texttt{MonthComparator} normalisiert alphanumerische Monate in eine numerische Darstellung.
 Falls vollständige Datumsangaben geliefert werden, wird der \texttt{DateComparator} genutzt und anschließend der Monat extrahiert.
 
-Um die verschiedenen Komparatoren den Feldern zuzuordnen, existiert für jede Dokumentenart eine Konfiguration, die dem jeweiligen \gls{JSON}-Schema aus Abschnitt~\ref{subsec:documents_as_json} entspricht.
+Um die verschiedenen Komparatoren den Feldern zuzuordnen, existiert für jede Dokumentenart eine Konfiguration, die dem jeweiligen \gls{JSON}-Schema entspricht.
 Das Code-Beispiel in Listing~\ref{lst:scheme_kg5b} definiert beispielhaft die Konfiguration für das KG5b-Formular.
 Hierbei wird über ein Python-Dictionary jedem erwarteten Feldnamen sowohl der Datentyp als auch der spezifische Comparator zugewiesen.
-Diese Struktur ermöglicht es dem Evaluations-Skript, über alle generierten Felder zu iterieren und die passgenaue Vergleichslogik anzuwenden.
+Diese Struktur ermöglicht es dem Evaluations-Skript, über alle generierten Felder zu iterieren und die passende Vergleichslogik anzuwenden.
 
 \begin{listing}[H]
     \caption{Konfiguration des KG5b-Formulars}
@@ -180,7 +181,7 @@ Das Ergebnis ist ein Python-Dictionary (Listing~\ref{lst:dict}), das für jedes 
 \end{listing}
 
 Auf Basis dieses Dictionaries wird für die Bewertung der Klassifikation aus jedem Dokument das Feld \texttt{type} extrahiert.
-Da das Feld \texttt{type} in jedem \gls{JSON}-Objekt der Dokumentenarten (siehe Listings~\ref{lst:json_kg5b},~\ref{lst:json_vertrag} und~\ref{lst:json_sonstiges}) vorkommt, kann es nicht halluziniert werden.
+Da das Feld \texttt{type} in jedem \gls{JSON}-Objekt der Dokumentenarten vorkommt, kann es nicht halluziniert werden.
 Jedoch kann das Feld fehlen, weshalb neben den Klassen KG5b, Vertrag und Sonstiges eine weitere Klasse \texttt{missing} eingeführt wird.
 \texttt{Missing} wird in der Auswertung nur betrachtet, wenn mindestens ein Dokument in der Klasse vorkommt.
 Für die Bestimmung der Güte der Modelle wird eine Confusion-Matrix erstellt, wobei der Fokus auf dem F1-Score liegt.
@@ -312,14 +313,15 @@ Die Parameteroptimierung erfolgt iterativ, wie im blau markierten Bereich in Abb
 Wie Listing~\ref{lst:parameter} verdeutlicht, werden alle Komponenten des VLM trainiert (\texttt{finetune\_...=True}).
 
 Für die LoRA-Konfiguration wurde ein Rang von $r=16$ sowie ein Alpha-Wert (\texttt{lora\_alpha}) von 16 gewählt.
-Diese Parameter bieten einen Kompromiss aus Anpassungsfähigkeit des Modells und vertretbarem VRAM-Bedarf.
-Zusätzlich wird durch \texttt{use\_rslora=True} die rsLoRA-Variante aktiviert.
+Diese Parameter bieten einen Kompromiss aus Anpassungsfähigkeit des Modells und \gls{VRAM}-Auslastung.
+Zusätzlich wird durch \texttt{use\_rslora=True} die rsLoRA-Variante des PEFT aktiviert.
 
 Die Steuerung des eigentlichen Trainings erfolgt über den \texttt{SFTTrainer}.
 Um Speicherplatz zu sparen und die Berechnungen zu beschleunigen, wird der 8-Bit-AdamW-Optimizer in Kombination mit einer Learning Rate von $5 \cdot 10^{-5}$ und einem Cosine-Scheduler eingesetzt.
 Die maximale Sequenzlänge (\texttt{max\_seq\_length}) wird auf 20.000 Token beschränkt, um keine Out-of-Memory-Fehler zu erhalten.
+Der Parameter \texttt{neftune\_noise\_alpha=15} fügt ein geringes Rauschen in die Trainingsdaten ein, um einem Overfitting entgegenzuwirken.
 
-Um ein Overfitting zu vermeiden, wird neben dem Trainingsdatensatz auch hier der Validierungsdatensatz verwendet.
+Um zusätzlich ein Overfitting zu vermeiden, wird neben dem Trainingsdatensatz auch der Validierungsdatensatz verwendet.
 Nach 80 Dokumenten wird mit dem Validierungsdatensatz der Trainingsfortschritt gemessen.
 Am Ende des Trainingslaufs wird das Modell geladen, das den geringsten Loss gegenüber dem Validierungsdatensatz hat.
 
@@ -336,5 +338,5 @@ Am Ende des Trainingslaufs wird das Modell geladen, das den geringsten Loss gege
     \label{lst:parameter}
 \end{listing}
 
-Abschließend werden wie bei der Auswahl des Basismodells mit dem Testdatensatz die finalen Metriken bestimmt.
+Abschließend werden, wie bei der Auswahl des Basismodells, mit dem Testdatensatz die finalen Metriken bestimmt.
 Die trainierten LoRA-Adapter werden zur Laufzeit geladen, um Speicherplatz zu sparen, da sonst das Qwen-2.5-VL-7B zusammen mit jedem Adapter gespeichert werden müsste.

@@ -1,6 +1,4 @@
-from pathlib import Path
 from PIL import Image, ImageOps
-from pdf2image import convert_from_path
 
 def preprocessing(path_to_document: str, max_pixels: int) -> [Image]:
     ...

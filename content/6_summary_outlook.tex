@@ -12,11 +12,11 @@ Ein zentraler Bestandteil der Untersuchung war das Fine-Tuning des kleineren 7B-
 Die Ergebnisse zeigen, dass die herkömmliche OCR/YOLO-Pipeline bei heterogenen Ausbildungsverträgen an ihre Grenzen stößt (F1-Score von 0,51).
 Die VLMs konnten hier eine Leistungssteigerung erzielen.
 Das Qwen-2.5-VL-32B lieferte mit einem F1-Score von 0,94 die besten Ergebnisse, erwies sich jedoch aufgrund einer durchschnittlichen \gls{Latenz} von 64 Sekunden und eines extrem hohen Energiebedarfs als unwirtschaftlich.
-Das nachtrainierte Qwen-2.5-VL-7B-finetuned bestätigte, dass domänenspezifisch angepasste, kleine Modelle mit großen Generalisten konkurrieren können.
+Das nachtrainierte Qwen-2.5-VL-7B-finetuned bestätigte, dass domänenspezifisch angepasste kleine Modelle mit großen Generalisten konkurrieren können.
 Mit einem F1-Score von 0,84 bei Verträgen und einer \gls{Latenz} von unter 10 Sekunden bietet es den optimalen Kompromiss.
-Zwar steigt der Energieverbrauch im Vergleich zur alten Pipeline an, dies steht jedoch der Minderung der manuellen Nachbearbeitung gegenüber.
+Zwar steigt der Energieverbrauch im Vergleich zur alten Pipeline an, dem steht jedoch die Minderung der manuellen Nachbearbeitung gegenüber.
 
-Als Fazit ergibt sich, dass der Einsatz eines kleinen, angepassten Modells den nächsten logischen Schritt in der teil-automatisierten Verarbeitung von Dokumenten darstellt.
+Als Fazit ergibt sich, dass der Einsatz eines kleinen angepassten Modells den nächsten logischen Schritt in der teilautomatisierten Verarbeitung von Dokumenten darstellt.
 
 \section{Ausblick}\label{sec:outlook}
 
@@ -25,7 +25,7 @@ Die Umgebung der bisherigen Pipeline muss für den Einsatz angepasst und die Aus
 Durch die Einführung von Constrained Decoding mithilfe von \gls{vLLM} wird in Zukunft die Generierung der \gls{JSON}-Objekte sichergestellt.
 Außerdem ermöglicht das Auslesen von Token-Wahrscheinlichkeiten eine Auswertung der Konfidenz für die Klassifikation.
 
-Hinsichtlich der Robustheit muss die VLM-Pipeline für komplexere Szenarien, wie zum Beispiel vermischte oder vielseitige Dokumente, weiter angepasst werden.
+Hinsichtlich der Robustheit muss die VLM-Pipeline für komplexere Szenarien, wie zum Beispiel vermischte oder lange Dokumente, weiter angepasst werden.
 
-Um das Potenzial kleiner, trainierter Modelle anderen Fachverfahren zu erläutern, wird das Proof of Concept anderen Abteilungen vorgestellt.
+Um das Potenzial trainierter Modelle anderen Fachverfahren zu erläutern, wird der Proof of Concept in den jeweiligen Abteilungen vorgestellt.
 Dies fördert die weitere Digitalisierung der Bundesagentur für Arbeit.

@@ -40,7 +40,7 @@ Abbildung~\ref{fig:results_classification} visualisiert die Klassifikationsleist
 Im Gegensatz zur~\gls{Information Extraction} zeigt sich hier ein homogenes Bild.
 Das Qwen-2.5-VL-32B erzielt in allen drei Kategorien die besten Ergebnisse und klassifiziert die KG5b-Formulare sogar mit einem Score von 1,0.
 Die Ergebnisse des Pixtral-12B, des Qwen-2.5-VL-7B und der OCR/YOLO-Pipeline liegen über alle Dokumentenarten hinweg dicht beisammen.
-In der Kategorie der sonstigen Dokumente fällt die Leistung aller Modelle gegenüber den anderen Dokumentenarten ab.
+In der Kategorie der sonstigen Dokumente fällt die Leistung aller Modelle im Vergleich zu den anderen Dokumentenarten ab.
 Hier erzielt das Pixtral-12B zusammen mit dem Qwen-2.5-VL-7B den niedrigsten Score mit 0,87.
 
 \begin{figure}[H]
@@ -152,7 +152,7 @@ Hier erreicht das Qwen-2.5-VL-7B-finetuned einen F1-Score von 0,97 bei den Vertr
         \includegraphics[width=\linewidth]{figures/results_confusion_matrix_qwen_32b}
         \caption{Confusion Matrix für das Qwen-2.5-VL-32B}
     \end{subfigure}
-    \caption{Confusion Matrices aller Modelle}
+    \caption{Confusion Matrices beider Modelle}
     \label{fig:confusion_matrices_32b_peft}
 \end{figure}
 
@@ -172,7 +172,7 @@ Ein spezifisches Training schafft in der Klassifikation einen Vorteil gegenüber
     \label{fig:results_latency_peft_32b_7b}
 \end{figure}
 
-Abbildung~\ref{fig:results_latency_peft_32b_7b} stellt die durchschnittlichen und maximalen \gls{Latenz}en des Qwen-2.5-VL-32B und Qwen-2.5-VL-7B-finetuned dar.
+Abbildung~\ref{fig:results_latency_peft_32b_7b} stellt die durchschnittlichen und maximalen Latenzen des Qwen-2.5-VL-32B und Qwen-2.5-VL-7B-finetuned dar.
 
 Es zeigt sich ein deutlicher Vorteil des kleineren Modells.
 Das Qwen-2.5-VL-7B-finetuned antwortet nach durchschnittlich 9,57 Sekunden, während das Qwen-2.5-VL-32B mehr als das Sechsfache an Zeit benötigt.

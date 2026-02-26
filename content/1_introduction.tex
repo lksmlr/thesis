@@ -39,12 +39,10 @@ Schon kleine Änderungen an der Laufzeitumgebung, wie zum Beispiel eine neue Pyt
 \section{Zielsetzung}\label{sec:goal}
 
 Das Ziel dieser Bachelorarbeit ist die Entwicklung und Evaluation eines prototypischen Systems zur teilautomatisierten Klassifikation und Informationsextraktion von Dokumenten.
-Angesichts der hohen Anzahl manuell bearbeiteter Anträge soll untersucht werden, inwieweit VLMs diesen Prozess effizienter gestalten können.
+Wegen der hohen Anzahl an manuell bearbeiteter Anträge und der Probleme der OCR/YOLO-Pipeline soll untersucht werden, inwieweit VLMs diesen Prozess effizienter gestalten können.
+Die VLM-Pipeline soll den Dokumententyp eigenständig erkennen und definierte Inhalte wie Namen, Unterschriften und Stempel in ein standardisiertes Format überführen.
 
-Die Arbeit umfasst die Implementierung einer Pipeline, die gescannte Dokumente als Bilddaten verarbeitet.
-Das System soll den Dokumententyp eigenständig erkennen und definierte Inhalte, darunter handschriftliche Merkmale wie Unterschriften oder Stempel, in ein standardisiertes Format überführen.
-
-Ein weiteres Ziel ist der Vergleich unterschiedlicher Modellansätze hinsichtlich ihrer Extraktionsperformance und Effizienz.
+Ein weiteres Ziel ist der Vergleich unterschiedlicher Modellansätze hinsichtlich ihrer Extraktionsleistung und Effizienz.
 Hierbei wird ein kleineres, domänenspezifisch nachtrainiertes Modell mit einem leistungsstärkeren Modell mit höherer Parameteranzahl verglichen.
 Die Evaluation untersucht, ob ein Fine-Tuning mit einem begrenzten Datensatz vergleichbare oder bessere Ergebnisse erzielt als der Einsatz größerer Basismodelle.
 

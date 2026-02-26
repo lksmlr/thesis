@@ -4,15 +4,15 @@
 
 Sowohl die OCR/YOLO-Pipeline als auch die VLMs weisen spezifische Fehlermuster auf, die sich in Klassifikations-, Format-, Detektions- und Wertfehler unterteilen lassen.
 
-Klassifikationsfehler wiegen in der aus mehreren Komponenten bestehenden OCR/YOLO-Pipeline besonders schwer, da die Klassifikation hier einen logischen Single Point of Failure darstellt.
+Klassifikationsfehler wiegen in der aus mehreren Komponenten bestehenden OCR/YOLO-Pipeline besonders schwer, da die Klassifikation hier einen logischen Single-Point-of-Failure darstellt.
 Wie die Confusion Matrix in Abbildung~\ref{fig:confusion_matrices} verdeutlicht, wurden fünf Dokumente fälschlicherweise als \texttt{Sonstiges} eingestuft, was aufgrund der Systemarchitektur (siehe Abbildung~\ref{fig:aube}) zu einem sofortigen Abbruch der Verarbeitung führt.
 Bei diesen fünf Dokumenten handelte es sich auffälligerweise ausschließlich um fotografierte Dokumente.
-Fotos weisen häufig Verzerrungen, Schattenwurf oder eine schlechte Beleuchtung auf, wodurch die \gls{OCR}-Ergebnisse des vorgeschalteten Systems schlechter ausfallen und die Klassifikation erschweren.
+Fotos weisen häufig Verzerrungen, Schattenwurf oder eine schlechte Beleuchtung auf, wodurch die \gls{OCR}-Ergebnisse des vorgeschalteten Systems schlechter ausfallen und die Klassifikation erschwert wird.
 
-Diese Klassifikationsfehler mindern die Leistung der Information Extraction, da mit einem einzigen Fehler bereits zehn (Vertrag) oder zwölf (KG5b) Felder fehlen.
+Diese Klassifikationsfehler mindern die Leistung der~\gls{Information Extraction}, da mit einem einzigen Fehler bereits zehn (Vertrag) oder zwölf (KG5b) Felder fehlen.
 Auch die Verwechslung von Verträgen mit KG5b-Formularen wirkt sich negativ auf die OCR/YOLO-Pipeline aus, da für beide Dokumentenarten unterschiedliche, spezialisierte Modelle trainiert wurden.
 Ein entscheidender Vorteil der generalistischen VLMs ist hier die Robustheit durch das einheitliche Modell.
-Da die Felder eines Vertrags eine Teilmenge des KG5b-Schemas darstellen, bleibt die Information Extraction teilweise erfolgreich, selbst wenn das Dokument falsch klassifiziert wurde.
+Da die Felder eines Vertrags eine Teilmenge des KG5b-Schemas darstellen, bleibt die~\gls{Information Extraction} teilweise erfolgreich, selbst wenn das Dokument falsch klassifiziert wurde.
 Ein Fehler in der Klassifikation wirkt sich somit nicht so stark aus wie bei der OCR/YOLO-Pipeline.
 Im Idealfall bleibt bei der Erkennung eines Vertrages statt eines KG5b-Formulars kein Feld unerkannt, und im umgekehrten Fall werden maximal zwei Felder ausgelassen.
 Die Fehlklassifizierung als \texttt{Sonstiges} ist jedoch auch bei den VLMs kritisch, da das Modell in diesem Fall keine Extraktion durchführt.
@@ -29,7 +29,7 @@ Da handschriftliche Unterschriften regelmäßig den vorgesehenen Platz überschr
 Während die OCR/YOLO-Pipeline hier oft keine valide Bounding-Box mehr liefern kann, zeigen das Qwen-2.5-VL-32B und das Qwen-2.5-VL-7B-finetuned eine hohe Robustheit gegenüber diesen Überlagerungen.
 Die trotz der Überlappungen gute Leistung ist vermutlich auf die Augmentation der Daten im ursprünglichen Training zurückzuführen.
 
-Formatfehler verdeutlichen Unterschiede in den \textit{Instruction-Following}-Fähigkeiten der Modelle.
+Formatfehler verdeutlichen Unterschiede in den Instruction-Following-Fähigkeiten der Modelle.
 Während die Qwen-Modelle nahezu fehlerfrei valide \gls{JSON}-Strukturen lieferten, scheiterte das Pixtral-12B trotz Retry-Logik an zwei Verträgen.
 Das Modell generierte in keinem der Versuche die umschließenden Klammern (\{\}), wodurch das Parsen fehlschlug und 20 \gls{JSON}-Felder verloren gingen.
 Dies deutet darauf hin, dass das Pixtral-12B eine geringere Stabilität bei der Einhaltung strikter Ausgabeformate aufweist als die Qwen-Modelle.
@@ -43,14 +43,14 @@ Das Fine-Tuning des Qwen-2.5-VL-7B reduzierte sowohl die \gls{OCR}- als auch die
 Halluzinationen von Feldern traten primär bei den Basismodellen auf, insbesondere bei der Klasse \texttt{Sonstiges}, da die Modelle hier Felder der beiden anderen Schemata extrahierten.
 Da diese zusätzlichen Felder durch die Schemata gefiltert werden können, stellen sie, anders als inhaltliche Halluzinationen, keine Einschränkung dar.
 
-
+\newpage
 \section{Abwägung Effektivität und Ressourceneffizienz}\label{sec:effectiveness_resource_efficiency}
 
 Die Ergebnisse der Untersuchung offenbaren einen Zielkonflikt zwischen der Leistungsfähigkeit der Modelle und ihrem Ressourcenbedarf.
-Während die OCR/YOLO-Pipeline durch ihre extrem geringe \gls{Latenz} und Ressourceneffizienz auffällt, zeigen die VLMs eine Überlegenheit in der Qualität der Information Extraction.
+Während die OCR/YOLO-Pipeline durch ihre extrem geringe \gls{Latenz} und Ressourceneffizienz auffällt, zeigen die VLMs eine Überlegenheit in der Qualität der~\gls{Information Extraction}.
 
 Die OCR/YOLO-Pipeline bildet mit einem durchschnittlichen Energieverbrauch von 117 Joule und einer \gls{Latenz} von unter einer Sekunde die Basislinie für die Effizienz.
-Demgegenüber steht das leistungsstärkste Modell, das Qwen-2.5-VL-32B, welches im Mittel die 160-Fache Energie pro Dokument benötigt und eine \gls{Latenz} von durchschnittlich 64,16 Sekunden aufweist.
+Demgegenüber steht das leistungsstärkste Modell, das Qwen-2.5-VL-32B, welches im Mittel die 160-fache Energie pro Dokument benötigt und eine \gls{Latenz} von durchschnittlich 64,16 Sekunden aufweist.
 Selbst das kleinste Modell, das Qwen-2.5-VL-7B, verbraucht rund das 22-Fache an Energie.
 Kritisch betrachtet relativiert sich der reine Effizienzvorteil der Pipeline jedoch im operativen Kontext.
 Ein niedriger F1-Score (0,51 bei Verträgen) zieht eine manuelle Nachbearbeitung durch Sachbearbeiter nach sich.
@@ -58,14 +58,14 @@ Die durch die schnelle technische Verarbeitung gewonnene Zeit wird somit im Gesa
 
 Betrachtet man die Wirtschaftlichkeit, so übersteigen die Kosten für eine einminütige manuelle Korrektur die Energiekosten einer einminütigen \gls{GPU}-Inferenz um ein Vielfaches.
 Die höhere Rechenzeit der VLMs gleicht sich somit durch die Einsparung von Arbeitszeit in der Sachbearbeitung aus.
-Bei einem F1-Score bei Verträgen von 0,94 (Qwen-2.5-VL-32B) muss im Schnitt ein Feld korrigiert werden, während bei einem F1-Score von 0,51 (OCR/YOLO-Pipeline) vier bis fünf Felder korrigiert werden müssen.
+Bei einem F1-Score von 0,94 bei den Verträgen (Qwen-2.5-VL-32B) muss im Schnitt ein Feld korrigiert werden, während bei einem F1-Score von 0,51 (OCR/YOLO-Pipeline) vier bis fünf Felder korrigiert werden müssen.
 
 Neben dem Energiebedarf ist die Infrastruktur, spezifisch die \gls{VRAM}-Auslastung, ein entscheidender Faktor.
 Während die OCR/YOLO-Pipeline auf einfachen \glspl{GPU} lauffähig ist, setzen die großen VLMs leistungsstarke \glspl{GPU} voraus.
-Das Qwen-2.5-VL-32B übertrifft das Qwen-2.5-VL-7B-finetuned zwar in der Information Extraction bei Verträgen (F1-Score 0,94 gegenüber 0,84), erkauft sich diesen Vorteil jedoch mit einem wesentlich höheren \gls{VRAM}-Bedarf.
+Das Qwen-2.5-VL-32B übertrifft das Qwen-2.5-VL-7B-finetuned zwar in der~\gls{Information Extraction} bei Verträgen (F1-Score 0,94 gegenüber 0,84), erkauft sich diesen Vorteil jedoch mit einem wesentlich höheren \gls{VRAM}-Bedarf.
 
 Insgesamt bietet das Qwen-2.5-VL-7B-finetuned den besten Kompromiss zwischen Effizienz und Effektivität.
-Das trainierte Modell schlägt dabei in der Klassifikation das Qwen-2.5-VL-32B, nähert sich bei der Information Extraction der Leistung des großen Modells an und ist dabei effizienter.
+Das trainierte Modell schlägt dabei in der Klassifikation das Qwen-2.5-VL-32B, nähert sich bei der~\gls{Information Extraction} der Leistung des großen Modells an und ist dabei effizienter.
 Mit einem statischen \gls{VRAM}-Bedarf von circa 17 GB ermöglicht dieses Modell den Betrieb auf kleineren \glspl{GPU}, was die Hürden für eine Integration in die Infrastruktur senkt.
 Hinsichtlich der Skalierbarkeit stellt die \gls{Latenz} der VLMs jedoch weiterhin eine Herausforderung dar, da eine niedrige \gls{Latenz} ein Cluster aus \glspl{GPU} voraussetzt.
 
@@ -79,11 +79,11 @@ Die Architektur der OCR/YOLO-Pipeline zeichnet sich durch eine Verkettung spezia
 Obwohl dieser Aufbau grundsätzlich modular ist, entsteht durch die sequenzielle Verarbeitung eine kritische Abhängigkeit.
 Der Klassifikator nimmt eine zentrale Rolle ein, da seine Entscheidung den weiteren Verlauf bestimmt.
 Fehlklassifikationen pflanzen sich durch die nachgelagerten Komponenten fort, was die Fehleranalyse erschwert.
-Wie bereits in der Fehleranalyse~\ref{sec:error_patterns} identifiziert, stellt der Klassifikator hier architektonisch einen \textit{Single Point of Failure} dar.
+Wie bereits in der Fehleranalyse identifiziert, stellt der Klassifikator hier architektonisch einen Single-Point-of-Failure dar.
 
 Hinsichtlich der Änderbarkeit offenbart die OCR/YOLO-Pipeline einen erhöhten Aufwand.
 Die Einführung einer neuen Dokumentenart erfordert nicht nur Anpassungen am Klassifikator, sondern auch das Training eines neuen \gls{YOLO}-Modells.
-Dies ist mit hohem manuellem Aufwand verbunden, da das Annotieren von Bounding-Boxes zeitintensiv ist.
+Dies ist mit hohem manuellem Aufwand verbunden, da das Annotieren von Bounding-Boxen zeitintensiv ist.
 Des Weiteren gibt es durch die vielen Komponenten zahlreiche Schnittstellen, die bei einer Änderung der Dokumentenstrukturen gegebenenfalls angepasst werden müssen.
 Im Gegensatz dazu reduziert der generalistische Ansatz mit den VLMs die Anzahl der Komponenten und Schnittstellen.
 Änderungen an den Dokumentenarten beschränken sich auf die Anpassung des Prompts oder, im Fall des Qwen-2.5-VL-7B-finetuned, auf das Training eines Modells.
@@ -112,16 +112,16 @@ Während die Klassifikationsleistung der Basismodelle mit der Leistung der Pipel
 Bei Verträgen erreicht die OCR/YOLO-Pipeline im Gegensatz zu den Qwen-Modellen lediglich einen F1-Score von 0,51.
 Mit einem F1-Score von 0,83 erreicht selbst das kleinste Basismodell, das Qwen-2.5-VL-7B, eine Leistungssteigerung von 0,32 Punkten.
 Auch bei den starren KG5b-Formularen übertrifft das Qwen-2.5-VL-7B die Pipeline knapp.
-Einzig das Pixtral-12B erzielte gegenüber der Pipeline sowohl in der Klassifikation als auch in der Information Extraction schlechtere Ergebnisse.
+Einzig das Pixtral-12B erzielte gegenüber der Pipeline sowohl in der Klassifikation als auch in der~\gls{Information Extraction} schlechtere Ergebnisse.
 
 Neben der verbesserten Leistung bietet ein generalistischer Ansatz wesentliche Vorteile in Bezug auf Architektur und Wartbarkeit.
-Durch den Single Point of Failure des Klassifikators ist die OCR/YOLO-Pipeline weniger robust gegenüber Klassifikationsfehlern.
+Durch den Single-Point-of-Failure des Klassifikators ist die OCR/YOLO-Pipeline weniger robust gegenüber Klassifikationsfehlern.
 Eine Fehlklassifikation führt zur Verwendung falscher Modelle oder zum sofortigen Abbruch.
 Ein VLM hingegen ist weniger anfällig bei einem Teil von Fehlklassifikationen, da aufgrund überlappender Schemata dennoch relevante Informationen extrahiert werden.
 
-Der monolithische Ansatz eines VLM reduziert des Weiteren die Anzahl der Komponenten und Schnittstellen drastisch.
+Der monolithische Ansatz eines VLMs reduziert des Weiteren die Anzahl der Komponenten und Schnittstellen drastisch.
 Während die Pipeline für jede neue Dokumentenart neue Modelle und Schnittstellen benötigt, reduziert sich der Aufwand bei einem VLM.
-Anstatt zeitaufwendig Bounding-Boxes für das Training von \gls{YOLO}-Modellen zu annotieren, genügt die Anpassung des Prompts oder ein Fine-Tuning mittels Model-Assisted-Labeling, was den manuellen Aufwand senkt.
+Anstatt zeitaufwendig Bounding-Boxen für das Training von \gls{YOLO}-Modellen zu annotieren, genügt die Anpassung des Prompts oder ein Fine-Tuning mittels Model-Assisted-Labeling, was den manuellen Aufwand senkt.
 
 
 \subsection{Beantwortung der Forschungsfrage 2}\label{subsec:answer_ff2}
@@ -130,7 +130,7 @@ Anstatt zeitaufwendig Bounding-Boxes für das Training von \gls{YOLO}-Modellen z
     \item [2.] Welche Auswirkungen hat ein domänenspezifisches Training eines kleineren Modells auf dessen \gls{Latenz}, Klassifikations- und Extraktionsleistung im Vergleich zu einem leistungsstärkeren Basismodell?
 \end{enumerate}
 
-Der Vergleich zeigt, dass das Training eines kleineren Modells einen merklichen Effizienzvorteil gegenüber einem größeren Basismodell bringt und in der Klassifikation sogar überlegen ist, wobei jedoch leichte Abstriche bei der Information Extraction hingenommen werden müssen.
+Der Vergleich zeigt, dass das Training eines kleineren Modells einen merklichen Effizienzvorteil gegenüber einem größeren Basismodell bringt und dieses in der Klassifikation sogar überlegen ist, wobei jedoch leichte Abstriche bei der~\gls{Information Extraction} hingenommen werden müssen.
 
 Hinsichtlich der \gls{Latenz} schlägt das angepasste Modell aufgrund seiner Größe das 32B-Modell deutlich.
 Insbesondere die maximale \gls{Latenz} des großen Modells ist mit 252,06 Sekunden bedenklich.
@@ -139,12 +139,12 @@ Die Klassifikationsleistung ist bei beiden Modellen beeindruckend, jedoch schnei
 Mit einem F1-Score von 0,95 bei sonstigen Dokumenten erzielt das Qwen-2.5-VL-7B-finetuned einen minimal höheren Wert als das Qwen-2.5-VL-32B mit einem F1-Score von 0,91.
 Dies verdeutlicht, dass das kleinere Modell durch das Training besser zwischen den Dokumentenarten unterscheiden kann als das Qwen-2.5-VL-32B mit seinem breiten Vorwissen.
 
-Bei der Information Extraction hängt die Leistung von der Varianz der Dokumentenarten ab.
+Bei der~\gls{Information Extraction} hängt die Leistung von der Varianz der Dokumentenarten ab.
 Bei den starren KG5b-Formularen erzielten beide Modelle einen F1-Score von 0,87.
 Die durch hohe Varianz gekennzeichneten Ausbildungsverträge werden jedoch durch das Qwen-2.5-VL-32B mit einem F1-Score von 0,94 besser erkannt.
 Das Weltwissen des großen Modells hilft ihm dabei, viele verschiedene Varianten von Dokumenten besser zu verstehen.
 
-Trotz der minimal besseren Information Extraction des großen Modells bietet das Qwen-2.5-VL-7B-finetuned den besten Kompromiss aus Effizienz und Effektivität.
+Trotz der minimal besseren~\gls{Information Extraction} des großen Modells bietet das Qwen-2.5-VL-7B-finetuned den besten Kompromiss aus Effizienz und Effektivität.
 
 
 \subsection{Beantwortung der Forschungsfrage 3}\label{subsec:answer_ff3}
@@ -173,7 +173,7 @@ Die Skalierung fällt hier wesentlich schwerer als die der deterministischen OCR
 \section{Limitationen und Probleme der Evaluation}\label{sec:limitations}
 
 Im Verlauf der Implementierung und Evaluation traten technische Limitationen und Herausforderungen auf, die die Ergebnisse beeinflussen und Potenziale für zukünftige Optimierungen aufzeigen.
-Diese lassen sich in framework-spezifische Probleme, Aspekte der Ressourcenverwaltung sowie methodische Grenzen der Klassifikation und Datenverarbeitung unterteilen.
+Diese lassen sich in frameworkspezifische Probleme, Aspekte der Ressourcenverwaltung sowie methodische Grenzen der Klassifikation und Datenverarbeitung unterteilen.
 
 Eine technische Hürde stellte die Inferenz des Pixtral-12B dar.
 Das Modell wurde über den in Listing~\ref{lst:pixtral} dargestellten Code geladen.
@@ -202,26 +202,26 @@ Dieser Overhead resultiert vermutlich aus der Art der Bereitstellung.
 Die Gewichte der während des Fine-Tunings trainierten LoRA-Adapter werden nicht fest mit dem Basismodell verschmolzen, sondern zur Laufzeit dynamisch geladen, um Speicherplatz zu sparen.
 In einem produktiven Einsatz wird der finale Adapter mit dem Basismodell verschmolzen und zusammen gespeichert, was diesen Overhead reduzieren wird.
 
-Methodische Limitationen zeigten sich in der Robustheit der Klassifikation bei Fehlklassifikationen.
+Methodische Limitationen zeigten sich in der Robustheit der Klassifikation gegenüber Fehlklassifikationen.
 Wie in der Fehleranalyse diskutiert, führt eine Fehlklassifikation eines Vertrags als \texttt{Sonstiges} zum Verlust aller Felder, da für die Klasse \texttt{Sonstiges} keine Extraktion stattfindet.
 Das Extrahieren von Vertragsdaten auch aus sonstigen Dokumenten würde die negativen Auswirkungen einer solchen Fehlklassifizierung reduzieren.
 Jedoch wäre dieses Vorgehen mit einem erhöhten Labeling-Aufwand verbunden.
 
 Zur Steigerung der Zuverlässigkeit der Ausgabeformate bietet sich der Einsatz von Constrained Decoding an.
 Durch die Bereitstellung des Modells über Frameworks wie \gls{vLLM} kann die Ausgabe strikt auf ein \gls{JSON}-Schema beschränkt werden.
-Damit ließe sich nicht nur die Generierung invalider \gls{JSON}-Schemata verhindern, sondern auch das Format für Datumsangaben und binäre Felder festlegen.
+Damit ließe sich nicht nur die Generierung invalider \gls{JSON}-Objekte verhindern, sondern auch das Format für Datumsangaben und binäre Felder festlegen.
 Zusätzlich ermöglicht dieser Ansatz die Auswertung der \gls{logprobs} der generierten Token.
 Durch die Analyse der Wahrscheinlichkeitsverteilung des Tokens, das auf \texttt{"type": "} folgt, ließe sich eine Confidence für die Klassifikation bestimmen.
 Dokumente, bei denen das Modell eine niedrige Confidence aufweist, könnten so für den Sachbearbeiter markiert werden.
 
 Außerdem wurde in der Evaluation nicht berücksichtigt, dass eventuell mehrere Dokumentenarten in einem PDF zusammengefasst sein könnten.
 Um gemischte Dokumentenarten zu erkennen, müsste das Modell in der Lage sein, ein Array von \gls{JSON}-Objekten zu liefern.
-Hierfür müsste eine Anpassung der Trainingsdaten mittels Augmentation erfolgen, da für diese vermischten Dokumente nur wenig Trainingsdaten zur Verfügung stehen.
+Hierfür müsste eine Anpassung der Trainingsdaten mittels Augmentation erfolgen, da für diese vermischten Dokumente nur wenige Trainingsdaten zur Verfügung stehen.
 
 Eine weitere Limitation stellt die maximale Kontextlänge der Modelle dar.
 Dokumente, die besonders umfangreich sind, neigen dazu, das Kontextfenster des Modells zu überlasten.
 Dies führt zu einem Abbruch der Inferenz oder zu einem Abschneiden relevanter Inhalte.
-Für den Fall derartig vielseitiger Dokumente muss für den produktiven Einsatz eine Strategie, wie beispielsweise eine Vorfilterung, entwickelt werden.
+Für den Fall derartig mehrseitiger Dokumente muss für den produktiven Einsatz eine Strategie, wie beispielsweise eine Vorfilterung, entwickelt werden.
 
 
 \section{Handlungsempfehlung für die Bundesagentur für Arbeit}\label{sec:recommendation_for_action}

@@ -5,7 +5,7 @@
 Im Rahmen der Kindergeldbeantragung für Auszubildende sind verschiedene Nachweise gültig.
 Zu den anerkannten Dokumententypen zählen der offizielle Vordruck der Bundesagentur für Arbeit (Formular KG5b)~\cite{KG5b} sowie Ausbildungsverträge.
 Die relevanten Informationen aus diesen Dokumenten sind von der fachlichen Seite vorgegeben.
-Zusätzlich laden Kunden häufig weitere Unterlagen, wie beispielsweise Schulbescheinigungen, im Portal hoch.
+Zusätzlich laden Kunden häufig weitere Unterlagen im Portal hoch.
 Da diese für den Kindergeldantrag nicht im Fokus stehen, fallen sie im Folgenden in die Kategorie „Sonstiges“.
 
 
@@ -37,28 +37,25 @@ Da diese Dokumente keine Relevanz für die Weiterbeantragung des Kindergeldes be
 
 \subsection{Der Ist-Zustand}\label{subsec:current}
 
-Der schematische Ablauf der OCR/YOLO-Pipeline ist in Abbildung~\ref{fig:aube} dargestellt und lässt sich in zwei Stufen einteilen.
-
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{figures/aube}
-    \caption{Schematischer Workflow der aktuellen OCR/YOLO-Pipeline zur Dokumentenverarbeitung}
+    \caption{Schematischer Ablauf der aktuellen OCR/YOLO-Pipeline zur Dokumentenverarbeitung}
     \label{fig:aube}
 \end{figure}
 
-In der ersten Stufe werden die hochgeladenen Dokumente des Kunden entgegengenommen.
-Dieses vorgeschaltete System ist nicht Teil der OCR/YOLO-Pipeline und somit kein Bestandteil dieser Arbeit.
-Wenn ein Dokument als PDF vorliegt, extrahiert das System den Text mithilfe des Textlayers und eines \gls{OCR}-Modells.
-Bei einer Bilddatei kommt lediglich das \gls{OCR}-Modell zum Einsatz.
-Die Ergebnisse sind eine PDF/A sowie der \gls{OCR}-Text.
+Der schematische Ablauf des Ist-Zustands ist in Abbildung~\ref{fig:aube} dargestellt und lässt sich in ein vorgeschaltetes System und die OCR/YOLO-Pipeline einteilen.
 
-Auf Basis des extrahierten \gls{OCR}-Textes führt die Pipeline in der nächsten Stufe zunächst eine Klassifikation durch.
+Dieses vorgeschaltete System ist nicht Teil der Arbeit, jedoch der Ausgangspunkt für die Verarbeitung.
+Es liefert als Ergebnis ein PDF/A sowie den daraus extrahierten \gls{OCR}-Text.
+
+Auf Basis des extrahierten \gls{OCR}-Textes führt die Pipeline zunächst eine Klassifikation durch.
 Hierbei unterscheidet der Klassifikator zwischen den bereits vorgestellten Dokumententypen: KG5b, Vertrag und Sonstiges.
 Erkennt der Klassifikator das Dokument als \texttt{Sonstiges}, endet an dieser Stelle die Bearbeitung.
 Handelt es sich hingegen um ein KG5b-Formular oder einen Vertrag, startet das System je nach Dokumententyp eine Erkennung mit einem spezifischen \gls{YOLO}-Modell.
-Innerhalb der Bounding-Boxes extrahiert die Pipeline mit einem \gls{OCR}-Modell den Text und ordnet ihn dem jeweiligen Label zu.
+Innerhalb der Bounding-Boxen extrahiert die Pipeline mit einem \gls{OCR}-Modell den Text und ordnet ihn dem jeweiligen Label zu.
 
-Schlussendlich stehen die erkannten Informationen zur weiteren Verarbeitung bereit.
+Abschließend stehen die erkannten Informationen zur weiteren Verarbeitung bereit.
 
 
 \subsection{Rahmenbedingungen und Infrastruktur}\label{subsec:infrastructure}
@@ -86,9 +83,9 @@ Um einen Test- oder Trainingslauf durchzuführen, durchläuft das System den fol
 
 \begin{enumerate}
     \item \textbf{Initialisierung:} Ein Python-Skript in der \gls{IDE} startet den Kubeflow-Job.
-    \item \textbf{Datenbereitstellung:} Die Pipeline lädt sowohl das VLM als auch die Dokumente aus dem S3-Store in den \gls{GPU}-Cluster.
-    \item \textbf{Verarbeitung:} Die Inferenz oder das Training findet im Kubernetes-Cluster statt.
-    \item \textbf{Persistierung:} Das System lädt die Ergebnisse zurück in den S3-Store.
+    \item \textbf{Datenbereitstellung:} Die Pipeline lädt sowohl das VLM als auch die Dokumente aus dem S3-Store in den Kubeflow-Job.
+    \item \textbf{Verarbeitung:} Die Inferenz oder das Training findet im Kubernetes-Cluster auf den bereitgestellten \glspl{GPU} statt.
+    \item \textbf{Persistierung:} Der Kubeflow-Job lädt die Ergebnisse zurück in den S3-Store.
 \end{enumerate}
 
 
@@ -113,7 +110,7 @@ Das Ergebnis ist eine Sequenz von Bildvektoren, die die visuellen Features des g
 Der Adapter verbindet den Image-Encoder mit dem Sprachmodell.
 Diese Schicht transformiert die Ausgabe des Image-Encoders in ein Format, das mit den Textvektoren des Sprachmodells kompatibel ist.
 In vielen Modellen besteht der Adapter aus einer linearen Schicht oder einem kleinen neuronalen Netz.
-Der Adapter projiziert die Bildvektoren des Image-Encoders in denselben Vektorraum wie die Textvektoren des LLM.
+Der Adapter projiziert die Bildvektoren des Image-Encoders in denselben Vektorraum wie die Textvektoren des LLMs.
 
 Die Hauptkomponente bildet das LLM, welches für die eigentliche Verarbeitung und Generierung zuständig ist.
 Das LLM erhält die Textvektoren zusammen mit den Bildvektoren und fusioniert diese.
@@ -141,18 +138,16 @@ Mit einem theoretischen Kontextfenster von 128.000 Token ermöglicht das Modell 
 Alibaba Cloud veröffentlichte das Qwen2.5-VL-7B-Instruct~\cite{Qwen7B} sowie das Qwen2.5-VL-32B-Instruct~\cite{Qwen32B} im Jahr 2025.
 Die beiden Modelle basieren auf dem gleichen Image-Encoder mit 600 Millionen Parametern.
 Lediglich die Größe des Text-Decoders ist mit 7 Milliarden beziehungsweise 32 Milliarden Parametern unterschiedlich.
-Eine Besonderheit dieser Modelle ist, dass sie speziell auf das Verarbeiten von Dokumenten trainiert wurden~\cite{QwenPaper}.
+Eine Besonderheit dieser Modelle ist, dass sie speziell auf die Verarbeitung von Dokumenten trainiert wurden~\cite{QwenPaper}.
 
 \subsection{Benchmarks}\label{subsec:benchmarks}
 
 Im Folgenden sind die Benchmarks der einzelnen Modelle gelistet.
 Besonders das Ergebnis des DocVQA-Benchmarks ist von Interesse, da der Benchmark ein Visual Question Answering (\gls{VQA}) auf Dokumentenbildern durchführt~\cite{DocVQA}.
 
-
-
 \begin{table}[ht]
     \centering
-    \begin{tabularx}{\textwidth}{Xccc} % 'X' nimmt den restlichen Platz ein
+    \begin{tabularx}{\textwidth}{Xccc}
         \hline
         \textbf{Modell} & \textbf{Pixtral-12B} & \textbf{Qwen2.5-VL-7B} & \textbf{Qwen2.5-VL-32B} \\
         \hline
@@ -163,7 +158,6 @@ Besonders das Ergebnis des DocVQA-Benchmarks ist von Interesse, da der Benchmark
     \caption{Benchmark-Ergebnisse der evaluierten Modelle~\cite{QwenPaper, Qwen32B, PixtralPaper}}
     \label{tab:benchmark}
 \end{table}
-
 
 
 \section{Parameter-Efficient Fine-Tuning}\label{sec:peft}
@@ -177,8 +171,9 @@ Anstatt das gesamte Modell neu zu trainieren, friert LoRA die ursprünglichen Ge
 Um Rechenaufwand und Speicherplatz zu sparen, trainiert der Algorithmus ausschließlich diese kleineren Matrizen~\cite{LoRA}.
 
 Ergänzend zu LoRA betrachtet diese Arbeit die Variante Rank-Stabilized LoRA (rsLoRA).
-Bei der Standard-LoRA führt ein steigender Rang $r$ oft nicht zu einer besseren Performance, da der verwendete Faktor ($\alpha/r$) das Lernen bei höheren Rängen verlangsamen oder hemmen kann.
+Bei Standard-LoRA führt ein steigender Rang $r$ oft nicht zu einer besseren Leistung, da der verwendete Faktor ($\alpha/r$) das Lernen bei höheren Rängen verlangsamen oder hemmen kann.
 rsLoRA stabilisiert den Prozess, indem das Verfahren die Adapter durch die Quadratwurzel des Rangs ($\alpha/\sqrt{r}$) teilt~\cite{rsLoRA}.
+
 
 \section{Verwandte Arbeiten}\label{sec:relatedwork}
 
@@ -193,7 +188,7 @@ Ein Problem besteht darin, dass herkömmliche \gls{OCR}-Modelle den Text als zus
 
 Um diese Informationen zu behalten, stellten Katti et al.\ mit Chargrid einen Ansatz vor, der Dokumente als zweidimensionales Raster von Zeichen (Character Grid) repräsentiert.
 Durch den Einsatz von Convolutional Neural Networks auf dieser Struktur konnte das Modell sowohl textuelle als auch räumliche Merkmale nutzen, was zu einer Leistungssteigerung bei Aufgaben wie der Informationsextraktion (\gls{Information Extraction}) aus Rechnungen führte~\cite{chargrid}.
-Chargrid baut auf den Bounding-Boxen und Koordinaten der \gls{OCR}-Modelle auf und benutzt diese, um das Layout des Dokuments zu modellieren.
+Chargrid baut auf den Bounding-Boxen und Koordinaten der \gls{OCR}-Modelle auf und verwendet diese, um das Layout des Dokuments zu modellieren.
 
 Dieser Ansatz der Verarbeitung des Textes mit einem \gls{OCR}-Modell ähnelt dem Klassifikationsschritt der aktuellen OCR/YOLO-Pipeline, die das Dokument ebenfalls ohne räumliche Merkmale klassifiziert.
 Die Einbeziehung räumlicher Merkmale ist für die Robustheit notwendig, was die Fehleranfälligkeit insbesondere bei komplexen Layouts erklärt.
@@ -201,7 +196,7 @@ Die Einbeziehung räumlicher Merkmale ist für die Robustheit notwendig, was die
 \subsection{Layoutbewusste Transformer-Modelle}\label{subsec:tranformer_ocr}
 
 Mit der Vorstellung der Transformer-Architektur begann eine tiefere Analyse der Semantik.
-Xu et al.\ erkannten, dass bisherige Lösungen sich fast ausschließlich auf Text konzentrieren, während das Layout eines Dokuments eine entscheidende Rolle für das Verständnis spielt.
+Xu et al.\ erkannten, dass bisherige Lösungen sich fast ausschließlich auf Text konzentrierten, während das Layout eines Dokuments eine entscheidende Rolle für das Verständnis spielt.
 LayoutLM verbindet ein vortrainiertes BERT-Modell mit Positionsvektoren und Bildvektoren.
 Die Positionsvektoren speichern die räumliche Anordnung der Elemente, während die Bildvektoren visuelle Merkmale des Dokuments kodieren.
 LayoutLM konnte auf diversen Benchmarks neue Bestwerte erzielen~\cite{LayoutLM}.
@@ -229,6 +224,6 @@ DocLLM kombiniert die aus einem \gls{OCR}-Modell gewonnenen Bounding-Box-Koordin
 
 Die Entwicklung von Donut und Nougat zeigt das Potenzial \gls{OCR}-freier Systeme.
 DocLLM demonstriert, wie sich das Wissen von LLMs für Aufgaben im Bereich der Document AI nutzbar machen lässt.
-Die aktuellen VLMs wie das Pixtral-12B und die Qwen-2.5-VL-Familie führen diese beiden Systeme zusammen.
+Die aktuellen VLMs wie das Pixtral-12B und die Qwen-2.5-VL-Familie führen diese beiden Ansätze zusammen.
 Sie vereinen die Image-Encoder mit dem Wissen des LLMs und können visuelle und textuelle Merkmale verbinden.
-Ähnlich wie die Evolution der Document AI beschäftigt sich diese Arbeit damit, ob ein solches generalistisches VLM die auf \gls{OCR}-Modellen beruhende Pipeline ersetzen kann.
+Anknüpfend an die Evolution der Document AI beschäftigt sich diese Arbeit damit, ob ein solches generalistisches VLM die auf \gls{OCR}-Modellen beruhende Pipeline ersetzen kann.

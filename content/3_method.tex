@@ -9,9 +9,9 @@ Um die Eignung der VLMs als potenziellen Ersatz für die OCR/YOLO-Pipeline zu be
 \end{enumerate}
 
 
-\section{Überblick der Methodik}\label{sec:overview}
+\section{Überblick über die Methodik}\label{sec:overview}
 
-Abbildung~\ref{fig:overview} skizziert einen Gesamtüberblick der Methodik.
+Abbildung~\ref{fig:overview} gibt einen Gesamtüberblick der Methodik.
 Die Methodik gliedert sich in vier Phasen, die farblich getrennt sind.
 Ausgehend vom Dokumentenbestand erfolgt zunächst ein Preprocessing der Daten, bevor aus einem Teil der Dokumente ein Test- und Validierungsdatensatz erstellt wird.
 Im Anschluss wird in einem iterativen Prozess mithilfe von Prompt-Refinement und Fehleranalysen das am besten geeignete Basismodell ausgewählt.
@@ -22,7 +22,7 @@ Die finalen Metriken werden mithilfe des Testdatensatzes bestimmt.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{figures/overview}
-    \caption{Überblick der Methodik}
+    \caption{Überblick über die Methodik}
     \label{fig:overview}
 \end{figure}
 
@@ -31,7 +31,7 @@ Die finalen Metriken werden mithilfe des Testdatensatzes bestimmt.
 
 \subsection{Preprocessing des Dokumentenbestands}\label{sec:preprocessing}
 
-Durch Datenlieferungen der Familienkasse stehen für die Evaluation mehrere Tausend Dokumente als PDF oder Bilddatei zur Verfügung.
+Durch Datenlieferungen der Familienkasse stehen für die Evaluation mehrere Tausend Dokumente als PDFs oder Bilddateien zur Verfügung.
 Um einen einheitlichen Dokumentenkorpus zu schaffen und die Klassifikations- und Extraktionsleistung zu verbessern, erfolgt eine Vorverarbeitung der Dokumente.
 Dieser Prozess ist im Überblick der Methodik~\ref{fig:overview} in Rot dargestellt.
 
@@ -56,7 +56,7 @@ Mit diesem Faktor wird das Bild dann verkleinert.
 Für die standardisierte Weiterverarbeitung der Modellausgaben ist eine konsistente Struktur essenziell.
 Da moderne VLMs darauf trainiert sind, Antworten im JavaScript Object Notation (\gls{JSON})-Format zu liefern, werden die extrahierten Informationen in ein vordefiniertes \gls{JSON}-Schema überführt.
 Die \gls{JSON}-Schemata für die relevanten Dokumentenarten sind in den Listings~\ref{lst:json_vertrag} und~\ref{lst:json_kg5b} dargestellt.
-Bei dem \gls{JSON}-Schema der sonstigen Dokumente in Listing~\ref{lst:json_sonstiges} findet nur die Klassifikation statt, da hier keine Informationen relevant sind.
+Im \gls{JSON}-Schema der sonstigen Dokumente in Listing~\ref{lst:json_sonstiges} findet nur die Klassifikation statt, da hier keine Informationen relevant sind.
 Die Felder der \gls{JSON}-Schemata geben die relevanten Informationen aus Abschnitt~\ref{sec:documenttypes} wieder.
 
 \begin{listing}[H]
@@ -80,7 +80,7 @@ Die Felder der \gls{JSON}-Schemata geben die relevanten Informationen aus Abschn
 Die Klassifikation wird im \gls{JSON}-Objekt über das Feld \texttt{type} abgebildet und ist in allen \gls{JSON}-Schemata vorhanden.
 Felder der Information Extraction sind über die Dokumentenarten hinweg nicht konsistent, jedoch bildet das Schema eines Vertrags eine Teilmenge des Schemas eines KG5b-Formulars.
 Das Schema des KG5b-Formulars beinhaltet zusätzlich die Felder \texttt{apprenticeship\_finished} und \texttt{exam\_month}.
-Das binäre Feld \texttt{apprenticeship\_finished} bildet die Checkboxen auf der ersten Seite des Formulars ab (siehe Anhang~\ref{fig:kg5b_page_1}).
+Das Feld \texttt{apprenticeship\_finished} bildet die Checkboxen auf der ersten Seite des Formulars ab (siehe Anhang~\ref{fig:kg5b_page_1}).
 
 Bei den binären, booleschen Feldern markiert ein \texttt{true} das Vorhandensein eines Merkmals, während ein \texttt{false} dessen Fehlen oder das Nicht-Erkennen repräsentiert.
 Um eine strukturelle Konsistenz zu erzwingen, werden Felder, bei denen die dazugehörige Information im Dokument fehlt, bei booleschen Typen mit \texttt{false} und bei Textfeldern mit einer leeren Zeichenkette belegt.
@@ -98,9 +98,9 @@ Die Datensätze decken dabei verschiedene Herausforderungen ab.
 Neben Dokumenten mit geringer Qualität, vorrangig mangelhaften Scans und Fotos, befinden sich fehlerhaft ausgefüllte Dokumente sowie Dokumente mit fehlenden Unterschriften und Stempeln in den Datensätzen.
 Um die hohe Varianz der Verträge und sonstigen Dokumente abzubilden, enthalten die Datensätze viele unterschiedliche Layouts.
 Die Exemplare für die Verträge beinhalten sowohl starre Layouts als auch Fließtexte unterschiedlicher Firmen und Kammern.
-Die sonstigen Dokumente beinhalten keine kontextfremden Dokumente, sondern Schulbescheinigungen, Studienbescheinigungen und Eintragungen bei der Handwerkskammer, um die Komplexität der Unterscheidung zu erhöhen.
+Die sonstigen Dokumente beinhalten keine kontextfremden Exemplare, sondern Schulbescheinigungen, Studienbescheinigungen und Eintragungen bei der Handwerkskammer, um die Komplexität der Unterscheidung zu erhöhen.
 
-Zur Erstellung der Wahrheitswerte (Ground Truth) werden alle Dokumente manuell annotiert und in das entsprechende \gls{JSON}-Schema überführt.
+Zur Erstellung der Ground Truth werden alle Dokumente manuell annotiert und in das entsprechende \gls{JSON}-Schema überführt.
 
 
 \section{Evaluation der generierten JSON-Objekte}\label{sec:evaluation}
@@ -133,7 +133,7 @@ Der \texttt{NameComparator} in Listing~\ref{lst:name_comparator} vergleicht die 
 Beispielsweise wird ein Name, der \texttt{ue} statt \texttt{ü} enthält, nicht als Fehler gewertet.
 Der Threshold, der zwischen korrekt und nicht korrekt entscheidet, liegt bei 0,8.
 Da die OCR/YOLO-Pipeline denselben Vergleich mit identischem Threshold verwendet, wird eine Vergleichbarkeit der Ergebnisse gewährleistet.
-Um die \gls{Levenshtein-Similarity} zu ermitteln, wird mit der Bibliothek \texttt{rapidfuzz} die Levenshtein-Distanz bestimmt und anschließend durch Division mit 100 normalisiert.
+Um die \gls{Levenshtein-Similarity} zu ermitteln, wird mit der Bibliothek \texttt{rapidfuzz} die Levenshtein-Distanz bestimmt und anschließend durch Division durch 100 normalisiert.
 
 \begin{listing}[H]
     \caption{Comparator für Namen}
@@ -142,7 +142,7 @@ Um die \gls{Levenshtein-Similarity} zu ermitteln, wird mit der Bibliothek \textt
 \end{listing}
 
 Der \texttt{BooleanComparator} normalisiert boolesche Felder entsprechend der Python-Syntax zu \texttt{True} und \texttt{False}.
-Zu den akzeptierten Varianten gehören sowohl \texttt{true} und \texttt{false}, \texttt{0} und \texttt{1}, \texttt{wahr} und \texttt{falsch} als auch \texttt{vorhanden} und \texttt{nicht vorhanden}.
+Zu den akzeptierten Varianten gehören sowohl \texttt{true} und \texttt{false}, \texttt{0} und \texttt{1}, \texttt{wahr} und \texttt{falsch} sowie \texttt{vorhanden} und \texttt{nicht vorhanden}.
 
 Zeichenketten, die keine Namen darstellen, werden durch den \texttt{ExactComparator} verglichen.
 Hierbei findet keine Normalisierung statt und die Zeichenketten müssen exakt übereinstimmen.
@@ -154,7 +154,7 @@ Der \texttt{MonthComparator} normalisiert alphanumerische Monate in eine numeris
 Falls vollständige Datumsangaben geliefert werden, wird der \texttt{DateComparator} genutzt und anschließend der Monat extrahiert.
 
 Um die verschiedenen Komparatoren den Feldern zuzuordnen, existiert für jede Dokumentenart eine Konfiguration, die dem jeweiligen \gls{JSON}-Schema entspricht.
-Das Code-Beispiel in Listing~\ref{lst:scheme_kg5b} definiert beispielhaft die Konfiguration für das KG5b-Formular.
+Listing~\ref{lst:scheme_kg5b} zeigt beispielhaft die Konfiguration für das KG5b-Formular.
 Hierbei wird über ein Python-Dictionary jedem erwarteten Feldnamen sowohl der Datentyp als auch der spezifische Comparator zugewiesen.
 Diese Struktur ermöglicht es dem Evaluations-Skript, über alle generierten Felder zu iterieren und die passende Vergleichslogik anzuwenden.
 
@@ -167,7 +167,7 @@ Diese Struktur ermöglicht es dem Evaluations-Skript, über alle generierten Fel
 
 \subsection{Bewertung der Klassifikation und der Information Extraction}\label{subsec:evaluation_classification_ie}
 
-Um die generierten \gls{JSON}-Objekte der VLMs schlussendlich bewerten zu können, werden die Klassifikation und Information Extraction unabhängig voneinander bewertet.
+Um die generierten \gls{JSON}-Objekte der VLMs schlussendlich bewerten zu können, werden die Klassifikation und Information Extraction unabhängig voneinander evaluiert.
 Für die Evaluation werden die einzelnen \gls{JSON}-Felder jedes Dokuments mithilfe der in der Konfiguration definierten Komparatoren mit der Ground Truth verglichen und verschiedene Metadaten erfasst.
 Die Metadaten beinhalten den Status (vorhanden, nicht vorhanden oder halluziniert), die Korrektheit sowie die Fehlerart des Feldes.
 Zu den Fehlerarten gehören Wert- und Formatfehler.
@@ -184,7 +184,7 @@ Auf Basis dieses Dictionaries wird für die Bewertung der Klassifikation aus jed
 Da das Feld \texttt{type} in jedem \gls{JSON}-Objekt der Dokumentenarten vorkommt, kann es nicht halluziniert werden.
 Jedoch kann das Feld fehlen, weshalb neben den Klassen KG5b, Vertrag und Sonstiges eine weitere Klasse \texttt{missing} eingeführt wird.
 \texttt{Missing} wird in der Auswertung nur betrachtet, wenn mindestens ein Dokument in der Klasse vorkommt.
-Für die Bestimmung der Güte der Modelle wird eine Confusion-Matrix erstellt, wobei der Fokus auf dem F1-Score liegt.
+Für die Bestimmung der Güte der Modelle wird eine Confusion Matrix erstellt, wobei der Fokus auf dem F1-Score liegt.
 
 Die Bewertung der Information Extraction ist komplexer als die der Klassifikation.
 Um den Entity-Level F1-Score, der die Hauptmetrik für den Vergleich darstellt, zu berechnen, werden die Metadaten aller Felder außer dem Feld \texttt{type} benötigt.
@@ -195,7 +195,7 @@ Zu den \gls{FN} gehören Felder, die entweder fehlen oder vorhanden sind, aber f
 Ein Feld, das vorhanden, aber falsch ist, zählt zusätzlich zu den \gls{FP}, zusammen mit den Feldern, die halluziniert werden.
 Diese doppelte Bestrafung stellt eine sehr strenge Bewertung für inhaltliche Fehler dar.
 True Negatives (\gls{TN}) sind nicht zählbar, da die Menge an nicht gefundenen, leeren Feldern theoretisch unendlich groß ist.
-Durch die Schemata und die Ground Truths ist eindeutig feststellbar, welche Felder halluziniert sind.
+Durch die Schemata und die jeweilige Ground Truth ist eindeutig feststellbar, welche Felder halluziniert sind.
 Da mithilfe der Schemata auch ohne Ground Truth die benötigten Felder gefiltert werden können, lässt sich die Strenge der Metrik steuern.
 Listing~\ref{lst:penalize_hallucinations} zeigt einen Ausschnitt der Evaluationslogik.
 Über den Parameter \texttt{penalize\_hallucinations} kann entschieden werden, ob Halluzinationen in die Berechnung einfließen.
@@ -229,7 +229,7 @@ Die Auswahl eines geeigneten Basismodells ist ein wichtiger Schritt für das sp�
 Wie im Überblick der Methodik~\ref{fig:overview} (grün markierte Felder) dargestellt, erfolgt diese Auswahl in einem iterativen Prozess.
 Ziel ist es, das Modell zu identifizieren, das bereits ohne Training die beste Leistung sowohl bei der Klassifikation als auch bei der Information Extraction erreichen kann.
 
-In jeder Iteration werden die Modelle Pixtral-12B und Qwen-2.5-VL-7B mit dem Validierungsdatensatz~\ref{subsec:test_val_dataset} evaluiert.
+In jeder Iteration werden die Modelle Pixtral-12B und Qwen-2.5-VL-7B mit dem Validierungsdatensatz evaluiert.
 Die Temperatur der Modelle wird auf null gesetzt, um Halluzinationen zu vermeiden.
 Jede Iteration gliedert sich in folgende Schritte:
 
@@ -240,7 +240,7 @@ Jede Iteration gliedert sich in folgende Schritte:
 \end{enumerate}
 
 Der Prozess wird so lange durchlaufen, bis durch Änderungen des Prompts keine Steigerungen der Metriken mehr erzielt werden.
-Im Anschluss werden mit dem finalen Prompt und dem Testdatensatz~\ref{subsec:test_val_dataset} die finalen Metriken bestimmt und auf deren Basis das Modell gewählt.
+Im Anschluss werden mit dem finalen Prompt und dem Testdatensatz die finalen Metriken bestimmt und auf deren Basis das Modell gewählt.
 Die Trennung von Validierungs- und Testdatensatz schließt ein Data Leakage aus und verhindert ein Overfitting auf den Testdaten.
 
 Bezogen auf das \gls{Prompt Engineering} wird bewusst ein \gls{Zero-Shot Prompting} gewählt.
@@ -275,14 +275,14 @@ Dabei werden die Daten aus einem einwöchigen Zeitraum betrachtet, wodurch ohne 
 Des Weiteren wird so ein Selection Bias verhindert.
 
 Zur effizienten Erstellung der Ground Truth wird ein Model-Assisted Labeling eingesetzt.
-Hierbei generiert das im Prozess der Modellauswahl~\ref{sec:model_selection} gewonnene Modell, zusammen mit dem angepassten Prompt, für jedes Dokument das jeweilige \gls{JSON}-Objekt.
+Hierbei generiert das im Prozess der Modellauswahl gewonnene Modell, zusammen mit dem angepassten Prompt, für jedes Dokument das jeweilige \gls{JSON}-Objekt.
 Im Anschluss werden diese \gls{JSON}-Objekte manuell kontrolliert und korrigiert.
 Durch den Einsatz des Modells zur Ermittlung der Ground Truth kann der Aufwand gesenkt werden.
 
 Für das Fine-Tuning muss der Datensatz, wie in Listing~\ref{lst:messages} dargestellt, in ein bestimmtes Format gebracht werden.
 Zu Beginn werden die \gls{JSON}-Objekte in Markdown-Blöcke eingebettet, um dem bereits gelernten Format des VLM zu entsprechen.
 Diese Blöcke werden dann in das \gls{OpenAI Message Format} eingefügt.
-Die PIL-Images der Dokumente werden einzeln in den Kontext des Benutzers mit \texttt{"type": "image"} eingebunden.
+Die PIL-Images der Dokumente werden einzeln in den Kontext des Benutzers mit \texttt{\char`\"type\char`\": \char`\"image\char`\"} eingebunden.
 
 \begin{listing}[H]
     \caption{OpenAI Message Format}
@@ -311,7 +311,6 @@ Darüber hinaus werden die Seiten der Dokumente zufällig getauscht, um dem Mode
 
 Die Parameteroptimierung erfolgt iterativ, wie im blau markierten Bereich in Abbildung~\ref{fig:overview} zu erkennen ist.
 Wie Listing~\ref{lst:parameter} verdeutlicht, werden alle Komponenten des VLM trainiert (\texttt{finetune\_...=True}).
-
 Für die LoRA-Konfiguration wurde ein Rang von $r=16$ sowie ein Alpha-Wert (\texttt{lora\_alpha}) von 16 gewählt.
 Diese Parameter bieten einen Kompromiss aus Anpassungsfähigkeit des Modells und \gls{VRAM}-Auslastung.
 Zusätzlich wird durch \texttt{use\_rslora=True} die rsLoRA-Variante des PEFT aktiviert.

@@ -9,10 +9,10 @@ Wie die Confusion Matrix in Abbildung~\ref{fig:confusion_matrices} verdeutlicht,
 Bei diesen fünf Dokumenten handelte es sich auffälligerweise ausschließlich um fotografierte Dokumente.
 Fotos weisen häufig Verzerrungen, Schattenwurf oder eine schlechte Beleuchtung auf, wodurch die \gls{OCR}-Ergebnisse des vorgeschalteten Systems schlechter ausfallen und die Klassifikation erschwert wird.
 
-Diese Klassifikationsfehler mindern die Leistung der~\gls{Information Extraction}, da mit einem einzigen Fehler bereits zehn (Vertrag) oder zwölf (KG5b) Felder fehlen.
+Diese Klassifikationsfehler mindern die Leistung der Information Extraction, da mit einem einzigen Fehler bereits zehn (Vertrag) oder zwölf (KG5b) Felder fehlen.
 Auch die Verwechslung von Verträgen mit KG5b-Formularen wirkt sich negativ auf die OCR/YOLO-Pipeline aus, da für beide Dokumentenarten unterschiedliche, spezialisierte Modelle trainiert wurden.
 Ein entscheidender Vorteil der generalistischen VLMs ist hier die Robustheit durch das einheitliche Modell.
-Da die Felder eines Vertrags eine Teilmenge des KG5b-Schemas darstellen, bleibt die~\gls{Information Extraction} teilweise erfolgreich, selbst wenn das Dokument falsch klassifiziert wurde.
+Da die Felder eines Vertrags eine Teilmenge des KG5b-Schemas darstellen, bleibt die Information Extraction teilweise erfolgreich, selbst wenn das Dokument falsch klassifiziert wurde.
 Ein Fehler in der Klassifikation wirkt sich somit nicht so stark aus wie bei der OCR/YOLO-Pipeline.
 Im Idealfall bleibt bei der Erkennung eines Vertrages statt eines KG5b-Formulars kein Feld unerkannt, und im umgekehrten Fall werden maximal zwei Felder ausgelassen.
 Die Fehlklassifizierung als \texttt{Sonstiges} ist jedoch auch bei den VLMs kritisch, da das Modell in diesem Fall keine Extraktion durchführt.
@@ -47,7 +47,7 @@ Da diese zusätzlichen Felder durch die Schemata gefiltert werden können, stell
 \section{Abwägung Effektivität und Ressourceneffizienz}\label{sec:effectiveness_resource_efficiency}
 
 Die Ergebnisse der Untersuchung offenbaren einen Zielkonflikt zwischen der Leistungsfähigkeit der Modelle und ihrem Ressourcenbedarf.
-Während die OCR/YOLO-Pipeline durch ihre extrem geringe \gls{Latenz} und Ressourceneffizienz auffällt, zeigen die VLMs eine Überlegenheit in der Qualität der~\gls{Information Extraction}.
+Während die OCR/YOLO-Pipeline durch ihre extrem geringe \gls{Latenz} und Ressourceneffizienz auffällt, zeigen die VLMs eine Überlegenheit in der Qualität der Information Extraction.
 
 Die OCR/YOLO-Pipeline bildet mit einem durchschnittlichen Energieverbrauch von 117 Joule und einer \gls{Latenz} von unter einer Sekunde die Basislinie für die Effizienz.
 Demgegenüber steht das leistungsstärkste Modell, das Qwen-2.5-VL-32B, welches im Mittel die 160-fache Energie pro Dokument benötigt und eine \gls{Latenz} von durchschnittlich 64,16 Sekunden aufweist.
@@ -62,10 +62,10 @@ Bei einem F1-Score von 0,94 bei den Verträgen (Qwen-2.5-VL-32B) muss im Schnitt
 
 Neben dem Energiebedarf ist die Infrastruktur, spezifisch die \gls{VRAM}-Auslastung, ein entscheidender Faktor.
 Während die OCR/YOLO-Pipeline auf einfachen \glspl{GPU} lauffähig ist, setzen die großen VLMs leistungsstarke \glspl{GPU} voraus.
-Das Qwen-2.5-VL-32B übertrifft das Qwen-2.5-VL-7B-finetuned zwar in der~\gls{Information Extraction} bei Verträgen (F1-Score 0,94 gegenüber 0,84), erkauft sich diesen Vorteil jedoch mit einem wesentlich höheren \gls{VRAM}-Bedarf.
+Das Qwen-2.5-VL-32B übertrifft das Qwen-2.5-VL-7B-finetuned zwar in der Information Extraction bei Verträgen (F1-Score 0,94 gegenüber 0,84), erkauft sich diesen Vorteil jedoch mit einem wesentlich höheren \gls{VRAM}-Bedarf.
 
 Insgesamt bietet das Qwen-2.5-VL-7B-finetuned den besten Kompromiss zwischen Effizienz und Effektivität.
-Das trainierte Modell schlägt dabei in der Klassifikation das Qwen-2.5-VL-32B, nähert sich bei der~\gls{Information Extraction} der Leistung des großen Modells an und ist dabei effizienter.
+Das trainierte Modell schlägt dabei in der Klassifikation das Qwen-2.5-VL-32B, nähert sich bei der Information Extraction der Leistung des großen Modells an und ist dabei effizienter.
 Mit einem statischen \gls{VRAM}-Bedarf von circa 17 GB ermöglicht dieses Modell den Betrieb auf kleineren \glspl{GPU}, was die Hürden für eine Integration in die Infrastruktur senkt.
 Hinsichtlich der Skalierbarkeit stellt die \gls{Latenz} der VLMs jedoch weiterhin eine Herausforderung dar, da eine niedrige \gls{Latenz} ein Cluster aus \glspl{GPU} voraussetzt.
 
@@ -112,7 +112,7 @@ Während die Klassifikationsleistung der Basismodelle mit der Leistung der Pipel
 Bei Verträgen erreicht die OCR/YOLO-Pipeline im Gegensatz zu den Qwen-Modellen lediglich einen F1-Score von 0,51.
 Mit einem F1-Score von 0,83 erreicht selbst das kleinste Basismodell, das Qwen-2.5-VL-7B, eine Leistungssteigerung von 0,32 Punkten.
 Auch bei den starren KG5b-Formularen übertrifft das Qwen-2.5-VL-7B die Pipeline knapp.
-Einzig das Pixtral-12B erzielte gegenüber der Pipeline sowohl in der Klassifikation als auch in der~\gls{Information Extraction} schlechtere Ergebnisse.
+Einzig das Pixtral-12B erzielte gegenüber der Pipeline sowohl in der Klassifikation als auch in der Information Extraction schlechtere Ergebnisse.
 
 Neben der verbesserten Leistung bietet ein generalistischer Ansatz wesentliche Vorteile in Bezug auf Architektur und Wartbarkeit.
 Durch den Single-Point-of-Failure des Klassifikators ist die OCR/YOLO-Pipeline weniger robust gegenüber Klassifikationsfehlern.
@@ -130,7 +130,7 @@ Anstatt zeitaufwendig Bounding-Boxen für das Training von \gls{YOLO}-Modellen z
     \item [2.] Welche Auswirkungen hat ein domänenspezifisches Training eines kleineren Modells auf dessen \gls{Latenz}, Klassifikations- und Extraktionsleistung im Vergleich zu einem leistungsstärkeren Basismodell?
 \end{enumerate}
 
-Der Vergleich zeigt, dass das Training eines kleineren Modells einen merklichen Effizienzvorteil gegenüber einem größeren Basismodell bringt und dieses in der Klassifikation sogar überlegen ist, wobei jedoch leichte Abstriche bei der~\gls{Information Extraction} hingenommen werden müssen.
+Der Vergleich zeigt, dass das Training eines kleineren Modells einen merklichen Effizienzvorteil gegenüber einem größeren Basismodell bringt und dieses in der Klassifikation sogar überlegen ist, wobei jedoch leichte Abstriche bei der Information Extraction hingenommen werden müssen.
 
 Hinsichtlich der \gls{Latenz} schlägt das angepasste Modell aufgrund seiner Größe das 32B-Modell deutlich.
 Insbesondere die maximale \gls{Latenz} des großen Modells ist mit 252,06 Sekunden bedenklich.
@@ -139,12 +139,12 @@ Die Klassifikationsleistung ist bei beiden Modellen beeindruckend, jedoch schnei
 Mit einem F1-Score von 0,95 bei sonstigen Dokumenten erzielt das Qwen-2.5-VL-7B-finetuned einen minimal höheren Wert als das Qwen-2.5-VL-32B mit einem F1-Score von 0,91.
 Dies verdeutlicht, dass das kleinere Modell durch das Training besser zwischen den Dokumentenarten unterscheiden kann als das Qwen-2.5-VL-32B mit seinem breiten Vorwissen.
 
-Bei der~\gls{Information Extraction} hängt die Leistung von der Varianz der Dokumentenarten ab.
+Bei der Information Extraction hängt die Leistung von der Varianz der Dokumentenarten ab.
 Bei den starren KG5b-Formularen erzielten beide Modelle einen F1-Score von 0,87.
 Die durch hohe Varianz gekennzeichneten Ausbildungsverträge werden jedoch durch das Qwen-2.5-VL-32B mit einem F1-Score von 0,94 besser erkannt.
 Das Weltwissen des großen Modells hilft ihm dabei, viele verschiedene Varianten von Dokumenten besser zu verstehen.
 
-Trotz der minimal besseren~\gls{Information Extraction} des großen Modells bietet das Qwen-2.5-VL-7B-finetuned den besten Kompromiss aus Effizienz und Effektivität.
+Trotz der minimal besseren Information Extraction des großen Modells bietet das Qwen-2.5-VL-7B-finetuned den besten Kompromiss aus Effizienz und Effektivität.
 
 
 \subsection{Beantwortung der Forschungsfrage 3}\label{subsec:answer_ff3}

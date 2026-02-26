@@ -1,4 +1,5 @@
 \pdfminorversion=7
+\pdfinclusioncopyfonts=1
 \documentclass[
  figures/kg5baper,
     sfdefaults=false,
@@ -23,16 +24,16 @@
 
 % details about your thesis
 \newcommand{\titel}{Vergleichsanalyse von multimodalen Large Language Models und einer OCR/YOLO-Pipeline zur Dokumentenklassifikation für die Bundesagentur für Arbeit}
-\newcommand{\artderarbeit}{Bachelorarbeit}  % {Bachelorarbeit,Masterarbeit}
+\newcommand{\artderarbeit}{Bachelorarbeit}
 \newcommand{\autor}{Lukas Müller}
-\newcommand{\studiengang}{Informatik}  % {Informatik,Wirtschaftsinformatik,Medieninformatik}
+\newcommand{\studiengang}{Informatik}
 \newcommand{\matrikelnr}{3698673}
 \newcommand{\erstgutachter}{Prof.\,Dr.~Natalie Kiesler}
 \newcommand{\zweitgutachter}{Prof.\,Dr.~Korbinian Riedhammer}
 \newcommand{\betreuer}{Tatjana Skiperska}
 \newcommand{\unternehmen}{Bundesagentur für Arbeit}
 \newcommand{\logo}{figures/TH-Nuernberg-RGB.png}
-\newcommand{\keywords}{hot, fuzz}
+\newcommand{\keywords}{VLM, BA, DocumentAI}
 
 
 % custom head and foot
@@ -57,7 +58,8 @@
 \usepackage{amsmath,amsfonts}
 \usepackage[english,ngerman]{babel}  % flip for German thesis
 \usepackage[final]{graphicx}
-\usepackage{setspace,geometry,xcolor}
+\usepackage{setspace,geometry}
+\usepackage[rgb]{xcolor}
 \usepackage{makeidx}
 \usepackage{paralist,ifthen,todonotes}
 \usepackage{url}
@@ -73,7 +75,7 @@
 \usepackage{tabularx}
 
 % PDF/A compliance
-\begin{filecontents*}{\jobname .xmpdata}
+\begin{filecontents*}{\jobname.xmpdata}
 \Title{\titel}
 \Author{\autor}
 \Subject{\titel}

@@ -187,7 +187,7 @@ Frühe Ansätze im Bereich der Document AI beruhten auf Pipelines, bei denen ein
 Ein Problem besteht darin, dass herkömmliche \gls{OCR}-Modelle den Text als zusammenhängende Zeichenkette verarbeiten, wodurch die zweidimensionalen Layout-Informationen, wie die räumliche Anordnung von Tabellen und Textblöcken, verloren gehen.
 
 Um diese Informationen zu behalten, stellten Katti et al.\ mit Chargrid einen Ansatz vor, der Dokumente als zweidimensionales Raster von Zeichen (Character Grid) repräsentiert.
-Durch den Einsatz von Convolutional Neural Networks auf dieser Struktur konnte das Modell sowohl textuelle als auch räumliche Merkmale nutzen, was zu einer Leistungssteigerung bei Aufgaben wie der Informationsextraktion (\gls{Information Extraction}) aus Rechnungen führte~\cite{chargrid}.
+Durch den Einsatz von Convolutional Neural Networks auf dieser Struktur konnte das Modell sowohl textuelle als auch räumliche Merkmale nutzen, was zu einer Leistungssteigerung bei Aufgaben wie der Informationsextraktion (Information Extraction) aus Rechnungen führte~\cite{chargrid}.
 Chargrid baut auf den Bounding-Boxen und Koordinaten der \gls{OCR}-Modelle auf und verwendet diese, um das Layout des Dokuments zu modellieren.
 
 Dieser Ansatz der Verarbeitung des Textes mit einem \gls{OCR}-Modell ähnelt dem Klassifikationsschritt der aktuellen OCR/YOLO-Pipeline, die das Dokument ebenfalls ohne räumliche Merkmale klassifiziert.

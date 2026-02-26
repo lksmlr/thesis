@@ -1,14 +1,14 @@
 \chapter{Ergebnisse}\label{ch:results}
 
 Die folgenden Ergebnisse basieren auf der Evaluation mit dem Testdatensatz.
-Bei der~\gls{Information Extraction} wurden die Halluzinationen von Feldern nicht bestraft, da diese durch das Schema gefiltert werden können.
+Bei der Information Extraction wurden die Halluzinationen von Feldern nicht bestraft, da diese durch das Schema gefiltert werden können.
 
 \section{Ergebnisse der OCR/YOLO-Pipeline gegenüber den Basismodellen}\label{sec:results_ie}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{figures/results_ie}
-    \caption{Ergebnisse der~\gls{Information Extraction}}
+    \caption{Ergebnisse der Information Extraction}
     \label{fig:results_ie}
 \end{figure}
 
@@ -23,7 +23,7 @@ Die OCR/YOLO-Pipeline fällt auf einen F1-Score von 0,51 ab.
 Demgegenüber stehen die Qwen-Modelle mit 0,94 (Qwen-2.5-VL-32B) und 0,84 (Qwen-2.5-VL-7B), die bei den Verträgen besser abschneiden als bei den KG5b-Formularen.
 Das Pixtral-12B bildet erneut das Schlusslicht, liegt jedoch nur minimal hinter der OCR/YOLO-Pipeline.
 
-Die Ergebnisse der~\gls{Information Extraction} verdeutlichen die Abhängigkeit der Leistungsfähigkeit von der Dokumentenart bei der OCR/YOLO-Pipeline.
+Die Ergebnisse der Information Extraction verdeutlichen die Abhängigkeit der Leistungsfähigkeit von der Dokumentenart bei der OCR/YOLO-Pipeline.
 Im Vergleich zu den Qwen-Modellen sinkt die Leistung bei den variablen Verträgen gegenüber den starren KG5b-Formularen.
 Die Daten belegen zusätzlich, dass bereits ein kleines Modell wie das Qwen-2.5-VL-7B die Pipeline übertrifft.
 In keiner Dokumentenart schneidet das Pixtral-12B besser als die bisherige Lösung ab.
@@ -37,7 +37,7 @@ In keiner Dokumentenart schneidet das Pixtral-12B besser als die bisherige Lösu
 
 Abbildung~\ref{fig:results_classification} visualisiert die Klassifikationsleistung der Basismodelle und der OCR/YOLO-Pipeline anhand von F1-Scores.
 
-Im Gegensatz zur~\gls{Information Extraction} zeigt sich hier ein homogenes Bild.
+Im Gegensatz zur Information Extraction zeigt sich hier ein homogenes Bild.
 Das Qwen-2.5-VL-32B erzielt in allen drei Kategorien die besten Ergebnisse und klassifiziert die KG5b-Formulare sogar mit einem Score von 1,0.
 Die Ergebnisse des Pixtral-12B, des Qwen-2.5-VL-7B und der OCR/YOLO-Pipeline liegen über alle Dokumentenarten hinweg dicht beisammen.
 In der Kategorie der sonstigen Dokumente fällt die Leistung aller Modelle im Vergleich zu den anderen Dokumentenarten ab.
@@ -105,7 +105,7 @@ Die \gls{Latenz}messung belegt den Zusammenhang zwischen der Modellgröße von V
 Mit zunehmender Parameteranzahl wächst die \gls{Latenz} überproportional.
 
 Diese Ergebnisse begründen zudem die Auswahl des Basismodells.
-Durch die Überlegenheit des Qwen-2.5-VL-7B gegenüber dem Pixtral-12B in der~\gls{Information Extraction} sowie der Klassifikation stellt sich das Qwen-Modell als besserer Kandidat für das Training heraus.
+Durch die Überlegenheit des Qwen-2.5-VL-7B gegenüber dem Pixtral-12B in der Information Extraction sowie der Klassifikation stellt sich das Qwen-Modell als besserer Kandidat für das Training heraus.
 
 
 \section{Ergebnisse des weitertrainierten Modells gegenüber dem größeren Basismodell}\label{sec:results_latency_peft}
@@ -113,18 +113,18 @@ Durch die Überlegenheit des Qwen-2.5-VL-7B gegenüber dem Pixtral-12B in der~\g
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{figures/results_ie_peft_32b_7b}
-    \caption{Ergebnisse der~\gls{Information Extraction}}
+    \caption{Ergebnisse der Information Extraction}
     \label{fig:results_ie_peft_32b_7b}
 \end{figure}
 
-Abbildung~\ref{fig:results_ie_peft_32b_7b} stellt die F1-Scores der~\gls{Information Extraction} des Qwen-2.5-VL-7B-finetuned und des Qwen-2.5-VL-32B dar.
+Abbildung~\ref{fig:results_ie_peft_32b_7b} stellt die F1-Scores der Information Extraction des Qwen-2.5-VL-7B-finetuned und des Qwen-2.5-VL-32B dar.
 
 Bei den standardisierten KG5b-Formularen erzielen beide Modelle identische Ergebnisse mit einem F1-Score von 0,87.
 Demgegenüber zeigen die Ausbildungsverträge einen deutlicheren Unterschied.
 Während das Qwen-2.5-VL-32B einen F1-Score von 0,94 aufweist, liegt das angepasste Modell mit einer Differenz von 0,10 darunter.
 
 Die Verteilung deutet darauf hin, dass ein domänenspezifisches Training ausreicht, um bei starren Layouts auf die Leistung des Qwen-2.5-VL-32B aufzuschließen.
-Bei variablen Dokumenten wie den Ausbildungsverträgen erzielt das 32B-Modell hingegen weiterhin die höchste Präzision in der~\gls{Information Extraction}.
+Bei variablen Dokumenten wie den Ausbildungsverträgen erzielt das 32B-Modell hingegen weiterhin die höchste Präzision in der Information Extraction.
 
 \begin{figure}[H]
     \centering
